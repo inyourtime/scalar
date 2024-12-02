@@ -15,7 +15,7 @@ test('@scalar/api-reference jsdelivr build', async ({ page, isMobile }) => {
    * Playwright uses pixelmatch to compare screenshots
    * update screenshots with npx playwright test --update-snapshots
    */
-  await expect(page).toHaveScreenshot('cdn-snapshot.png', {
+  await expect(page).toHaveScreenshot('jsdelivr-snapshot.png', {
     fullPage: true,
     maxDiffPixelRatio: 0.02,
   })

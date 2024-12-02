@@ -1,5 +1,56 @@
 # @scalar/aspnetcore
 
+## 1.2.45
+
+### Patch Changes
+
+- Updated dependencies [7605d6f]
+- Updated dependencies [c9b6873]
+- Updated dependencies [baaad1c]
+- Updated dependencies [c984ac8]
+  - @scalar/api-reference@1.25.72
+
+## 1.2.44
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.71
+
+## 1.2.43
+
+### Patch Changes
+
+- Updated dependencies [8004539]
+- Updated dependencies [9d23f95]
+- Updated dependencies [9002259]
+  - @scalar/api-reference@1.25.70
+
+## 1.2.42
+
+### Patch Changes
+
+- Updated dependencies [1b06f64]
+- Updated dependencies [fda0e5c]
+  - @scalar/api-reference@1.25.69
+
+## 1.2.41
+
+### Patch Changes
+
+- Updated dependencies [daa2663]
+- Updated dependencies [f67c3bc]
+  - @scalar/api-reference@1.25.68
+
+## 1.2.40
+
+### Patch Changes
+
+- Updated dependencies [594a96c]
+- Updated dependencies [0adbfd5]
+- Updated dependencies [9b4def7]
+- Updated dependencies [2a6117e]
+  - @scalar/api-reference@1.25.67
+
 ## 1.2.39
 
 ### Patch Changes

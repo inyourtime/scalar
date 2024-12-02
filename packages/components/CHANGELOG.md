@@ -1,5 +1,73 @@
 # @scalar/components
 
+## 0.13.0
+
+### Minor Changes
+
+- d08a7ae: feat(components): cleanup and extend floating components
+
+### Patch Changes
+
+- 2dd6aa3: feat(components): update ScalarErrorBoundary
+- 7605d6f: feat: add error boundary component
+- 7278742: feat(components): allow logo in ScalarMenu to adjust width
+- 3ca88dc: feat(components): create useBindCx hook
+- f6cd5ed: feat: updates show hide icons
+  - @scalar/themes@0.9.53
+  - @scalar/code-highlight@0.0.17
+  - @scalar/use-hooks@0.1.6
+
+## 0.12.76
+
+### Patch Changes
+
+- Updated dependencies [1fa0d20]
+  - @scalar/themes@0.9.52
+  - @scalar/code-highlight@0.0.17
+  - @scalar/use-hooks@0.1.5
+
+## 0.12.75
+
+### Patch Changes
+
+- 6140275: fix(components): remove col on larger screens only use row
+- Updated dependencies [91123e8]
+- Updated dependencies [9002259]
+  - @scalar/themes@0.9.51
+  - @scalar/code-highlight@0.0.17
+  - @scalar/use-hooks@0.1.4
+
+## 0.12.74
+
+### Patch Changes
+
+- 324834d: style: sets z context to tooltip content
+- 1b06f64: fix(api-reference): conflicting styles with bulma, galaxy bug on docs
+- Updated dependencies [1b06f64]
+  - @scalar/code-highlight@0.0.16
+  - @scalar/themes@0.9.50
+  - @scalar/use-hooks@0.1.3
+
+## 0.12.73
+
+### Patch Changes
+
+- 28a6b05: style(components): scalar menu flex col for products
+- Updated dependencies [d379b81]
+- Updated dependencies [f67c3bc]
+  - @scalar/themes@0.9.49
+  - @scalar/code-highlight@0.0.15
+  - @scalar/use-hooks@0.1.2
+
+## 0.12.72
+
+### Patch Changes
+
+- 12fed75: Add header button and checkbox component
+- Updated dependencies [0adbfd5]
+- Updated dependencies [2a6117e]
+  - @scalar/use-hooks@0.1.1
+
 ## 0.12.71
 
 ### Patch Changes

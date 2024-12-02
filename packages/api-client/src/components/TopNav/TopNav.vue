@@ -3,11 +3,13 @@ import ScalarHotkey from '@/components/ScalarHotkey.vue'
 import { ROUTES } from '@/constants'
 import type { HotKeyEvent } from '@/libs'
 import { useWorkspace } from '@/store'
+import { useActiveEntities } from '@/store/active-entities'
 import {
   type Icon,
   ScalarContextMenu,
-  ScalarDropdown,
-  ScalarDropdownItem,
+  ScalarDropdownButton,
+  ScalarDropdownMenu,
+  ScalarFloating,
   ScalarIcon,
 } from '@scalar/components'
 import { capitalize } from '@scalar/oas-utils/helpers'
@@ -19,7 +21,8 @@ import TopNavItem from './TopNavItem.vue'
 const props = defineProps<{
   openNewTab: { name: string; uid: string } | null
 }>()
-const { activeRequest, router, events } = useWorkspace()
+const { activeRequest, router } = useActiveEntities()
+const { events } = useWorkspace()
 const { copyToClipboard } = useClipboard()
 
 /** Nav Items list */
@@ -146,8 +149,9 @@ onMounted(() => events.hotKeys.on(handleHotKey))
 onBeforeUnmount(() => events.hotKeys.off(handleHotKey))
 </script>
 <template>
-  <nav class="flex h-10 t-app__top-nav">
-    <div class="t-app__top-nav-draggable"></div>
+  <nav class="flex relative h-10 pl-2 mac:pl-[72px] t-app__top-nav">
+    <!-- Add a draggable overlay -->
+    <div class="absolute inset-0 app-drag-region" />
     <div
       class="flex h-10 flex-1 items-center gap-1.5 text-sm font-medium pr-2.5 relative overflow-hidden">
       <template v-if="topNavItems.length === 1">
@@ -162,33 +166,33 @@ onBeforeUnmount(() => events.hotKeys.off(handleHotKey))
               <span>{{ topNavItems[0].label }}</span>
             </template>
             <template #content>
-              <ScalarDropdown
-                class="scalar-client"
-                static>
-                <template #items>
-                  <ScalarDropdownItem
-                    class="flex items-center gap-1.5"
-                    @click="addNavItem">
-                    <ScalarIcon
-                      icon="AddTab"
-                      size="sm"
-                      thickness="1.5" />
-                    New Tab
-                    <ScalarHotkey
-                      class="bg-b-2 ml-auto"
-                      hotkey="T" />
-                  </ScalarDropdownItem>
-                  <ScalarDropdownItem
-                    class="flex items-center gap-1.5"
-                    @click="copyUrl(activeNavItemIdxValue)">
-                    <ScalarIcon
-                      icon="Link"
-                      size="sm"
-                      thickness="1.5" />
-                    Copy URL
-                  </ScalarDropdownItem>
+              <ScalarFloating placement="right-start">
+                <template #floating>
+                  <ScalarDropdownMenu class="scalar-app scalar-client">
+                    <ScalarDropdownButton
+                      class="flex items-center gap-1.5"
+                      @click="addNavItem">
+                      <ScalarIcon
+                        icon="AddTab"
+                        size="sm"
+                        thickness="1.5" />
+                      New Tab
+                      <ScalarHotkey
+                        class="bg-b-2 ml-auto"
+                        hotkey="T" />
+                    </ScalarDropdownButton>
+                    <ScalarDropdownButton
+                      class="flex items-center gap-1.5"
+                      @click="copyUrl(activeNavItemIdxValue)">
+                      <ScalarIcon
+                        icon="Link"
+                        size="sm"
+                        thickness="1.5" />
+                      Copy URL
+                    </ScalarDropdownButton>
+                  </ScalarDropdownMenu>
                 </template>
-              </ScalarDropdown>
+              </ScalarFloating>
             </template>
           </ScalarContextMenu>
         </div>
@@ -208,7 +212,7 @@ onBeforeUnmount(() => events.hotKeys.off(handleHotKey))
           @newTab="addNavItem" />
       </template>
       <button
-        class="text-c-3 hover:bg-b-3 p-1.5 rounded webkit-app-no-drag"
+        class="text-c-3 hover:bg-b-3 p-1.5 rounded app-no-drag-region"
         type="button"
         @click="addNavItem">
         <ScalarIcon
@@ -219,31 +223,3 @@ onBeforeUnmount(() => events.hotKeys.off(handleHotKey))
     </div>
   </nav>
 </template>
-<style scoped>
-.t-app__top-nav {
-  padding-left: 52px;
-  padding-right: 4px;
-  position: relative;
-}
-@screen lg {
-  .t-app__top-nav {
-    padding-right: 6px;
-  }
-}
-@screen lg {
-  .t-app__top-nav {
-    padding-right: 10px;
-  }
-}
-.t-app__top-nav-draggable {
-  -webkit-app-region: drag;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-.webkit-app-no-drag {
-  -webkit-app-region: no-drag;
-}
-</style>

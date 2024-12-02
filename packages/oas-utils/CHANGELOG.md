@@ -1,5 +1,56 @@
 # @scalar/oas-utils
 
+## 0.2.82
+
+### Patch Changes
+
+- 6389557: feat: allow to pass a base URL to makeUrlAbsolute
+- Updated dependencies [baaad1c]
+- Updated dependencies [c984ac8]
+  - @scalar/types@0.0.22
+  - @scalar/themes@0.9.53
+
+## 0.2.81
+
+### Patch Changes
+
+- Updated dependencies [1fa0d20]
+  - @scalar/themes@0.9.52
+
+## 0.2.80
+
+### Patch Changes
+
+- Updated dependencies [9d23f95]
+- Updated dependencies [91123e8]
+  - @scalar/types@0.0.21
+  - @scalar/themes@0.9.51
+
+## 0.2.79
+
+### Patch Changes
+
+- 6dd7eda: fix: catch errors for invalid OpenAPI documents
+- Updated dependencies [1b06f64]
+  - @scalar/themes@0.9.50
+
+## 0.2.78
+
+### Patch Changes
+
+- daa2663: feat: split out the router based computed values from the store into its own store
+- 37abd4f: feat: make security spec compliant + migrations
+- Updated dependencies [d379b81]
+- Updated dependencies [f67c3bc]
+  - @scalar/themes@0.9.49
+  - @scalar/types@0.0.20
+
+## 0.2.77
+
+### Patch Changes
+
+- 44a7100: fix: handle no protocol prefix
+
 ## 0.2.76
 
 ### Patch Changes

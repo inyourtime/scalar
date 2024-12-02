@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import { useHttpClientStore } from '@/stores/useHttpClientStore'
 import { provideUseId } from '@headlessui/vue'
 import { addScalarClassesToHeadless } from '@scalar/components'
+import { ScalarErrorBoundary } from '@scalar/components'
 import { defaultStateFactory } from '@scalar/oas-utils/helpers'
 import {
   type ThemeId,
   getThemeStyles,
   hasObtrusiveScrollbars,
 } from '@scalar/themes'
-import type { SSRState } from '@scalar/types/legacy'
+import type { ReferenceConfiguration, SSRState } from '@scalar/types/legacy'
 import { ScalarToasts, useToasts } from '@scalar/use-toasts'
 import { useDebounceFn, useMediaQuery, useResizeObserver } from '@vueuse/core'
 import {
@@ -256,6 +258,28 @@ provide(INTEGRATION_SYMBOL, () =>
     : 'vue',
 )
 
+// ---------------------------------------------------------------------------/
+// HANDLE MAPPING CONFIGURATION TO INTERNAL REFERENCE STATE
+
+/** Helper utility to map configuration props to the ApiReference internal state */
+function mapConfigToState<K extends keyof ReferenceConfiguration>(
+  key: K,
+  setter: (val: NonNullable<ReferenceConfiguration[K]>) => any,
+) {
+  watch(
+    () => props.configuration[key],
+    (newValue) => {
+      if (typeof newValue !== 'undefined') setter(newValue)
+    },
+    { immediate: true },
+  )
+}
+
+// Hides any client snippets from the references
+const { setExcludedClients, setDefaultHttpClient } = useHttpClientStore()
+mapConfigToState('defaultHttpClient', setDefaultHttpClient)
+mapConfigToState('hiddenClients', setExcludedClients)
+
 hideModels.value = props.configuration.hideModels ?? false
 defaultOpenAllTags.value = props.configuration.defaultOpenAllTags ?? false
 
@@ -299,21 +323,23 @@ const themeStyleTag = computed(
       class="references-navigation t-doc__sidebar">
       <!-- Navigation tree / Table of Contents -->
       <div class="references-navigation-list">
-        <Sidebar
-          :operationsSorter="configuration.operationsSorter"
-          :parsedSpec="parsedSpec"
-          :tagsSorter="configuration.tagsSorter">
-          <template #sidebar-start>
-            <slot
-              v-bind="referenceSlotProps"
-              name="sidebar-start" />
-          </template>
-          <template #sidebar-end>
-            <slot
-              v-bind="referenceSlotProps"
-              name="sidebar-end" />
-          </template>
-        </Sidebar>
+        <ScalarErrorBoundary>
+          <Sidebar
+            :operationsSorter="configuration.operationsSorter"
+            :parsedSpec="parsedSpec"
+            :tagsSorter="configuration.tagsSorter">
+            <template #sidebar-start>
+              <slot
+                v-bind="referenceSlotProps"
+                name="sidebar-start" />
+            </template>
+            <template #sidebar-end>
+              <slot
+                v-bind="referenceSlotProps"
+                name="sidebar-end" />
+            </template>
+          </Sidebar>
+        </ScalarErrorBoundary>
       </div>
     </aside>
     <!-- Swagger file editing -->
@@ -333,9 +359,9 @@ const themeStyleTag = computed(
         class="references-rendered">
         <Content
           :baseServerURL="configuration.baseServerURL"
-          :layout="configuration.layout === 'classic' ? 'accordion' : 'default'"
+          :layout="configuration.layout"
           :parsedSpec="parsedSpec"
-          :proxy="configuration.proxy"
+          :proxyUrl="configuration.proxyUrl ?? configuration.proxy"
           :servers="configuration.servers">
           <template #start>
             <slot

@@ -57,6 +57,8 @@ export type ThemeId =
   | 'deepSpace'
   | 'saturn'
   | 'kepler'
+  | 'elysiajs'
+  | 'fastify'
   | 'mars'
   | 'none'
 
@@ -67,8 +69,14 @@ export type ReferenceConfiguration = {
   layout?: 'modern' | 'classic'
   /** The Swagger/OpenAPI spec to render */
   spec?: SpecConfiguration
-  /** URL to a request proxy for the API client */
+  /**
+   * URL to a request proxy for the API client
+   *
+   * @deprecated Use proxyUrl instead
+   */
   proxy?: string
+  /** URL to a request proxy for the API client */
+  proxyUrl?: string
   /** Whether the spec input should show */
   isEditable?: boolean
   /** Whether to show the sidebar */
@@ -241,6 +249,12 @@ export type ReferenceConfiguration = {
     | 'react' // ✅
     | 'rust'
     | 'vue' // ✅
+  /**
+   * Whether to show the client button from the reference sidebar and modal
+   *
+   * @default false
+   */
+  hideClientButton?: boolean
 }
 
 export type Server = OpenAPIV3.ServerObject | OpenAPIV3_1.ServerObject
@@ -294,6 +308,7 @@ export type Information = {
   'summary'?: string
   'tags'?: string[]
   'deprecated'?: boolean
+  'servers'?: Server[]
   /**
    * Scalar
    */
@@ -324,8 +339,15 @@ export type Operation = {
   name?: string
   description?: string
   information?: Information
+  servers?: Server[]
 }
-export type Parameters = {
+
+/**
+ * @deprecated Use Parameter instead
+ */
+export type Parameters = Parameter
+
+export type Parameter = {
   // Fixed Fields
   name: string
   in?: string
@@ -389,7 +411,7 @@ export type Schema = {
 }
 
 export type TransformedOperation = Operation & {
-  pathParameters?: Parameters[]
+  pathParameters?: Parameter[]
 }
 
 export type CollapsedSidebarItems = Record<string, boolean>

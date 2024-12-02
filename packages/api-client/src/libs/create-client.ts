@@ -1,9 +1,24 @@
-import type { ClientLayout } from '@/hooks'
+import { type ClientLayout, LAYOUT_SYMBOL } from '@/hooks/useLayout'
 import { loadAllResources } from '@/libs/local-storage'
-import { type WorkspaceStore, createWorkspaceStore } from '@/store'
-import type { Collection, RequestMethod } from '@scalar/oas-utils/entities/spec'
+import {
+  ACTIVE_ENTITIES_SYMBOL,
+  createActiveEntitiesStore,
+} from '@/store/active-entities'
+import {
+  WORKSPACE_SYMBOL,
+  type WorkspaceStore,
+  createWorkspaceStore,
+} from '@/store/store'
+import type {
+  RequestMethod,
+  SecurityScheme,
+} from '@scalar/oas-utils/entities/spec'
 import { workspaceSchema } from '@scalar/oas-utils/entities/workspace'
-import { LS_KEYS, objectMerge } from '@scalar/oas-utils/helpers'
+import {
+  LS_KEYS,
+  objectMerge,
+  prettyPrintJson,
+} from '@scalar/oas-utils/helpers'
 import { DATA_VERSION, DATA_VERSION_LS_LEY } from '@scalar/oas-utils/migrations'
 import type { Path, PathValue } from '@scalar/object-utils/nested'
 import type {
@@ -16,7 +31,7 @@ import type { Router } from 'vue-router'
 
 /** Configuration options for the Scalar API client */
 export type ClientConfiguration = {
-  proxyUrl?: ReferenceConfiguration['proxy']
+  proxyUrl?: ReferenceConfiguration['proxyUrl']
   themeId?: ReferenceConfiguration['theme']
 } & Pick<
   ReferenceConfiguration,
@@ -26,6 +41,7 @@ export type ClientConfiguration = {
   | 'searchHotKey'
   | 'authentication'
   | 'baseServerURL'
+  | 'hideClientButton'
 >
 
 export type OpenClientPayload = {
@@ -106,10 +122,16 @@ export const createApiClient = ({
   // Create the store if it wasn't passed in
   const store =
     _store ||
-    createWorkspaceStore(router, {
+    createWorkspaceStore({
+      isReadOnly,
+      proxyUrl: configuration.proxyUrl,
+      themeId: configuration.themeId,
+      hideClientButton: configuration.hideClientButton,
       useLocalStorage: persistData,
-      defaultProxyUrl: configuration.proxyUrl,
     })
+
+  // Create the router based active entities store
+  const activeEntities = createActiveEntitiesStore({ ...store, router })
 
   // Load from localStorage if available
   // Check if we have localStorage data
@@ -138,7 +160,6 @@ export const createApiClient = ({
     store.workspaceMutators.add({
       uid: 'default',
       name: 'Workspace',
-      isReadOnly,
       proxyUrl: configuration.proxyUrl,
     })
 
@@ -158,22 +179,25 @@ export const createApiClient = ({
   const app = createApp(appComponent)
   app.use(router)
   // Provide the workspace store for the useWorkspace hook
-  app.provide('workspace', store)
+  app.provide(WORKSPACE_SYMBOL, store)
   // Provide the layout for the useLayout hook
-  app.provide('layout', layout)
+  app.provide(LAYOUT_SYMBOL, layout)
+  // Provide the active entities store
+  app.provide(ACTIVE_ENTITIES_SYMBOL, activeEntities)
 
   const {
-    activeCollection,
-    activeWorkspace,
     collectionMutators,
     importSpecFile,
     importSpecFromUrl,
     modalState,
     requests,
     securitySchemes,
+    securitySchemeMutators,
     servers,
     workspaceMutators,
+    requestExampleMutators,
   } = store
+  const { activeCollection, activeWorkspace } = activeEntities
 
   // Mount the vue app
   const mount = (mountingEl = el) => {
@@ -188,27 +212,7 @@ export const createApiClient = ({
     }
     app.mount(mountingEl)
   }
-
-  // Update some workspace params from the config
-  if (activeWorkspace.value) {
-    if (mountOnInitialize) mount()
-
-    if (configuration?.proxyUrl) {
-      workspaceMutators.edit(
-        activeWorkspace.value.uid,
-        'proxyUrl',
-        configuration?.proxyUrl,
-      )
-    }
-
-    if (configuration?.themeId) {
-      workspaceMutators.edit(
-        activeWorkspace.value.uid,
-        'themeId',
-        configuration?.themeId,
-      )
-    }
-  }
+  if (mountOnInitialize) mount()
 
   /**
    * Update the spec
@@ -218,7 +222,7 @@ export const createApiClient = ({
   const updateSpec = async (spec: SpecConfiguration) => {
     if (spec?.url) {
       await importSpecFromUrl(spec.url, activeWorkspace.value.uid, {
-        proxy: configuration?.proxyUrl,
+        proxyUrl: configuration?.proxyUrl,
         setCollectionSecurity: true,
         ...configuration,
       })
@@ -289,25 +293,19 @@ export const createApiClient = ({
     /**
      * Update the auth values, we currently don't change the auth selection
      */
-    updateAuth: <P extends Path<Collection['auth'][string]>>({
+    updateAuth: <P extends Path<SecurityScheme>>({
       nameKey,
       propertyKey,
       value,
     }: {
       nameKey: string
       propertyKey: P
-      value: PathValue<Collection['auth'][string], P>
+      value: NonNullable<PathValue<SecurityScheme, P>>
     }) => {
       const schemes = Object.values(securitySchemes)
       const scheme = schemes.find((s) => s.nameKey === nameKey)
 
-      if (scheme && activeCollection.value)
-        collectionMutators.edit(
-          activeCollection.value.uid,
-          `auth.${scheme.uid}.${propertyKey}`,
-          // @ts-expect-error why typescript why
-          value,
-        )
+      if (scheme) securitySchemeMutators.edit(scheme.uid, propertyKey, value)
     },
     /** Route to a method + path */
     route: (
@@ -360,5 +358,27 @@ export const createApiClient = ({
     modalState,
     /* The workspace store */
     store,
+    /** Update the currently selected example */
+    updateExample: (exampleKey: string, operationId: string) => {
+      if (!exampleKey || !operationId) return
+
+      const request = Object.values(requests).find(
+        ({ operationId: reqOperationId, path }) =>
+          reqOperationId === operationId || path === operationId,
+      )
+      if (!request) return
+
+      const contentType =
+        Object.keys(request.requestBody?.content || {})[0] || 'application/json'
+      const example =
+        request.requestBody?.content?.[contentType]?.examples[exampleKey]
+      if (!example) return
+
+      requestExampleMutators.edit(
+        request.examples[0],
+        'body.raw.value',
+        prettyPrintJson(example.value),
+      )
+    },
   }
 }

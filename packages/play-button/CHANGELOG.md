@@ -1,5 +1,101 @@
 # @scalar/play-button
 
+## 0.2.148
+
+### Patch Changes
+
+- Updated dependencies [6389557]
+- Updated dependencies [7605d6f]
+- Updated dependencies [c9b6873]
+- Updated dependencies [d08a7ae]
+- Updated dependencies [baaad1c]
+- Updated dependencies [642d112]
+- Updated dependencies [c984ac8]
+- Updated dependencies [bae9997]
+- Updated dependencies [c984ac8]
+  - @scalar/oas-utils@0.2.82
+  - @scalar/api-reference@1.25.72
+  - @scalar/api-client@2.2.4
+  - @scalar/types@0.0.22
+  - @scalar/themes@0.9.53
+
+## 0.2.147
+
+### Patch Changes
+
+- Updated dependencies [1fa0d20]
+  - @scalar/themes@0.9.52
+  - @scalar/api-client@2.2.3
+  - @scalar/api-reference@1.25.71
+  - @scalar/oas-utils@0.2.81
+
+## 0.2.146
+
+### Patch Changes
+
+- Updated dependencies [794a50d]
+- Updated dependencies [85a9aea]
+- Updated dependencies [9d23f95]
+- Updated dependencies [8004539]
+- Updated dependencies [9d23f95]
+- Updated dependencies [91123e8]
+- Updated dependencies [9002259]
+  - @scalar/api-client@2.2.2
+  - @scalar/types@0.0.21
+  - @scalar/api-reference@1.25.70
+  - @scalar/themes@0.9.51
+  - @scalar/oas-utils@0.2.80
+
+## 0.2.145
+
+### Patch Changes
+
+- Updated dependencies [5da67b2]
+- Updated dependencies [6b0d817]
+- Updated dependencies [6b0d817]
+- Updated dependencies [6c843e6]
+- Updated dependencies [1b06f64]
+- Updated dependencies [8066c8c]
+- Updated dependencies [fda0e5c]
+- Updated dependencies [6dd7eda]
+  - @scalar/api-client@2.2.1
+  - @scalar/api-reference@1.25.69
+  - @scalar/themes@0.9.50
+  - @scalar/oas-utils@0.2.79
+
+## 0.2.144
+
+### Patch Changes
+
+- Updated dependencies [d379b81]
+- Updated dependencies [daa2663]
+- Updated dependencies [f67c3bc]
+- Updated dependencies [37abd4f]
+- Updated dependencies [37abd4f]
+  - @scalar/themes@0.9.49
+  - @scalar/api-reference@1.25.68
+  - @scalar/api-client@2.2.0
+  - @scalar/oas-utils@0.2.78
+  - @scalar/types@0.0.20
+
+## 0.2.143
+
+### Patch Changes
+
+- Updated dependencies [cb3e89f]
+- Updated dependencies [594a96c]
+- Updated dependencies [0adbfd5]
+- Updated dependencies [98e9cb2]
+- Updated dependencies [9b4def7]
+- Updated dependencies [9b4def7]
+- Updated dependencies [44a7100]
+- Updated dependencies [1e3214c]
+- Updated dependencies [2a6117e]
+  - @scalar/api-client@2.1.52
+  - @scalar/api-reference@1.25.67
+  - @scalar/openapi-parser@0.8.10
+  - @scalar/oas-utils@0.2.77
+
 ## 0.2.142
 
 ### Patch Changes

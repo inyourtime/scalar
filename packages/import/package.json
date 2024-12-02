@@ -16,7 +16,7 @@
     "postman",
     "scalar"
   ],
-  "version": "0.1.1",
+  "version": "0.2.0",
   "engines": {
     "node": ">=18"
   },
@@ -44,11 +44,12 @@
   ],
   "module": "dist/index.js",
   "dependencies": {
+    "@scalar/oas-utils": "workspace:*",
     "@scalar/openapi-parser": "workspace:*",
     "yaml": "^2.4.5"
   },
   "devDependencies": {
     "@scalar/build-tooling": "workspace:*",
-    "vite": "^5.4.9"
+    "vite": "^5.4.10"
   }
 }

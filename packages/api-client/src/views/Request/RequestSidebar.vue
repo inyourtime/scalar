@@ -9,6 +9,7 @@ import SidebarButton from '@/components/Sidebar/SidebarButton.vue'
 import { useSidebar } from '@/hooks'
 import type { HotKeyEvent } from '@/libs'
 import { useWorkspace } from '@/store'
+import { useActiveEntities } from '@/store/active-entities'
 import { createInitialRequest } from '@/store/requests'
 import RequestSidebarItemMenu from '@/views/Request/RequestSidebarItemMenu.vue'
 import { dragHandlerFactory } from '@/views/Request/handle-drag'
@@ -50,14 +51,14 @@ const {
   activeRequest,
   activeWorkspaceRequests,
   activeWorkspace,
-  findRequestParents,
-  isReadOnly,
-  events,
-  requestMutators,
-  requests,
-} = workspaceContext
+} = useActiveEntities()
+const { findRequestParents, isReadOnly, events, requestMutators, requests } =
+  workspaceContext
 
-const { handleDragEnd, isDroppable } = dragHandlerFactory(workspaceContext)
+const { handleDragEnd, isDroppable } = dragHandlerFactory(
+  activeWorkspace,
+  workspaceContext,
+)
 const { collapsedSidebarFolders, setCollapsedSidebarFolder } = useSidebar()
 const { replace } = useRouter()
 const openCommandPaletteImport = () => {
@@ -239,7 +240,7 @@ const handleClearDrafts = () => {
                 thickness="2.25" />
               <LibraryIcon
                 v-else
-                class="text-sidebar-c-2 size-3.5 stroke-[2.25] group-hover:hidden"
+                class="min-w-3.5 text-sidebar-c-2 size-3.5 stroke-2 group-hover:hidden"
                 :src="
                   collection['x-scalar-icon'] || 'interface-content-folder'
                 " />
@@ -250,8 +251,7 @@ const handleClearDrafts = () => {
                 <ScalarIcon
                   class="text-c-3 hidden text-sm group-hover:block"
                   icon="ChevronRight"
-                  size="sm"
-                  thickness="2.5" />
+                  size="md" />
               </div>
             </template>
           </RequestSidebarItem>

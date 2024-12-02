@@ -1,5 +1,131 @@
 # @scalar/api-reference
 
+## 1.25.72
+
+### Patch Changes
+
+- 7605d6f: feat: add error boundary component
+- c9b6873: feat: moved hidden client config to apiReferenceLayout
+- baaad1c: refactor: deprecated the `proxy` configuration attribute, and use `proxyUrl` everywhere
+- c984ac8: feat(api-reference): displays path server in request example
+- Updated dependencies [ae0555b]
+- Updated dependencies [2dd6aa3]
+- Updated dependencies [6389557]
+- Updated dependencies [7605d6f]
+- Updated dependencies [d08a7ae]
+- Updated dependencies [baaad1c]
+- Updated dependencies [80ee5e0]
+- Updated dependencies [642d112]
+- Updated dependencies [c984ac8]
+- Updated dependencies [7278742]
+- Updated dependencies [bae9997]
+- Updated dependencies [3ca88dc]
+- Updated dependencies [f6cd5ed]
+  - @scalar/snippetz@0.2.5
+  - @scalar/components@0.13.0
+  - @scalar/oas-utils@0.2.82
+  - @scalar/api-client@2.2.4
+  - @scalar/types@0.0.22
+  - @scalar/themes@0.9.53
+  - @scalar/code-highlight@0.0.17
+  - @scalar/use-hooks@0.1.6
+
+## 1.25.71
+
+### Patch Changes
+
+- Updated dependencies [1fa0d20]
+  - @scalar/themes@0.9.52
+  - @scalar/api-client@2.2.3
+  - @scalar/code-highlight@0.0.17
+  - @scalar/components@0.12.76
+  - @scalar/oas-utils@0.2.81
+  - @scalar/use-hooks@0.1.5
+
+## 1.25.70
+
+### Patch Changes
+
+- 8004539: fix: response have been doubled
+- 9d23f95: refactor: make the Operations component a feature
+- 9002259: style: font size fixtures
+- Updated dependencies [794a50d]
+- Updated dependencies [85a9aea]
+- Updated dependencies [9d23f95]
+- Updated dependencies [91123e8]
+- Updated dependencies [6140275]
+- Updated dependencies [9002259]
+  - @scalar/api-client@2.2.2
+  - @scalar/types@0.0.21
+  - @scalar/themes@0.9.51
+  - @scalar/components@0.12.75
+  - @scalar/code-highlight@0.0.17
+  - @scalar/oas-utils@0.2.80
+  - @scalar/use-hooks@0.1.4
+
+## 1.25.69
+
+### Patch Changes
+
+- 1b06f64: fix(api-reference): conflicting styles with bulma, galaxy bug on docs
+- fda0e5c: fix(api-reference): missing section borders and card-form border
+- Updated dependencies [5da67b2]
+- Updated dependencies [6b0d817]
+- Updated dependencies [6b0d817]
+- Updated dependencies [6c843e6]
+- Updated dependencies [324834d]
+- Updated dependencies [1b06f64]
+- Updated dependencies [8066c8c]
+- Updated dependencies [6dd7eda]
+  - @scalar/api-client@2.2.1
+  - @scalar/components@0.12.74
+  - @scalar/code-highlight@0.0.16
+  - @scalar/themes@0.9.50
+  - @scalar/oas-utils@0.2.79
+  - @scalar/use-hooks@0.1.3
+
+## 1.25.68
+
+### Patch Changes
+
+- daa2663: feat: split out the router based computed values from the store into its own store
+- f67c3bc: feat: add framework themes
+- Updated dependencies [d379b81]
+- Updated dependencies [daa2663]
+- Updated dependencies [f67c3bc]
+- Updated dependencies [28a6b05]
+- Updated dependencies [37abd4f]
+- Updated dependencies [37abd4f]
+  - @scalar/themes@0.9.49
+  - @scalar/api-client@2.2.0
+  - @scalar/oas-utils@0.2.78
+  - @scalar/types@0.0.20
+  - @scalar/components@0.12.73
+  - @scalar/code-highlight@0.0.15
+  - @scalar/use-hooks@0.1.2
+
+## 1.25.67
+
+### Patch Changes
+
+- 594a96c: fix: wrap property heading and detail
+- 0adbfd5: feat(use-hooks): add useBreakpoint hook
+- 9b4def7: feat: adds use example store
+- 2a6117e: feat(use-hooks): add computed dark light mode
+- Updated dependencies [cb3e89f]
+- Updated dependencies [0adbfd5]
+- Updated dependencies [98e9cb2]
+- Updated dependencies [9b4def7]
+- Updated dependencies [44a7100]
+- Updated dependencies [12fed75]
+- Updated dependencies [1e3214c]
+- Updated dependencies [2a6117e]
+  - @scalar/api-client@2.1.52
+  - @scalar/use-hooks@0.1.1
+  - @scalar/openapi-parser@0.8.10
+  - @scalar/oas-utils@0.2.77
+  - @scalar/components@0.12.72
+
 ## 1.25.66
 
 ### Patch Changes

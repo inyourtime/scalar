@@ -10,17 +10,18 @@
     "url": "https://github.com/scalar/scalar.git",
     "directory": "packages/icons"
   },
-  "version": "0.1.1",
+  "version": "0.1.2",
   "engines": {
     "node": ">=18"
   },
   "scripts": {
-    "build": "scalar-build-vite",
+    "build": "pnpm update:icons && pnpm prettier --write README.md && scalar-build-vite",
     "lint:check": "eslint . && pnpm lint:icons",
     "lint:fix": "eslint . --fix",
     "lint:icons": "svglint src/icons/*.svg --config .svglintrc.js",
     "types:build": "scalar-types-build-vue",
-    "types:check": "scalar-types-check-vue"
+    "types:check": "scalar-types-check-vue",
+    "update:icons": "vite-node ./scripts/update-list-of-icons.ts"
   },
   "type": "module",
   "main": "./dist/index.cjs",
@@ -42,7 +43,7 @@
     "@scalar/build-tooling": "workspace:*",
     "@vitejs/plugin-vue": "^5.0.4",
     "svglint": "^2.7.1",
-    "vite": "^5.4.9",
+    "vite": "^5.4.10",
     "vite-svg-loader": "^5.1.0"
   }
 }

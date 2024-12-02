@@ -14,7 +14,8 @@ export default defineConfig({
   plugins: [vue()],
   build: {
     ...createViteBuildOptions({
-      entry: ['src/index.ts', 'src/style.css', ...presets],
+      entry: ['src/index.ts', 'src/tailwind.ts', 'src/style.css', ...presets],
+      options: { lib: { formats: ['es', 'cjs'] } },
     }),
     cssCodeSplit: true,
     // We don’t want to minify the CSS. We need beautiful output for our theme editor.

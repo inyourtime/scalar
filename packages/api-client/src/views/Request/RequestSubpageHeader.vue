@@ -5,6 +5,7 @@ import EnvironmentSelector from '@/components/EnvironmentSelector/EnvironmentSel
 import SidebarToggle from '@/components/Sidebar/SidebarToggle.vue'
 import { useLayout } from '@/hooks'
 import { useWorkspace } from '@/store'
+import { useActiveEntities } from '@/store/active-entities'
 import { ScalarIcon } from '@scalar/components'
 
 import { WorkspaceDropdown } from './components'
@@ -20,7 +21,11 @@ defineEmits<{
   (e: 'importCurl', value: string): void
 }>()
 
-const { activeCollection } = useWorkspace()
+const { activeCollection } = useActiveEntities()
+const workspaceContext = useWorkspace()
+
+const { hideClientButton } = workspaceContext
+
 const { layout } = useLayout()
 </script>
 <template>
@@ -49,9 +54,8 @@ const { layout } = useLayout()
     <div
       class="flex flex-row items-center gap-1 lg:px-2.5 lg:mb-0 mb-2 lg:flex-1 justify-end w-6/12">
       <EnvironmentSelector v-if="!isReadonly" />
-
       <OpenApiClientButton
-        v-if="isReadonly && activeCollection?.documentUrl"
+        v-if="isReadonly && activeCollection?.documentUrl && !hideClientButton"
         buttonSource="modal"
         class="gitbook-hidden !w-fit lg:-mr-1"
         :integration="activeCollection?.integration"

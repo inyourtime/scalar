@@ -2,6 +2,7 @@
 import { useFileDialog } from '@/hooks'
 import { getOpenApiDocumentDetails, isUrl } from '@/libs'
 import { useWorkspace } from '@/store'
+import { useActiveEntities } from '@/store/active-entities'
 import {
   ScalarButton,
   ScalarCodeBlock,
@@ -21,7 +22,8 @@ const emits = defineEmits<{
   (event: 'back', e: KeyboardEvent): void
 }>()
 
-const { activeWorkspace, importSpecFile, importSpecFromUrl } = useWorkspace()
+const { activeWorkspace } = useActiveEntities()
+const { importSpecFile, importSpecFromUrl } = useWorkspace()
 const { toast } = useToasts()
 const loader = useLoadingState()
 
@@ -83,7 +85,7 @@ async function importCollection() {
         inputContent.value,
         activeWorkspace.value.uid,
         {
-          proxy: activeWorkspace.value.proxyUrl,
+          proxyUrl: activeWorkspace.value.proxyUrl,
           watchMode: watchMode.value,
         },
       )

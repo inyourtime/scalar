@@ -1,29 +1,33 @@
 import { describe, expect, it } from 'vitest'
 
-import { ofetch } from './ofetch'
+import { jsOfetch } from './ofetch'
 
-describe('ofetch', () => {
+describe('jsOfetch', () => {
   it('returns a basic request', () => {
-    const source = ofetch({
+    const result = jsOfetch.generate({
       url: 'https://example.com',
     })
 
-    expect(source.code).toBe(`ofetch('https://example.com')`)
+    expect(result).toBe(`import { ofetch } from 'ofetch'
+
+ofetch('https://example.com')`)
   })
 
   it('returns a POST request', () => {
-    const source = ofetch({
+    const result = jsOfetch.generate({
       url: 'https://example.com',
       method: 'post',
     })
 
-    expect(source.code).toBe(`ofetch('https://example.com', {
+    expect(result).toBe(`import { ofetch } from 'ofetch'
+
+ofetch('https://example.com', {
   method: 'POST'
 })`)
   })
 
   it('has headers', () => {
-    const source = ofetch({
+    const result = jsOfetch.generate({
       url: 'https://example.com',
       headers: [
         {
@@ -33,7 +37,9 @@ describe('ofetch', () => {
       ],
     })
 
-    expect(source.code).toBe(`ofetch('https://example.com', {
+    expect(result).toBe(`import { ofetch } from 'ofetch'
+
+ofetch('https://example.com', {
   headers: {
     'Content-Type': 'application/json'
   }
@@ -41,16 +47,18 @@ describe('ofetch', () => {
   })
 
   it('doesn’t add empty headers', () => {
-    const source = ofetch({
+    const result = jsOfetch.generate({
       url: 'https://example.com',
       headers: [],
     })
 
-    expect(source.code).toBe(`ofetch('https://example.com')`)
+    expect(result).toBe(`import { ofetch } from 'ofetch'
+
+ofetch('https://example.com')`)
   })
 
   it('has JSON body', () => {
-    const source = ofetch({
+    const result = jsOfetch.generate({
       url: 'https://example.com',
       postData: {
         mimeType: 'application/json',
@@ -60,7 +68,9 @@ describe('ofetch', () => {
       },
     })
 
-    expect(source.code).toBe(`ofetch('https://example.com', {
+    expect(result).toBe(`import { ofetch } from 'ofetch'
+
+ofetch('https://example.com', {
   body: {
     hello: 'world'
   }
@@ -68,7 +78,7 @@ describe('ofetch', () => {
   })
 
   it('has query string', () => {
-    const source = ofetch({
+    const result = jsOfetch.generate({
       url: 'https://example.com',
       queryString: [
         {
@@ -82,7 +92,9 @@ describe('ofetch', () => {
       ],
     })
 
-    expect(source.code).toBe(`ofetch('https://example.com', {
+    expect(result).toBe(`import { ofetch } from 'ofetch'
+
+ofetch('https://example.com', {
   query: {
     foo: 'bar',
     bar: 'foo'
@@ -91,7 +103,7 @@ describe('ofetch', () => {
   })
 
   it('has cookies', () => {
-    const source = ofetch({
+    const result = jsOfetch.generate({
       url: 'https://example.com',
       cookies: [
         {
@@ -105,7 +117,9 @@ describe('ofetch', () => {
       ],
     })
 
-    expect(source.code).toBe(`ofetch('https://example.com', {
+    expect(result).toBe(`import { ofetch } from 'ofetch'
+
+ofetch('https://example.com', {
   headers: {
     'Set-Cookie': 'foo=bar; bar=foo'
   }
@@ -113,11 +127,13 @@ describe('ofetch', () => {
   })
 
   it('doesn’t add empty cookies', () => {
-    const source = ofetch({
+    const result = jsOfetch.generate({
       url: 'https://example.com',
       cookies: [],
     })
 
-    expect(source.code).toBe(`ofetch('https://example.com')`)
+    expect(result).toBe(`import { ofetch } from 'ofetch'
+
+ofetch('https://example.com')`)
   })
 })

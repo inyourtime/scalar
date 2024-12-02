@@ -8,7 +8,6 @@ import { useFavicon } from '@vueuse/core'
 import { computed, toRef, watch } from 'vue'
 
 import { useReactiveSpec } from '../hooks'
-import { useHttpClientStore } from '../stores'
 import type { ReferenceProps } from '../types'
 import { Layouts } from './Layouts'
 
@@ -19,7 +18,7 @@ defineEmits<{
   (e: 'updateContent', value: string): void
 }>()
 
-const { setColorMode, toggleColorMode, colorMode } = useColorMode({
+const { setColorMode, toggleColorMode, darkLightMode } = useColorMode({
   initialColorMode: props.configuration?.darkMode ? 'dark' : undefined,
   overrideColorMode: props.configuration?.forceDarkModeState,
 })
@@ -44,7 +43,7 @@ const configuration = computed<ReferenceConfiguration>(() => ({
     url: undefined,
     ...props.configuration?.spec,
   },
-  proxy: undefined,
+  proxyUrl: undefined,
   theme: 'default',
   showSidebar: true,
   isEditable: false,
@@ -77,13 +76,10 @@ function mapConfigToState<K extends keyof ReferenceConfiguration>(
 const { setAuthentication } = useAuthenticationStore()
 mapConfigToState('authentication', setAuthentication)
 
-// Hides any client snippets from the references
-const { setExcludedClients, setDefaultHttpClient } = useHttpClientStore()
-mapConfigToState('defaultHttpClient', setDefaultHttpClient)
-mapConfigToState('hiddenClients', setExcludedClients)
-
 const { parsedSpec, rawSpec } = useReactiveSpec({
-  proxy: toRef(() => configuration.value.proxy || ''),
+  proxyUrl: toRef(
+    () => configuration.value.proxyUrl || configuration.value.proxy || '',
+  ),
   specConfig: toRef(() => configuration.value.spec || {}),
 })
 
@@ -99,7 +95,7 @@ useFavicon(favicon)
   </component>
   <Layouts
     :configuration="configuration"
-    :isDark="colorMode === 'dark'"
+    :isDark="darkLightMode === 'dark'"
     :parsedSpec="parsedSpec"
     :rawSpec="rawSpec"
     @toggleDarkMode="() => toggleColorMode()"

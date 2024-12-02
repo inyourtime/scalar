@@ -5,6 +5,7 @@ import TopNav from '@/components/TopNav/TopNav.vue'
 import MainLayout from '@/layouts/App/MainLayout.vue'
 import { DEFAULT_HOTKEYS, type HotKeyEvent, handleHotKeyDown } from '@/libs'
 import { useWorkspace } from '@/store'
+import { useActiveEntities } from '@/store/active-entities'
 import { addScalarClassesToHeadless } from '@scalar/components'
 import { getThemeStyles } from '@scalar/themes'
 import { useColorMode } from '@scalar/use-hooks/useColorMode'
@@ -29,8 +30,8 @@ const handleNewTab = (item: { name: string; uid: string }) => {
 // Initialize color mode state globally
 useColorMode()
 
-const workspaceStore = useWorkspace()
-const { events } = workspaceStore
+const { activeWorkspace } = useActiveEntities()
+const { events } = useWorkspace()
 
 // Ensure we add our scalar wrapper class to the headless ui root
 onBeforeMount(() => addScalarClassesToHeadless())
@@ -62,35 +63,39 @@ onBeforeUnmount(() => {
 
 const themeStyleTag = computed(
   () =>
-    workspaceStore.activeWorkspace.value &&
-    `<style>${getThemeStyles(workspaceStore.activeWorkspace.value.themeId)}</style>`,
+    activeWorkspace.value &&
+    `<style>${getThemeStyles(activeWorkspace.value.themeId)}</style>`,
 )
 </script>
 <template>
-  <!-- Listen for paste and drop events, and look for `url` query parameters to import collections -->
-  <!-- <ImportCollectionListener> -->
-  <div v-html="themeStyleTag"></div>
-  <TopNav :openNewTab="newTab" />
+  <div
+    id="scalar-client-app"
+    class="contents">
+    <!-- Listen for paste and drop events, and look for `url` query parameters to import collections -->
+    <!-- <ImportCollectionListener> -->
+    <div v-html="themeStyleTag"></div>
+    <TopNav :openNewTab="newTab" />
 
-  <!-- Ensure we have the workspace loaded from localStorage above -->
-  <MainLayout v-if="workspaceStore.activeWorkspace.value?.uid">
-    <RouterView
-      v-slot="{ Component }"
-      @newTab="handleNewTab">
-      <keep-alive>
-        <component :is="Component" />
-      </keep-alive>
-    </RouterView>
-  </MainLayout>
+    <!-- Ensure we have the workspace loaded from localStorage above -->
+    <MainLayout v-if="activeWorkspace?.uid">
+      <RouterView
+        v-slot="{ Component }"
+        @newTab="handleNewTab">
+        <keep-alive>
+          <component :is="Component" />
+        </keep-alive>
+      </RouterView>
+    </MainLayout>
 
-  <ScalarToasts />
-  <!-- </ImportCollectionListener> -->
+    <ScalarToasts />
+    <!-- </ImportCollectionListener> -->
+  </div>
 </template>
 <style>
 @import '@scalar/components/style.css';
 @import '@scalar/themes/style.css';
-@import '@/assets/tailwind.css';
-@import '@/assets/variables.css';
+@import '@/tailwind/tailwind.css';
+@import '@/tailwind/variables.css';
 
 #scalar-client {
   display: flex;
@@ -101,6 +106,6 @@ const themeStyleTag = computed(
   background-color: var(--scalar-background-2);
 }
 .dark-mode #scalar-client {
-  background-color: color-mix(in srgb, var(--scalar-background-1) 60%, black);
+  background-color: color-mix(in srgb, var(--scalar-background-1) 65%, black);
 }
 </style>

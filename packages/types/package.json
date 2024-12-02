@@ -16,7 +16,7 @@
     "scalar",
     "references"
   ],
-  "version": "0.0.19",
+  "version": "0.0.22",
   "engines": {
     "node": ">=18"
   },
@@ -57,7 +57,7 @@
   ],
   "dependencies": {
     "@scalar/openapi-types": "workspace:*",
-    "@unhead/schema": "^1.9.5"
+    "@unhead/schema": "^1.11.11"
   },
   "devDependencies": {
     "@scalar/build-tooling": "workspace:*"

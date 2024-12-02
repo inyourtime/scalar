@@ -1,5 +1,17 @@
 # @scalar/code-highlight
 
+## 0.0.17
+
+### Patch Changes
+
+- 9002259: style: font size fixtures
+
+## 0.0.16
+
+### Patch Changes
+
+- 1b06f64: fix(api-reference): conflicting styles with bulma, galaxy bug on docs
+
 ## 0.0.15
 
 ### Patch Changes

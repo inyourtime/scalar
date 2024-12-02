@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ViewLayoutCollapse from '@/components/ViewLayout/ViewLayoutCollapse.vue'
 import { useWorkspace } from '@/store'
+import { useActiveEntities } from '@/store/active-entities'
 import RequestTable from '@/views/Request/RequestSection/RequestTable.vue'
 import { ScalarButton } from '@scalar/components'
 import {
@@ -14,7 +15,8 @@ const props = defineProps<{
   paramKey: keyof RequestExample['parameters']
 }>()
 
-const { activeRequest, activeExample, requestExampleMutators } = useWorkspace()
+const { activeRequest, activeExample } = useActiveEntities()
+const { requestExampleMutators } = useWorkspace()
 
 const params = computed(
   () => activeExample.value?.parameters[props.paramKey] ?? [],
@@ -88,6 +90,11 @@ const updateRow = (rowIdx: number, field: 'key' | 'value', value: string) => {
       const inputsIndex = field === 'key' ? 0 : 1
       inputs[inputsIndex]?.focus()
     })
+  }
+
+  // Add a new row if the updated row is the last one
+  if (rowIdx === currentParams.length - 1) {
+    addRow()
   }
 }
 
@@ -170,7 +177,6 @@ watch(
         class="flex-1"
         :columns="['32px', '', '']"
         :items="params"
-        @addRow="addRow"
         @toggleRow="toggleRow"
         @updateRow="updateRow" />
     </div>

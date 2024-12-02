@@ -2,11 +2,16 @@
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
 import { ref } from 'vue'
 
-import { type FloatingOptions, ScalarFloating } from '../ScalarFloating'
+import { useBindCx } from '../../hooks/useBindCx'
+import { ScalarFloating, type ScalarFloatingOptions } from '../ScalarFloating'
+import type { ScalarPopoverSlots } from '../ScalarPopover'
 
-defineProps<Omit<FloatingOptions, 'middleware'>>()
+defineProps<ScalarFloatingOptions>()
+
+defineSlots<ScalarPopoverSlots>()
 
 defineOptions({ inheritAttrs: false })
+const { cx } = useBindCx()
 
 /** Expose the popover button so we can close the popup */
 const popoverButtonRef = ref<typeof PopoverButton | null>(null)
@@ -24,24 +29,21 @@ defineExpose({ popoverButtonRef })
   <Popover
     v-slot="{ open }"
     as="template">
-    <ScalarFloating
-      :isOpen="open ?? isOpen"
-      :placement="placement ?? 'bottom-start'"
-      :resize="resize"
-      :teleport="teleport">
+    <ScalarFloating v-bind="$props">
       <PopoverButton
         ref="popoverButtonRef"
         as="template"
         @keydown="handleKeydown">
-        <slot />
+        <slot :open="open" />
       </PopoverButton>
-      <template #floating="{ width }">
+      <template
+        v-if="open"
+        #floating="{ width }">
         <PopoverPanel
           v-slot="{ close }"
-          class="relative flex w-40 flex-col rounded border text-sm"
           focus
           :style="{ width }"
-          v-bind="$attrs">
+          v-bind="cx('relative flex w-40 flex-col rounded border text-sm')">
           <slot
             :close="close"
             name="popover"

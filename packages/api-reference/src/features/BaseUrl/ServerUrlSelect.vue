@@ -53,14 +53,14 @@ const selected = computed<ScalarListboxOption | undefined>({
       <ScalarIcon
         v-if="options.length > 1"
         icon="ChevronDown"
-        size="xs" />
+        size="sm" />
     </ScalarButton>
   </ScalarListbox>
 </template>
 
 <style scoped>
 .url-select {
-  padding: 0 9px;
+  padding: 0 9px !important; /* fix for non tailwind padding */
   min-height: 32px;
   color: var(--scalar-color-1);
   align-items: center;

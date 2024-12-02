@@ -6,15 +6,13 @@ import {
 } from '@/components/DataTable'
 import ViewLayoutCollapse from '@/components/ViewLayout/ViewLayoutCollapse.vue'
 import { useWorkspace } from '@/store'
+import { useActiveEntities } from '@/store/active-entities'
 import {
   ADD_AUTH_OPTIONS,
   type SecuritySchemeGroup,
   type SecuritySchemeOption,
 } from '@/views/Request/consts'
-import {
-  createSchemeValueSet,
-  displaySchemeFormatter,
-} from '@/views/Request/libs'
+import { displaySchemeFormatter } from '@/views/Request/libs'
 import {
   type Icon,
   ScalarButton,
@@ -34,9 +32,8 @@ const { selectedSecuritySchemeUids } = defineProps<{
   title: string
 }>()
 
+const { activeCollection, activeRequest } = useActiveEntities()
 const {
-  activeCollection,
-  activeRequest,
   collectionMutators,
   isReadOnly,
   requestMutators,
@@ -123,7 +120,7 @@ const schemeOptions = computed<SecuritySchemeOption[] | SecuritySchemeGroup[]>(
     ]
 
     // Read only mode we don't want to add new auth
-    if (isReadOnly.value)
+    if (isReadOnly)
       return requiredFormatted.length ? options : availableFormatted
 
     options.push({
@@ -160,7 +157,7 @@ const editSelectedSchemeUids = (uids: string[]) => {
   if (!activeCollection.value || !activeRequest.value) return
 
   // Set as selected on the collection for the modal
-  if (isReadOnly.value) {
+  if (isReadOnly) {
     collectionMutators.edit(
       activeCollection.value.uid,
       'selectedSecuritySchemeUids',
@@ -198,22 +195,8 @@ function updateSelectedAuth(entries: SecuritySchemeOption[]) {
       addNewOption.payload,
       activeCollection.value.uid,
     )
-
     if (scheme) _entries.push(scheme.uid)
   }
-
-  // Here we grab the keys for auth that doesn't yet exist
-  const newAuth = _entries.filter((uid) => !activeCollection.value!.auth[uid])
-
-  // Create new auth entries for new auth
-  collectionMutators.edit(
-    activeCollection.value.uid,
-    'auth',
-    newAuth.reduce((prev, uid) => {
-      prev[uid] = createSchemeValueSet(securitySchemes[uid])
-      return prev
-    }, activeCollection.value.auth),
-  )
 
   editSelectedSchemeUids(_entries)
 }
@@ -306,9 +289,9 @@ function handleDeleteScheme(option: { id: string; label: string }) {
                   None
                 </div>
                 <ScalarIcon
-                  class="min-w-3 ml-auto mr-2.5"
+                  class="mr-[9px]"
                   icon="ChevronDown"
-                  size="xs" />
+                  size="md" />
               </ScalarButton>
             </ScalarComboboxMultiselect>
           </DataTableHeader>

@@ -21,12 +21,11 @@ withDefaults(
     :defaultOpen="defaultOpen">
     <div class="flex items-center">
       <DisclosureButton
-        class="group hover:text-c-1 flex flex-1 items-center gap-2.5 overflow-hidden py-1.5 text-sm font-medium px-2.5 outline-none">
+        class="group hover:text-c-1 flex flex-1 items-center gap-2.5 overflow-hidden py-1.5 text-sm font-medium px-1 md:px-1.5 xl:px-2 outline-none">
         <ScalarIcon
           class="text-c-3 group-hover:text-c-1 group-focus-visible:outline ui-open:rotate-90 ui-not-open:rotate-0 rounded-[1px] outline-offset-2"
           icon="ChevronRight"
-          size="sm"
-          thickness="2.5" />
+          size="md" />
         <div class="flex flex-1 items-center gap-1.5 text-c-1">
           <slot
             name="title"

@@ -1,5 +1,78 @@
 # @scalar/nuxt
 
+## 0.2.150
+
+### Patch Changes
+
+- baaad1c: refactor: deprecated the `proxy` configuration attribute, and use `proxyUrl` everywhere
+- Updated dependencies [7605d6f]
+- Updated dependencies [c9b6873]
+- Updated dependencies [d08a7ae]
+- Updated dependencies [baaad1c]
+- Updated dependencies [642d112]
+- Updated dependencies [bae9997]
+- Updated dependencies [c984ac8]
+  - @scalar/api-reference@1.25.72
+  - @scalar/api-client@2.2.4
+
+## 0.2.149
+
+### Patch Changes
+
+- @scalar/api-client@2.2.3
+- @scalar/api-reference@1.25.71
+
+## 0.2.148
+
+### Patch Changes
+
+- Updated dependencies [794a50d]
+- Updated dependencies [85a9aea]
+- Updated dependencies [8004539]
+- Updated dependencies [9d23f95]
+- Updated dependencies [9002259]
+  - @scalar/api-client@2.2.2
+  - @scalar/api-reference@1.25.70
+
+## 0.2.147
+
+### Patch Changes
+
+- Updated dependencies [5da67b2]
+- Updated dependencies [6b0d817]
+- Updated dependencies [6b0d817]
+- Updated dependencies [6c843e6]
+- Updated dependencies [1b06f64]
+- Updated dependencies [8066c8c]
+- Updated dependencies [fda0e5c]
+  - @scalar/api-client@2.2.1
+  - @scalar/api-reference@1.25.69
+
+## 0.2.146
+
+### Patch Changes
+
+- Updated dependencies [daa2663]
+- Updated dependencies [f67c3bc]
+- Updated dependencies [37abd4f]
+  - @scalar/api-reference@1.25.68
+  - @scalar/api-client@2.2.0
+
+## 0.2.145
+
+### Patch Changes
+
+- Updated dependencies [cb3e89f]
+- Updated dependencies [594a96c]
+- Updated dependencies [0adbfd5]
+- Updated dependencies [9b4def7]
+- Updated dependencies [9b4def7]
+- Updated dependencies [44a7100]
+- Updated dependencies [1e3214c]
+- Updated dependencies [2a6117e]
+  - @scalar/api-client@2.1.52
+  - @scalar/api-reference@1.25.67
+
 ## 0.2.144
 
 ### Patch Changes

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ScalarErrorBoundary } from '@scalar/components'
 import type { Server, Spec } from '@scalar/types/legacy'
 import { computed } from 'vue'
 
@@ -13,18 +14,23 @@ import { Models, ModelsAccordion } from './Models'
 import { TagList } from './Tag'
 import { Webhooks } from './Webhooks'
 
-const props = defineProps<{
-  parsedSpec: Spec
-  layout?: 'default' | 'accordion'
-  baseServerURL?: string
-  servers?: Server[]
-  proxy?: string
-}>()
+const props = withDefaults(
+  defineProps<{
+    parsedSpec: Spec
+    layout?: 'modern' | 'classic'
+    baseServerURL?: string
+    servers?: Server[]
+    proxyUrl?: string
+  }>(),
+  {
+    layout: 'modern',
+  },
+)
 
 const { hideModels } = useSidebar()
 
 const introCardsSlot = computed(() =>
-  props.layout === 'accordion' ? 'after' : 'aside',
+  props.layout === 'classic' ? 'after' : 'aside',
 )
 </script>
 <template>
@@ -50,20 +56,22 @@ const introCardsSlot = computed(() =>
       :info="parsedSpec.info"
       :parsedSpec="parsedSpec">
       <template #[introCardsSlot]>
-        <div
-          class="introduction-card"
-          :class="{ 'introduction-card-row': layout === 'accordion' }">
-          <BaseUrl
-            class="introduction-card-item"
-            :defaultServerUrl="baseServerURL"
-            :servers="props.servers"
-            :specification="parsedSpec" />
-          <Authentication
-            class="introduction-card-item"
-            :parsedSpec="parsedSpec"
-            :proxy="proxy" />
-          <ClientLibraries class="introduction-card-item" />
-        </div>
+        <ScalarErrorBoundary>
+          <div
+            class="introduction-card"
+            :class="{ 'introduction-card-row': layout === 'classic' }">
+            <BaseUrl
+              class="introduction-card-item"
+              :defaultServerUrl="baseServerURL"
+              :servers="props.servers"
+              :specification="parsedSpec" />
+            <Authentication
+              class="introduction-card-item"
+              :parsedSpec="parsedSpec"
+              :proxyUrl="proxyUrl" />
+            <ClientLibraries class="introduction-card-item" />
+          </div>
+        </ScalarErrorBoundary>
       </template>
     </Introduction>
     <slot
@@ -95,7 +103,7 @@ const introCardsSlot = computed(() =>
 
     <template v-if="hasModels(parsedSpec) && !hideModels">
       <ModelsAccordion
-        v-if="layout === 'accordion'"
+        v-if="layout === 'classic'"
         :schemas="getModels(parsedSpec)" />
       <Models
         v-else
@@ -127,10 +135,14 @@ const introCardsSlot = computed(() =>
 }
 .introduction-card-item {
   padding: 9px;
-  border-bottom: var(--scalar-border-width) solid var(--scalar-border-color);
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: start;
+}
+@container narrow-references-container (max-width: 900px) {
+  .introduction-card-item {
+    border-bottom: var(--scalar-border-width) solid var(--scalar-border-color);
+  }
 }
 .introduction-card-item:has(.description) :deep(.server-form-container) {
   border-bottom-left-radius: 0;
@@ -145,8 +157,12 @@ const introCardsSlot = computed(() =>
   color: var(--scalar-color-3);
 }
 .introduction-card-row {
-  flex-flow: row wrap;
   gap: 24px;
+}
+@media (min-width: 600px) {
+  .introduction-card-row {
+    flex-flow: row wrap;
+  }
 }
 .introduction-card-row > * {
   flex: 1;
@@ -192,7 +208,6 @@ const introCardsSlot = computed(() =>
   margin-top: 0;
 }
 .section-flare {
-  position: absolute;
   top: 0;
   right: 0;
   pointer-events: none;

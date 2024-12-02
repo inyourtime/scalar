@@ -2,12 +2,14 @@
 import DeleteSidebarListElement from '@/components/Sidebar/Actions/DeleteSidebarListElement.vue'
 import EditSidebarListElement from '@/components/Sidebar/Actions/EditSidebarListElement.vue'
 import { useWorkspace } from '@/store'
+import { useActiveEntities } from '@/store/active-entities'
 import {
   ScalarButton,
   ScalarDropdown,
   ScalarDropdownDivider,
   ScalarDropdownItem,
   ScalarIcon,
+  ScalarListboxCheckbox,
   ScalarModal,
   ScalarTooltip,
   useModal,
@@ -15,8 +17,8 @@ import {
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-const { activeWorkspace, workspaces, workspaceMutators, events } =
-  useWorkspace()
+const { activeWorkspace } = useActiveEntities()
+const { workspaces, workspaceMutators, events } = useWorkspace()
 const { push } = useRouter()
 
 const updateSelected = (uid: string) => {
@@ -99,9 +101,8 @@ const deleteWorkspace = async () => {
               {{ activeWorkspace.name }}
             </h2>
             <ScalarIcon
-              class="size-3"
               icon="ChevronDown"
-              thickness="3" />
+              size="md" />
           </div>
         </ScalarButton>
 
@@ -112,22 +113,13 @@ const deleteWorkspace = async () => {
             :key="uid"
             class="flex gap-1.5 group/item items-center whitespace-nowrap text-ellipsis overflow-hidden w-full"
             @click.stop="updateSelected(uid)">
-            <div
-              class="flex items-center justify-center rounded-full p-[3px] w-4 h-4"
-              :class="
-                activeWorkspace.uid === uid
-                  ? 'bg-c-accent text-b-1'
-                  : 'group-hover/item:shadow-border text-transparent'
-              ">
-              <ScalarIcon
-                class="size-2.5"
-                icon="Checkmark"
-                thickness="3.5" />
-            </div>
+            <ScalarListboxCheckbox :selected="activeWorkspace.uid === uid" />
             <span class="text-ellipsis overflow-hidden">{{
               workspace.name
             }}</span>
-            <ScalarDropdown teleport=".scalar-client">
+            <ScalarDropdown
+              placement="right-start"
+              teleport=".scalar-client">
               <ScalarButton
                 class="px-0.5 py-0 hover:bg-b-3 group-hover/item:flex aspect-square ml-auto -mr-1 h-fit"
                 size="sm"
@@ -199,9 +191,8 @@ const deleteWorkspace = async () => {
             @click="createNewWorkspace">
             <div class="flex items-center justify-center h-4 w-4">
               <ScalarIcon
-                class="h-2.5"
                 icon="Add"
-                thickness="3" />
+                size="sm" />
             </div>
             <span>Create Workspace</span>
           </ScalarDropdownItem>

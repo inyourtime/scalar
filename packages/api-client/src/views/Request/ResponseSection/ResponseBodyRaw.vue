@@ -1,7 +1,9 @@
 <script lang="ts" setup>
-import { ScalarCodeBlock } from '@scalar/components'
+import { ScalarIcon } from '@scalar/components'
+import { prettyPrintJson } from '@scalar/oas-utils/helpers'
 import { type CodeMirrorLanguage, useCodeMirror } from '@scalar/use-codemirror'
-import { ref } from 'vue'
+import { useClipboard } from '@scalar/use-hooks/useClipboard'
+import { ref, toRef } from 'vue'
 
 const props = defineProps<{
   content: any
@@ -9,19 +11,42 @@ const props = defineProps<{
 }>()
 
 const codeMirrorRef = ref<HTMLDivElement | null>(null)
+const { copyToClipboard } = useClipboard()
 
-useCodeMirror({
+const { codeMirror } = useCodeMirror({
   codeMirrorRef,
   readOnly: true,
   lineNumbers: true,
-  content: props.content,
-  language: props.language,
+  content: toRef(() => prettyPrintJson(props.content)),
+  language: toRef(() => props.language),
+  forceFoldGutter: true,
 })
+
+// Function to get current content
+const getCurrentContent = () => {
+  return codeMirror.value?.state.doc.toString() || ''
+}
 </script>
 <template>
-  <ScalarCodeBlock
-    :content="content"
-    :lang="language" />
+  <div class="body-raw relative overflow-auto">
+    <!-- Copy button -->
+    <div
+      v-if="getCurrentContent()"
+      class="scalar-code-copy">
+      <button
+        class="copy-button"
+        type="button"
+        @click="copyToClipboard(getCurrentContent())">
+        <span class="sr-only">Copy content</span>
+        <ScalarIcon
+          icon="Clipboard"
+          size="md" />
+      </button>
+    </div>
+
+    <!-- CodeMirror container -->
+    <div ref="codeMirrorRef" />
+  </div>
 </template>
 <style scoped>
 :deep(.cm-editor) {
@@ -32,5 +57,45 @@ useCodeMirror({
 :deep(.cm-gutters) {
   background-color: var(--scalar-background-1);
   border-radius: var(--scalar-radius) 0 0 var(--scalar-radius);
+}
+
+/* Copy Button Styles */
+.scalar-code-copy {
+  align-items: flex-start;
+  display: flex;
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 10;
+  pointer-events: none;
+  position: sticky;
+  transform: translateX(-6px);
+}
+
+.copy-button {
+  align-items: center;
+  display: flex;
+  background-color: var(--scalar-background-1);
+  border: 1px solid var(--scalar-border-color);
+  border-radius: 3px;
+  color: var(--scalar-color-3);
+  cursor: pointer;
+  height: 30px;
+  opacity: 0;
+  padding: 6px;
+  pointer-events: auto;
+  transition:
+    opacity 0.15s ease-in-out,
+    color 0.15s ease-in-out;
+}
+
+/* Show button on container hover */
+.body-raw:hover .copy-button,
+.copy-button:focus-visible {
+  opacity: 1;
+}
+
+.copy-button:hover {
+  color: var(--scalar-color-1);
 }
 </style>

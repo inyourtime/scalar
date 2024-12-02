@@ -175,10 +175,10 @@ const rules = ['oneOf', 'anyOf', 'allOf', 'not']
             </DisclosurePanel>
             <DisclosureButton class="enum-toggle-button">
               <ScalarIcon
-                class="enum-toggle-button-icon h-2.5"
+                class="enum-toggle-button-icon"
                 :class="{ 'enum-toggle-button-icon--open': open }"
                 icon="Add"
-                thickness="3" />
+                size="sm" />
               {{ open ? 'Hide values' : 'Show all values' }}
             </DisclosureButton>
           </Disclosure>
@@ -314,6 +314,7 @@ const rules = ['oneOf', 'anyOf', 'allOf', 'not']
   padding: 6px;
 }
 .property-example-value {
+  all: unset;
   font-family: var(--scalar-font-code);
   white-space: pre;
   padding: 6px;
@@ -332,6 +333,8 @@ const rules = ['oneOf', 'anyOf', 'allOf', 'not']
 .property-enum-value {
   padding: 3px 0;
   color: var(--scalar-color-2);
+  line-height: 1.5;
+  word-break: break-word;
 }
 .property-enum-value::before {
   content: '⊢';

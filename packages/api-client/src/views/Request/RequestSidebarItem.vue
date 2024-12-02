@@ -4,6 +4,7 @@ import { useSidebar } from '@/hooks'
 import { getModifiers } from '@/libs'
 import { PathId } from '@/router'
 import { useWorkspace } from '@/store'
+import { useActiveEntities } from '@/store/active-entities'
 import type { SidebarItem, SidebarMenuItem } from '@/views/Request/types'
 import { ScalarButton, ScalarIcon, ScalarTooltip } from '@scalar/components'
 import {
@@ -52,9 +53,12 @@ defineSlots<{
 
 const {
   activeCollection,
+  router,
   activeRequest,
   activeRouterParams,
   activeWorkspace,
+} = useActiveEntities()
+const {
   collections,
   tags,
   isReadOnly,
@@ -64,7 +68,6 @@ const {
   tagMutators,
   requestMutators,
   requestExampleMutators,
-  router,
   events,
 } = useWorkspace()
 const { collapsedSidebarFolders, toggleSidebarFolder } = useSidebar()
@@ -160,12 +163,12 @@ const highlightClasses = 'hover:bg-sidebar-active-b indent-padding-left'
 /** Due to the nesting, we need a dynamic left offset for hover and active backgrounds */
 const leftOffset = computed(() => {
   if (!props.parentUids.length) return '12px'
-  else if (isReadOnly.value) return `${(props.parentUids.length - 1) * 12}px`
+  else if (isReadOnly) return `${(props.parentUids.length - 1) * 12}px`
   else return `${props.parentUids.length * 12}px`
 })
 const paddingOffset = computed(() => {
   if (!props.parentUids.length) return '0px'
-  else if (isReadOnly.value) return `${(props.parentUids.length - 1) * 12}px`
+  else if (isReadOnly) return `${(props.parentUids.length - 1) * 12}px`
   else return `${props.parentUids.length * 12}px`
 })
 
@@ -221,7 +224,7 @@ const getDraggableOffsets = computed(() => {
 /** Guard to check if an element is able to be dropped on */
 const _isDroppable = (draggingItem: DraggingItem, hoveredItem: HoveredItem) => {
   // Cannot drop in read only mode
-  if (activeWorkspace.value.isReadOnly) return false
+  if (isReadOnly) return false
   // RequestExamples cannot be dropped on
   if (requestExamples[hoveredItem.id]) return false
   // Collection cannot be dropped into another collection
@@ -262,7 +265,7 @@ const watchIconColor = computed(() => {
 const hasDraftRequests = computed(() => {
   return (
     item.value.title == 'Drafts' &&
-    !isReadOnly.value &&
+    !isReadOnly &&
     item.value.children.length > 0
   )
 })
@@ -330,13 +333,13 @@ const hasDraftRequests = computed(() => {
                     $emit('openMenu', {
                       item,
                       parentUids,
-                      targetRef: ev.currentTarget.parentNode,
-                      open: true,
+                      targetRef: ev.currentTarget,
+                      open: !menuItem.open,
                     })
                 ">
                 <ScalarIcon
                   icon="Ellipses"
-                  size="sm" />
+                  size="md" />
               </ScalarButton>
             </div>
             <span class="flex items-start">
@@ -368,8 +371,7 @@ const hasDraftRequests = computed(() => {
               <ScalarIcon
                 class="text-c-3 text-sm"
                 icon="ChevronRight"
-                size="sm"
-                thickness="2.5" />
+                size="md" />
             </div>
           </slot>
           &hairsp;
@@ -384,54 +386,46 @@ const hasDraftRequests = computed(() => {
             {{ item.title }}
           </span>
           <div class="relative flex h-fit">
-            <ScalarButton
-              v-if="!isReadOnly && !isDraftCollection"
-              class="px-0.5 py-0 hover:bg-b-3 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 group-has-[:focus-visible]:opacity-100 absolute -translate-y-1/2 right-0 aspect-square inset-y-2/4 h-fit"
+            <div
+              class="flex items-center opacity-0 gap-px group-hover:opacity-100 group-focus-visible:opacity-100 group-has-[:focus-visible]:opacity-100 absolute -translate-y-1/2 -right-px inset-y-2/4"
               :class="{
                 'flex':
                   menuItem.item?.entity.uid === item.entity.uid &&
                   menuItem.open,
-                'right-5': item.watchMode,
-              }"
-              size="sm"
-              variant="ghost"
-              @click.stop.prevent="
-                (ev) =>
-                  $emit('openMenu', {
-                    item,
-                    parentUids,
-                    targetRef: ev.currentTarget.parentNode,
-                    open: true,
-                  })
-              ">
-              <ScalarIcon
-                icon="Ellipses"
-                size="sm" />
-            </ScalarButton>
-            <ScalarButton
-              v-if="isDraftCollection && hasDraftRequests"
-              class="px-0.5 py-0 hover:bg-b-3 hidden group-hover:flex absolute -translate-y-1/2 right-0 aspect-square inset-y-2/4 h-fit"
-              :class="{
-                'flex':
-                  menuItem.item?.entity.uid === item.entity.uid &&
-                  menuItem.open,
-                'right-5': item.watchMode,
-              }"
-              size="sm"
-              variant="ghost"
-              @click.stop.prevent="
-                (ev) =>
-                  $emit('openMenu', {
-                    item,
-                    parentUids,
-                    targetRef: ev.currentTarget.parentNode,
-                    open: true,
-                  })
-              ">
-              <ScalarIcon
-                icon="Ellipses"
-                size="sm" />
-            </ScalarButton>
+                '!right-5': item.watchMode,
+              }">
+              <ScalarButton
+                v-if="
+                  (!isReadOnly && !isDraftCollection) ||
+                  (isDraftCollection && hasDraftRequests)
+                "
+                class="px-0.5 py-0 hover:bg-b-3 group-focus-visible:opacity-100 group-has-[:focus-visible]:opacity-100 aspect-square h-fit"
+                size="sm"
+                variant="ghost"
+                @click.stop.prevent="
+                  (ev) =>
+                    $emit('openMenu', {
+                      item,
+                      parentUids,
+                      targetRef: ev.currentTarget.parentNode,
+                      open: true,
+                    })
+                ">
+                <ScalarIcon
+                  icon="Ellipses"
+                  size="md" />
+              </ScalarButton>
+              <ScalarButton
+                class="px-0.5 py-0 hover:bg-b-3 group-focus-visible:opacity-100 group-has-[:focus-visible]:opacity-100 aspect-square h-fit"
+                size="sm"
+                variant="ghost"
+                @click.stop.prevent="openCommandPaletteRequest()">
+                <ScalarIcon
+                  icon="Add"
+                  size="md"
+                  thickness="2" />
+              </ScalarButton>
+            </div>
             <ScalarTooltip
               v-if="item.watchMode"
               side="right"
@@ -441,8 +435,8 @@ const hasDraftRequests = computed(() => {
                   class="text-sm"
                   :class="watchIconColor"
                   icon="Watch"
-                  size="sm"
-                  thickness="2.5" />
+                  size="md"
+                  thickness="2" />
               </template>
               <template #content>
                 <div

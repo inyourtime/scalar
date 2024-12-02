@@ -16,7 +16,7 @@
     "swagger",
     "cli"
   ],
-  "version": "0.2.80",
+  "version": "0.2.86",
   "engines": {
     "node": ">=18"
   },
@@ -55,6 +55,7 @@
     "@hono/node-server": "^1.11.0",
     "@scalar/build-tooling": "workspace:*",
     "@scalar/hono-api-reference": "workspace:*",
-    "@types/node": "^20.14.10"
+    "@types/node": "^20.14.10",
+    "vite": "^5.4.10"
   }
 }

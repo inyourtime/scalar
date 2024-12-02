@@ -6,14 +6,15 @@ import { ERRORS } from '@/libs'
 import { importCurlCommand } from '@/libs/importers/curl'
 import { createRequestOperation } from '@/libs/send-request'
 import { useWorkspace } from '@/store'
+import { useActiveEntities } from '@/store/active-entities'
 import RequestSection from '@/views/Request/RequestSection/RequestSection.vue'
 import RequestSubpageHeader from '@/views/Request/RequestSubpageHeader.vue'
 import ResponseSection from '@/views/Request/ResponseSection/ResponseSection.vue'
 import { useOpenApiWatcher } from '@/views/Request/hooks/useOpenApiWatcher'
 import type { RequestPayload } from '@scalar/oas-utils/entities/spec'
 import { safeJSON } from '@scalar/object-utils/parse'
+import { useBreakpoints } from '@scalar/use-hooks/useBreakpoints'
 import { useToasts } from '@scalar/use-toasts'
-import { useMediaQuery } from '@vueuse/core'
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -32,6 +33,8 @@ const {
   activeRequest,
   activeWorkspace,
   activeServer,
+} = useActiveEntities()
+const {
   cookies,
   isReadOnly,
   modalState,
@@ -43,7 +46,7 @@ const {
   events,
 } = workspaceContext
 
-const showSideBar = ref(!activeWorkspace.value?.isReadOnly)
+const showSideBar = ref(!isReadOnly)
 const requestAbortController = ref<AbortController>()
 const parsedCurl = ref<RequestPayload>()
 const selectedServerUid = ref('')
@@ -54,8 +57,8 @@ const activeHistoryEntry = computed(() =>
 )
 
 /** Show / hide the sidebar when we resize the screen */
-const isNarrow = useMediaQuery('(max-width: 800px)')
-watch(isNarrow, (narrow) => (showSideBar.value = !narrow))
+const { mediaQueries } = useBreakpoints()
+watch(mediaQueries.md, (isMedium) => (showSideBar.value = isMedium))
 
 /**
  * Selected scheme UIDs
@@ -67,7 +70,7 @@ watch(isNarrow, (narrow) => (showSideBar.value = !narrow))
  */
 const selectedSecuritySchemeUids = computed(
   () =>
-    (isReadOnly.value
+    (isReadOnly
       ? activeCollection.value?.selectedSecuritySchemeUids
       : activeRequest.value?.selectedSecuritySchemeUids) ?? [],
 )
@@ -89,11 +92,10 @@ const executeRequest = async () => {
   const globalCookies = activeWorkspace.value.cookies.map((c) => cookies[c])
 
   const [error, requestOperation] = createRequestOperation({
-    auth: activeCollection.value.auth,
     request: activeRequest.value,
     example: activeExample.value,
     selectedSecuritySchemeUids: selectedSecuritySchemeUids.value,
-    proxy: activeWorkspace.value.proxyUrl ?? '',
+    proxyUrl: activeWorkspace.value.proxyUrl ?? '',
     environment,
     globalCookies,
     status: events.requestStatus,
@@ -178,18 +180,18 @@ function handleCurlImport(curl: string) {
 </script>
 <template>
   <div
-    class="flex flex-1 flex-col pt-0 h-full bg-b-1 relative overflow-hidden"
+    class="flex flex-1 flex-col pt-0 h-full bg-b-1 relative z-0 overflow-hidden"
     :class="{
-      '!mr-0 !mb-0 !border-0': activeWorkspace.isReadOnly,
+      '!mr-0 !mb-0 !border-0': isReadOnly,
     }">
     <RequestSubpageHeader
       v-model="showSideBar"
-      :isReadonly="activeWorkspace.isReadOnly"
+      :isReadonly="isReadOnly"
       @hideModal="() => modalState.hide()"
       @importCurl="handleCurlImport" />
     <ViewLayout>
       <RequestSidebar
-        :isReadonly="activeWorkspace.isReadOnly"
+        :isReadonly="isReadOnly"
         :showSidebar="showSideBar"
         @newTab="$emit('newTab', $event)"
         @update:showSidebar="(show) => (showSideBar = show)" />

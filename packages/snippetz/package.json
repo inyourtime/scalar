@@ -9,7 +9,7 @@
     "url": "https://github.com/scalar/scalar.git",
     "directory": "packages/snippetz"
   },
-  "version": "0.2.4",
+  "version": "0.2.5",
   "engines": {
     "node": ">=18"
   },
@@ -30,6 +30,11 @@
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./plugins/shell/curl": {
+      "import": "./dist/plugins/shell/curl/index.js",
+      "types": "./dist/plugins/shell/curl/index.d.ts",
+      "default": "./dist/plugins/shell/curl/index.js"
     },
     "./plugins/node/undici": {
       "import": "./dist/plugins/node/undici/index.js",

@@ -1,5 +1,49 @@
 # @scalar/mock-server
 
+## 0.2.86
+
+### Patch Changes
+
+- Updated dependencies [6389557]
+  - @scalar/oas-utils@0.2.82
+
+## 0.2.85
+
+### Patch Changes
+
+- @scalar/oas-utils@0.2.81
+
+## 0.2.84
+
+### Patch Changes
+
+- 7465487: refactor: use path aliases
+  - @scalar/oas-utils@0.2.80
+
+## 0.2.83
+
+### Patch Changes
+
+- Updated dependencies [6dd7eda]
+  - @scalar/oas-utils@0.2.79
+
+## 0.2.82
+
+### Patch Changes
+
+- Updated dependencies [daa2663]
+- Updated dependencies [37abd4f]
+  - @scalar/oas-utils@0.2.78
+
+## 0.2.81
+
+### Patch Changes
+
+- Updated dependencies [98e9cb2]
+- Updated dependencies [44a7100]
+  - @scalar/openapi-parser@0.8.10
+  - @scalar/oas-utils@0.2.77
+
 ## 0.2.80
 
 ### Patch Changes

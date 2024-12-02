@@ -1,5 +1,6 @@
 import { isHTTPMethod } from '@/components/HttpMethod/helpers'
 import type { WorkspaceStore } from '@/store'
+import type { ActiveEntitiesStore } from '@/store/active-entities'
 import {
   type Request,
   type RequestParameterPayload,
@@ -8,7 +9,6 @@ import {
   type Server,
   collectionSchema,
   createExampleFromRequest,
-  oasOauthFlowSchema,
   requestSchema,
   securitySchemeSchema,
   serverSchema,
@@ -253,7 +253,8 @@ export const parseDiff = <T>(
  */
 export const mutateCollectionDiff = (
   diff: Difference,
-  { activeCollection, collectionMutators }: WorkspaceStore,
+  { activeCollection }: ActiveEntitiesStore,
+  { collectionMutators }: WorkspaceStore,
 ): boolean => {
   if (!activeCollection.value) return false
 
@@ -325,10 +326,11 @@ const updateRequestExamples = (requestUid: string, store: WorkspaceStore) => {
  */
 export const mutateRequestDiff = (
   diff: Difference,
+  { activeCollection }: ActiveEntitiesStore,
   store: WorkspaceStore,
 ): boolean => {
-  const { activeCollection, requests, requestMutators } = store
   if (!activeCollection.value) return false
+  const { requests, requestMutators } = store
 
   const [, path, method, ...keys] = diff.path as [
     'paths',
@@ -467,7 +469,8 @@ export const mutateRequestDiff = (
 /** Generates a payload for the server mutator from the server diff including the mutator method */
 export const mutateServerDiff = (
   diff: Difference,
-  { activeCollection, servers, serverMutators }: WorkspaceStore,
+  { activeCollection }: ActiveEntitiesStore,
+  { servers, serverMutators }: WorkspaceStore,
 ): boolean => {
   if (!activeCollection.value) return false
 
@@ -509,7 +512,8 @@ export const mutateServerDiff = (
 /** Generates a payload for the tag mutator from the tag diff */
 export const mutateTagDiff = (
   diff: Difference,
-  { activeCollection, tags, tagMutators }: WorkspaceStore,
+  { activeCollection }: ActiveEntitiesStore,
+  { tags, tagMutators }: WorkspaceStore,
 ): boolean => {
   if (!activeCollection.value) return false
 
@@ -578,7 +582,8 @@ export const narrowUnionSchema = (
  */
 export const mutateSecuritySchemeDiff = (
   diff: Difference,
-  { activeCollection, securitySchemes, securitySchemeMutators }: WorkspaceStore,
+  { activeCollection }: ActiveEntitiesStore,
+  { securitySchemes, securitySchemeMutators }: WorkspaceStore,
 ): boolean => {
   if (!activeCollection.value) return false
 
@@ -599,50 +604,13 @@ export const mutateSecuritySchemeDiff = (
 
   // Edit update properties
   if (keys?.length) {
-    if (!scheme) return false
-
-    // Narrows the schema and path based on oauth2 vs non oauth2
-    const { schema, _path } =
-      keys[0] === 'flows' && scheme.type === 'oauth2'
-        ? {
-            schema: narrowUnionSchema(
-              oasOauthFlowSchema,
-              'type',
-              scheme?.flow?.type,
-            ),
-            _path: keys.slice(2),
-          }
-        : {
-            schema: narrowUnionSchema(
-              securitySchemeSchema,
-              'type',
-              scheme?.type,
-            ),
-            _path: keys,
-          }
-
-    // Scopes is another union so lets handle it separately
-    if (_path[0] === 'scopes' && scheme.type === 'oauth2') {
-      const scopes = { ...scheme.flow.scopes } as Record<string, string>
-
-      if (diff.type === 'CREATE' || diff.type === 'CHANGE') {
-        scopes[_path[1]] = diff.value
-      } else delete scopes[_path[1]]
-
-      securitySchemeMutators.edit(scheme.uid, 'flow.scopes', scopes)
-      return true
-    }
-
+    // Narrows the schema and path based on type of security scheme
+    const schema = narrowUnionSchema(securitySchemeSchema, 'type', scheme?.type)
     if (!schema) return false
-
-    const parsed = parseDiff(schema, { ...diff, path: _path })
+    const parsed = parseDiff(schema, { ...diff, path: keys })
     if (!parsed) return false
 
-    // We prepend flow to the path for an oauth2 flow
-    const path = (
-      keys[0] === 'flows' ? ['flow', ..._path].join('.') : parsed.path
-    ) as Path<SecurityScheme>
-
+    const path = parsed.path as Path<SecurityScheme>
     securitySchemeMutators.edit(scheme.uid, path, parsed.value)
   }
   // Delete whole object

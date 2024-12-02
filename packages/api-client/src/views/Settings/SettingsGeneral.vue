@@ -1,36 +1,42 @@
 <script setup lang="ts">
+import IntegrationLogo from '@/components/ImportCollection/IntegrationLogo.vue'
 import { useWorkspace } from '@/store'
+import { useActiveEntities } from '@/store/active-entities'
 import { ScalarButton, ScalarIcon } from '@scalar/components'
-import { type ThemeId, themeLabels } from '@scalar/themes'
+import {
+  type IntegrationThemeId,
+  type ThemeId,
+  themeLabels,
+} from '@scalar/themes'
 
-import SettingsGeneralMode from './SettingsGeneralMode.vue'
+import SettingsGeneralAppearance from './components/SettingsAppearance.vue'
+import SettingsSection from './components/SettingsSection.vue'
 
-const {
-  activeWorkspace,
-  workspaceMutators,
-  proxyUrl,
-  setProxyUrl,
-  defaultProxyUrl,
-} = useWorkspace()
+const { activeWorkspace } = useActiveEntities()
+const { proxyUrl, workspaceMutators } = useWorkspace()
 
-const themeIds: ThemeId[] = [
+const DEFAULT_PROXY_URL = 'https://proxy.scalar.com'
+
+const themeIds: Exclude<ThemeId, IntegrationThemeId>[] = [
   'default',
   'alternate',
-  'moon',
+  // 'moon',
   'purple',
   'solarized',
-  'bluePlanet',
+  // 'bluePlanet',
   'saturn',
   'kepler',
-  'mars',
-  'deepSpace',
+  // 'mars',
+  // 'deepSpace',
 ]
 
+const integrationThemeIds: IntegrationThemeId[] = ['elysiajs', 'fastify']
+
 const getThemeColors = (
-  themeId: ThemeId,
+  themeId: Exclude<ThemeId, IntegrationThemeId>,
 ): { light: string; dark: string; accent: string } => {
   const colors: Record<
-    ThemeId,
+    Exclude<ThemeId, IntegrationThemeId>,
     { light: string; dark: string; accent: string }
   > = {
     default: { light: '#fff', dark: '#0f0f0f', accent: '#0099ff' },
@@ -56,44 +62,59 @@ const changeTheme = (themeId: ThemeId) => {
 </script>
 <template>
   <div class="bg-b-1 w-full h-full overflow-auto">
-    <div class="flex flex-col px-5 py-5 max-w-[720px] ml-auto mr-auto w-full">
-      <div>
+    <div class="px-5 py-5 max-w-[720px] ml-auto mr-auto w-full">
+      <div class="flex flex-col gap-8">
+        <!-- Heading -->
         <div>
-          <h2 class="font-bold text-xl mb-5 mt-10">Settings</h2>
-          <h3 class="font-bold mb-1">CORS Proxy</h3>
-          <!-- <a
-            class="hover:text-c-1"
-            href="https://github.com/scalar/scalar/tree/main/packages/api-client-proxy"
-            target="_blank"
-            >open source</a
-          > -->
-          <p class="text-c-2 mb-2 leading-[21px]">
+          <h2 class="font-bold text-xl mt-10">Settings</h2>
+        </div>
+
+        <!-- Proxy -->
+        <SettingsSection>
+          <template #title>CORS Proxy</template>
+          <template #description>
             Browsers block cross-origin requests for security. We provide a
             public proxy to
             <a
               class="hover:text-c-1 underline-offset-2"
               href="https://en.wikipedia.org/wiki/Cross-origin_resource_sharing"
-              target="_blank"
-              >bypass CORS issues</a
-            >. Check the
+              target="_blank">
+              bypass CORS issues
+            </a>
+            . Check the
             <a
               class="hover:text-c-1 underline-offset-2"
               href="https://github.com/scalar/scalar/tree/main/examples/proxy-server"
-              target="_blank"
-              >source code on GitHub</a
-            >.
-          </p>
-          <div class="gap-2 mt-4 mb-8 flex flex-col">
+              target="_blank">
+              source code on GitHub
+            </a>
+            .
+          </template>
+
+          <div class="flex flex-col gap-2">
             <!-- Default proxy -->
             <ScalarButton
               class="w-full shadow-none text-c-1 justify-start pl-2 gap-2 bg-b-1 border-1/2"
-              :class="{ 'bg-b-2 text-c-1': proxyUrl }"
-              :variant="proxyUrl ? 'primary' : 'secondary'"
-              @click="setProxyUrl('https://proxy.scalar.com')">
+              :class="{
+                'bg-b-2 text-c-1':
+                  activeWorkspace.proxyUrl === DEFAULT_PROXY_URL,
+              }"
+              :variant="
+                activeWorkspace.proxyUrl === DEFAULT_PROXY_URL
+                  ? 'primary'
+                  : 'secondary'
+              "
+              @click="
+                workspaceMutators.edit(
+                  activeWorkspace.uid,
+                  'proxyUrl',
+                  DEFAULT_PROXY_URL,
+                )
+              ">
               <div
                 class="flex items-center justify-center w-5 h-5 rounded-full border-[1.5px] p-1">
                 <ScalarIcon
-                  v-if="proxyUrl === 'https://proxy.scalar.com'"
+                  v-if="activeWorkspace.proxyUrl === DEFAULT_PROXY_URL"
                   icon="Checkmark"
                   size="xs"
                   thickness="3.5" />
@@ -103,34 +124,39 @@ const changeTheme = (themeId: ThemeId) => {
 
             <!-- Custom proxy (only if configured) -->
             <ScalarButton
-              v-if="
-                defaultProxyUrl &&
-                defaultProxyUrl !== 'https://proxy.scalar.com'
-              "
+              v-if="proxyUrl && proxyUrl !== DEFAULT_PROXY_URL"
               class="w-full shadow-none text-c-1 justify-start pl-2 gap-2 bg-b-1 border-1/2"
               variant="primary"
-              @click="setProxyUrl(defaultProxyUrl)">
+              @click="
+                workspaceMutators.edit(
+                  activeWorkspace.uid,
+                  'proxyUrl',
+                  proxyUrl,
+                )
+              ">
               <div
                 class="flex items-center justify-center w-5 h-5 rounded-full border-[1.5px] p-1">
                 <ScalarIcon
-                  v-if="proxyUrl === defaultProxyUrl"
+                  v-if="activeWorkspace.proxyUrl === proxyUrl"
                   icon="Checkmark"
                   size="xs"
                   thickness="3.5" />
               </div>
-              Use custom proxy ({{ defaultProxyUrl }})
+              Use custom proxy ({{ proxyUrl }})
             </ScalarButton>
 
             <!-- No proxy -->
             <ScalarButton
               class="w-full shadow-none text-c-1 justify-start pl-2 gap-2 bg-b-1 border-1/2"
-              :class="{ 'bg-b-2 text-c-1': !proxyUrl }"
-              :variant="!proxyUrl ? 'primary' : 'secondary'"
-              @click="setProxyUrl('')">
+              :class="{ 'bg-b-2 text-c-1': !activeWorkspace.proxyUrl }"
+              :variant="!activeWorkspace.proxyUrl ? 'primary' : 'secondary'"
+              @click="
+                workspaceMutators.edit(activeWorkspace.uid, 'proxyUrl', '')
+              ">
               <div
                 class="flex items-center justify-center w-5 h-5 rounded-full border-[1.5px] p-1">
                 <ScalarIcon
-                  v-if="!proxyUrl"
+                  v-if="!activeWorkspace.proxyUrl"
                   icon="Checkmark"
                   size="xs"
                   thickness="3.5" />
@@ -138,20 +164,22 @@ const changeTheme = (themeId: ThemeId) => {
               Skip the proxy
             </ScalarButton>
           </div>
-        </div>
-        <div>
-          <h3 class="font-bold mb-1">Theme</h3>
-          <p class="text-c-2 mb-4 leading-[21px]">
+        </SettingsSection>
+
+        <!-- Themes -->
+        <SettingsSection>
+          <template #title>Themes</template>
+          <template #description>
             We’ve got a whole rainbow of themes for you to play with:
-          </p>
+          </template>
+
           <div class="flex flex-col gap-2">
             <div class="grid grid-cols-2 gap-2">
               <ScalarButton
                 v-for="themeId in themeIds"
                 :key="themeId"
-                class="px-2"
+                class="px-2 flex items-center justify-between gap-2 text-c-1 border-1/2"
                 :class="[
-                  'flex items-center justify-between gap-2 text-c-1 border-1/2',
                   activeWorkspace.themeId === themeId ? 'bg-b-2' : 'bg-b-1',
                 ]"
                 variant="ghost"
@@ -196,10 +224,62 @@ const changeTheme = (themeId: ThemeId) => {
               </ScalarButton>
             </div>
           </div>
-        </div>
-        <div>
-          <SettingsGeneralMode />
-        </div>
+        </SettingsSection>
+
+        <!-- Frameworks -->
+        <SettingsSection>
+          <template #title>Framework Themes</template>
+          <template #description>
+            Are you a real fan? Show your support by using your favorite
+            framework’s theme!
+          </template>
+
+          <div class="grid grid-cols-2 gap-2">
+            <ScalarButton
+              v-for="themeId in integrationThemeIds"
+              :key="themeId"
+              class="px-2 flex items-center justify-between gap-2 text-c-1 border-1/2"
+              :class="[
+                activeWorkspace.themeId === themeId ? 'bg-b-2' : 'bg-b-1',
+              ]"
+              variant="ghost"
+              @click="changeTheme(themeId)">
+              <div class="flex items-center gap-2">
+                <div
+                  class="flex items-center justify-center w-5 h-5 rounded-full border-2 border-c-3"
+                  :class="{
+                    'bg-primary': activeWorkspace.themeId === themeId,
+                  }">
+                  <div
+                    class="flex items-center justify-center w-5 h-5 rounded-full border-[1.5px] p-1">
+                    <ScalarIcon
+                      v-if="activeWorkspace.themeId === themeId"
+                      icon="Checkmark"
+                      size="xs"
+                      thickness="3.5" />
+                  </div>
+                </div>
+                {{ themeLabels[themeId] }}
+              </div>
+              <div class="flex items-center gap-1">
+                <div class="rounded-xl size-7">
+                  <IntegrationLogo :integration="themeId" />
+                </div>
+              </div>
+            </ScalarButton>
+          </div>
+        </SettingsSection>
+
+        <!-- Appearance -->
+        <SettingsSection>
+          <template #title>Appearance</template>
+          <template #description>
+            Choose between light, dark, or system-based appearance for your
+            workspace.
+          </template>
+
+          <SettingsGeneralAppearance />
+        </SettingsSection>
       </div>
     </div>
   </div>

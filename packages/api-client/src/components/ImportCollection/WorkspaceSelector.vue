@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useWorkspace } from '@/store'
+import { useActiveEntities } from '@/store/active-entities'
 import {
   ScalarButton,
   ScalarDropdown,
@@ -13,7 +14,8 @@ import { useToasts } from '@scalar/use-toasts'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-const { activeWorkspace, workspaces, workspaceMutators } = useWorkspace()
+const { activeWorkspace } = useActiveEntities()
+const { workspaces, workspaceMutators } = useWorkspace()
 const { push } = useRouter()
 
 const modal = useModal()
@@ -66,9 +68,8 @@ const handleCreateWorkspace = () => {
             {{ activeWorkspace.name }}
           </h2>
           <ScalarIcon
-            class="size-3"
             icon="ChevronDown"
-            thickness="3" />
+            size="md" />
         </div>
       </ScalarButton>
 
@@ -103,9 +104,8 @@ const handleCreateWorkspace = () => {
           @click="modal.show()">
           <div class="flex items-center justify-center h-4 w-4">
             <ScalarIcon
-              class="h-2.5"
               icon="Add"
-              thickness="3" />
+              size="sm" />
           </div>
           <span>New Workspace</span>
         </ScalarDropdownItem>

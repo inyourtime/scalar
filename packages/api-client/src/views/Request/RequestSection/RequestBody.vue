@@ -6,6 +6,7 @@ import DataTableRow from '@/components/DataTable/DataTableRow.vue'
 import ViewLayoutCollapse from '@/components/ViewLayout/ViewLayoutCollapse.vue'
 import { useFileDialog } from '@/hooks'
 import { useWorkspace } from '@/store'
+import { useActiveEntities } from '@/store/active-entities'
 import { ScalarButton, ScalarIcon, ScalarListbox } from '@scalar/components'
 import { requestExampleParametersSchema } from '@scalar/oas-utils/entities/spec'
 import { canMethodHaveBody } from '@scalar/oas-utils/helpers'
@@ -19,7 +20,8 @@ defineProps<{
   title: string
 }>()
 
-const { activeRequest, activeExample, requestExampleMutators } = useWorkspace()
+const { activeRequest, activeExample } = useActiveEntities()
+const { requestExampleMutators } = useWorkspace()
 
 /** use-codemirror package to be udpated accordingly */
 const contentTypeToLanguageMap = {
@@ -143,6 +145,11 @@ const updateRow = (rowIdx: number, field: 'key' | 'value', value: string) => {
       const inputsIndex = field === 'key' ? 0 : 1
       inputs[inputsIndex]?.focus()
     })
+  }
+
+  // Add a new row if the updated row is the last one
+  if (rowIdx === currentParams.length - 1) {
+    addRow()
   }
 }
 
@@ -396,6 +403,44 @@ watch(
   },
   { immediate: true },
 )
+
+const exampleOptions = computed(() => {
+  const contentType = selectedContentType.value.id
+  const { header } = getBodyType(contentType as Content)
+  const content = activeRequest.value?.requestBody?.content || {}
+  const examples = header ? content[header]?.examples || {} : {}
+  return Object.entries(examples).map(([key, example]) => ({
+    id: key,
+    label: key,
+    value: example,
+  }))
+})
+
+const selectedExample = computed({
+  get: () => {
+    const rawValue = activeExample.value?.body.raw?.value ?? '{}'
+    const parsedValue = JSON.parse(rawValue)
+    const [key] = Object.keys(parsedValue)
+    const value = parsedValue[key]
+    return (
+      exampleOptions.value.find((example) => example.id === value) ??
+      exampleOptions.value[0]
+    )
+  },
+  set: (opt) => {
+    if (opt?.id) {
+      const exampleOption = exampleOptions.value.find(
+        (example) => example.id === opt.id,
+      )
+      if (exampleOption) {
+        const exampleValue = exampleOption.value as {
+          value: Record<string, string>
+        }
+        updateRequestBody(JSON.stringify(exampleValue.value, null, 2))
+      }
+    }
+  },
+})
 </script>
 <template>
   <ViewLayoutCollapse>
@@ -403,21 +448,35 @@ watch(
     <DataTable :columns="['']">
       <DataTableRow>
         <DataTableHeader
-          class="relative col-span-full flex h-8 cursor-pointer items-center !p-0">
+          class="relative col-span-full flex h-8 cursor-pointer items-center justify-between !p-0">
           <ScalarListbox
             v-model="selectedContentType"
-            class="text-xxs"
             :options="contentTypeOptions"
             teleport>
             <ScalarButton
-              class="flex gap-1.5 h-full px-2 text-c-2 font-normal hover:text-c-1"
+              class="flex gap-1.5 h-full px-2 text-c-2 font-normal hover:text-c-1 w-fit"
               fullWidth
               variant="ghost">
               <span>{{ selectedContentType?.label }}</span>
               <ScalarIcon
                 icon="ChevronDown"
-                size="xs"
-                thickness="2.5" />
+                size="md" />
+            </ScalarButton>
+          </ScalarListbox>
+          <ScalarListbox
+            v-if="exampleOptions.length > 0"
+            v-model="selectedExample"
+            :options="exampleOptions"
+            side="left"
+            teleport>
+            <ScalarButton
+              class="flex gap-1.5 h-full px-2 text-c-2 font-normal hover:text-c-1 w-fit"
+              fullWidth
+              variant="ghost">
+              <span>{{ selectedExample?.label }}</span>
+              <ScalarIcon
+                icon="ChevronDown"
+                size="md" />
             </ScalarButton>
           </ScalarListbox>
         </DataTableHeader>
@@ -467,7 +526,6 @@ watch(
             :columns="['32px', '', '', '61px']"
             :items="formParams"
             showUploadButton
-            @addRow="addRow"
             @deleteRow="deleteRow"
             @removeFile="handleRemoveFileFormData"
             @toggleRow="toggleRow"
@@ -481,7 +539,6 @@ watch(
             :columns="['32px', '', '', '61px']"
             :items="formParams"
             showUploadButton
-            @addRow="addRow"
             @deleteRow="deleteRow"
             @removeFile="handleRemoveFileFormData"
             @toggleRow="toggleRow"

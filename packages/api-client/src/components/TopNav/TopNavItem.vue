@@ -3,9 +3,10 @@ import ScalarHotkey from '@/components/ScalarHotkey.vue'
 import {
   type Icon,
   ScalarContextMenu,
-  ScalarDropdown,
+  ScalarDropdownButton,
   ScalarDropdownDivider,
-  ScalarDropdownItem,
+  ScalarDropdownMenu,
+  ScalarFloating,
   ScalarIcon,
   ScalarTooltip,
 } from '@scalar/components'
@@ -37,7 +38,7 @@ defineEmits<{
         :sideOffset="4">
         <template #trigger>
           <div
-            class="nav-item webkit-app-no-drag"
+            class="nav-item app-no-drag-region"
             :class="{ 'nav-item__active': active }"
             @click="$emit('click')">
             <div
@@ -68,55 +69,55 @@ defineEmits<{
       </ScalarTooltip>
     </template>
     <template #content>
-      <ScalarDropdown
-        class="scalar-client"
-        static>
-        <template #items>
-          <ScalarDropdownItem
-            class="flex items-center gap-1.5"
-            @click="$emit('newTab')">
-            <ScalarIcon
-              icon="AddTab"
-              size="sm"
-              thickness="1.5" />
-            New Tab
-            <ScalarHotkey
-              class="bg-b-2 ml-auto"
-              hotkey="T" />
-          </ScalarDropdownItem>
-          <ScalarDropdownItem
-            class="flex items-center gap-1.5"
-            @click="$emit('copyUrl')">
-            <ScalarIcon
-              icon="Link"
-              size="sm"
-              thickness="1.5" />
-            Copy URL
-          </ScalarDropdownItem>
-          <ScalarDropdownDivider />
-          <ScalarDropdownItem
-            class="flex items-center gap-1.5"
-            @click="$emit('close')">
-            <ScalarIcon
-              icon="CloseTab"
-              size="sm"
-              thickness="1.5" />
-            Close Tab
-            <ScalarHotkey
-              class="bg-b-2 ml-auto"
-              hotkey="W" />
-          </ScalarDropdownItem>
-          <ScalarDropdownItem
-            class="flex items-center gap-1.5"
-            @click="$emit('closeOtherTabs')">
-            <ScalarIcon
-              icon="CloseTabs"
-              size="sm"
-              thickness="1.5" />
-            Close Other Tabs
-          </ScalarDropdownItem>
+      <ScalarFloating placement="right-start">
+        <template #floating>
+          <ScalarDropdownMenu class="scalar-app scalar-client">
+            <ScalarDropdownButton
+              class="flex items-center gap-1.5"
+              @click="$emit('newTab')">
+              <ScalarIcon
+                icon="AddTab"
+                size="sm"
+                thickness="1.5" />
+              New Tab
+              <ScalarHotkey
+                class="bg-b-2 ml-auto"
+                hotkey="T" />
+            </ScalarDropdownButton>
+            <ScalarDropdownButton
+              class="flex items-center gap-1.5"
+              @click="$emit('copyUrl')">
+              <ScalarIcon
+                icon="Link"
+                size="sm"
+                thickness="1.5" />
+              Copy URL
+            </ScalarDropdownButton>
+            <ScalarDropdownDivider />
+            <ScalarDropdownButton
+              class="flex items-center gap-1.5"
+              @click="$emit('close')">
+              <ScalarIcon
+                icon="CloseTab"
+                size="sm"
+                thickness="1.5" />
+              Close Tab
+              <ScalarHotkey
+                class="bg-b-2 ml-auto"
+                hotkey="W" />
+            </ScalarDropdownButton>
+            <ScalarDropdownButton
+              class="flex items-center gap-1.5"
+              @click="$emit('closeOtherTabs')">
+              <ScalarIcon
+                icon="CloseTabs"
+                size="sm"
+                thickness="1.5" />
+              Close Other Tabs
+            </ScalarDropdownButton>
+          </ScalarDropdownMenu>
         </template>
-      </ScalarDropdown>
+      </ScalarFloating>
     </template>
   </ScalarContextMenu>
 </template>
@@ -129,7 +130,7 @@ defineEmits<{
   justify-content: center;
   align-items: center;
   display: flex;
-  border-radius: var(--scalar-radius);
+  border-radius: var(--scalar-radius-lg);
   background: var(--scalar-background-3);
   border: var(--scalar-border-width) solid var(--scalar-background-2);
   color: var(--scalar-color-3);
@@ -192,8 +193,5 @@ defineEmits<{
 }
 .nav-item__active .nav-item-close:hover {
   background-color: var(--scalar-background-2);
-}
-.webkit-app-no-drag {
-  -webkit-app-region: no-drag;
 }
 </style>

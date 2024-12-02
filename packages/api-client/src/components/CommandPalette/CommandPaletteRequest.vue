@@ -2,6 +2,7 @@
 import { isHTTPMethod } from '@/components/HttpMethod'
 import HttpMethod from '@/components/HttpMethod/HttpMethod.vue'
 import { useWorkspace } from '@/store'
+import { useActiveEntities } from '@/store/active-entities'
 import {
   ScalarButton,
   type ScalarComboboxOption,
@@ -34,10 +35,9 @@ const {
   activeCollection,
   activeWorkspace,
   activeWorkspaceCollections,
-  requestMutators,
   activeRequest,
-  tags: _tags,
-} = useWorkspace()
+} = useActiveEntities()
+const { requestMutators, tags: _tags } = useWorkspace()
 
 const requestName = ref('')
 const requestMethod = ref('get')
@@ -133,7 +133,7 @@ const handleSubmit = () => {
       placeholder="Request Name"
       @onDelete="emits('back', $event)" />
     <template #options>
-      <div class="flex gap-2">
+      <div class="flex">
         <HttpMethod
           :isEditable="true"
           isSquare
@@ -143,17 +143,21 @@ const handleSubmit = () => {
           v-model="selectedCollection"
           :options="collections">
           <ScalarButton
-            class="justify-between p-2 max-h-8 w-full gap-1 text-xs hover:bg-b-2"
+            class="justify-between p-2 ml-2 max-h-8 w-full gap-1 text-xs hover:bg-b-2"
             variant="outlined">
-            <span :class="selectedCollection ? 'text-c-1' : 'text-c-3'">{{
-              selectedCollection
-                ? selectedCollection.label
-                : 'Select Collection'
-            }}</span>
+            <span
+              class="whitespace-nowrap"
+              :class="selectedCollection ? 'text-c-1' : 'text-c-3'"
+              >{{
+                selectedCollection
+                  ? selectedCollection.label
+                  : 'Select Collection'
+              }}</span
+            >
             <ScalarIcon
               class="text-c-3"
               icon="ChevronDown"
-              size="xs" />
+              size="md" />
           </ScalarButton>
         </ScalarListbox>
         <ScalarListbox
@@ -161,7 +165,7 @@ const handleSubmit = () => {
           v-model="selectedTag"
           :options="tags">
           <ScalarButton
-            class="justify-between p-2 max-h-8 w-full gap-1 text-xs hover:bg-b-2"
+            class="justify-between p-2 ml-2 max-h-8 w-full gap-1 text-xs hover:bg-b-2"
             variant="outlined">
             <span :class="selectedTag ? 'text-c-1' : 'text-c-3'">
               {{ selectedTag ? selectedTag.label : 'Select Tag' }}
@@ -169,7 +173,7 @@ const handleSubmit = () => {
             <ScalarIcon
               class="text-c-3"
               icon="ChevronDown"
-              size="xs" />
+              size="md" />
           </ScalarButton>
         </ScalarListbox>
       </div>

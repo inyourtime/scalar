@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useWorkspace } from '@/store'
+import { useActiveEntities } from '@/store/active-entities'
 import {
   ScalarButton,
   type ScalarComboboxOption,
@@ -17,8 +18,8 @@ const emits = defineEmits<{
   (event: 'back', e: KeyboardEvent): void
 }>()
 
-const { activeWorkspaceCollections, activeCollection, tagMutators } =
-  useWorkspace()
+const { activeWorkspaceCollections, activeCollection } = useActiveEntities()
+const { tagMutators } = useWorkspace()
 const { toast } = useToasts()
 
 const availableCollections = computed(() =>
@@ -65,7 +66,7 @@ const handleSubmit = () => {
         v-model="selectedCollection"
         :options="availableCollections">
         <ScalarButton
-          class="justify-between p-2 max-h-8 w-full gap-1 text-xs hover:bg-b-2"
+          class="justify-between p-2 max-h-8 w-fit gap-1 text-xs hover:bg-b-2"
           variant="outlined">
           <span :class="selectedCollection ? 'text-c-1' : 'text-c-3'">{{
             selectedCollection ? selectedCollection.label : 'Select Collection'
@@ -73,7 +74,7 @@ const handleSubmit = () => {
           <ScalarIcon
             class="text-c-3"
             icon="ChevronDown"
-            size="xs" />
+            size="md" />
         </ScalarButton>
       </ScalarListbox>
     </template>

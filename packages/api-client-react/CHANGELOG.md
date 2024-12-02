@@ -1,5 +1,61 @@
 # @scalar/api-client-react
 
+## 1.0.95
+
+### Patch Changes
+
+- Updated dependencies [d08a7ae]
+- Updated dependencies [baaad1c]
+- Updated dependencies [642d112]
+- Updated dependencies [bae9997]
+  - @scalar/api-client@2.2.4
+
+## 1.0.94
+
+### Patch Changes
+
+- @scalar/api-client@2.2.3
+
+## 1.0.93
+
+### Patch Changes
+
+- Updated dependencies [794a50d]
+- Updated dependencies [85a9aea]
+  - @scalar/api-client@2.2.2
+
+## 1.0.92
+
+### Patch Changes
+
+- Updated dependencies [5da67b2]
+- Updated dependencies [6b0d817]
+- Updated dependencies [6b0d817]
+- Updated dependencies [6c843e6]
+- Updated dependencies [1b06f64]
+- Updated dependencies [8066c8c]
+  - @scalar/api-client@2.2.1
+
+## 1.0.91
+
+### Patch Changes
+
+- Updated dependencies [daa2663]
+- Updated dependencies [f67c3bc]
+- Updated dependencies [37abd4f]
+  - @scalar/api-client@2.2.0
+
+## 1.0.90
+
+### Patch Changes
+
+- Updated dependencies [cb3e89f]
+- Updated dependencies [0adbfd5]
+- Updated dependencies [9b4def7]
+- Updated dependencies [44a7100]
+- Updated dependencies [1e3214c]
+  - @scalar/api-client@2.1.52
+
 ## 1.0.89
 
 ### Patch Changes

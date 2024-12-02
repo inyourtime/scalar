@@ -25,9 +25,9 @@ type AnyObject = Record<string, any>
 export const parse = (
   specification: any,
   {
-    proxy,
+    proxyUrl,
   }: {
-    proxy?: string
+    proxyUrl?: string
   } = {},
 ): Promise<Spec> => {
   // eslint-disable-next-line no-async-promise-executor
@@ -45,7 +45,8 @@ export const parse = (
       const { filesystem } = await load(specification, {
         plugins: [
           fetchUrls({
-            fetch: (url) => fetch(proxy ? redirectToProxy(proxy, url) : url),
+            fetch: (url) =>
+              fetch(proxyUrl ? redirectToProxy(proxyUrl, url) : url),
           }),
         ],
       })
@@ -73,6 +74,12 @@ export const parse = (
 
       return resolve(transformResult(schema))
     } catch (error) {
+      console.error(
+        '[@scalar/api-reference]',
+        'Failed to parse the OpenAPI document. It might be invalid?',
+      )
+      console.error(error)
+
       reject(error)
     }
 

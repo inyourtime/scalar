@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useWorkspace } from '@/store'
+import { useActiveEntities } from '@/store/active-entities'
 import {
   ScalarButton,
   type ScalarComboboxOption,
@@ -19,13 +20,8 @@ const emits = defineEmits<{
 
 const { toast } = useToasts()
 
-const {
-  activeCollection,
-  activeWorkspaceCollections,
-  collectionMutators,
-  serverMutators,
-  events,
-} = useWorkspace()
+const { activeCollection, activeWorkspaceCollections } = useActiveEntities()
+const { collectionMutators, serverMutators, events } = useWorkspace()
 
 const url = ref('')
 
@@ -85,7 +81,7 @@ const redirectToCreateCollection = () => {
         :options="collections">
         <ScalarButton
           v-if="collections.length > 0"
-          class="justify-between p-2 max-h-8 w-full gap-1 text-xs hover:bg-b-2"
+          class="justify-between p-2 max-h-8 w-fit gap-1 text-xs hover:bg-b-2"
           variant="outlined">
           <span :class="selectedCollection ? 'text-c-1' : 'text-c-3'">{{
             selectedCollection ? selectedCollection.label : 'Select Collection'
@@ -93,7 +89,7 @@ const redirectToCreateCollection = () => {
           <ScalarIcon
             class="text-c-3"
             icon="ChevronDown"
-            size="xs" />
+            size="md" />
         </ScalarButton>
         <ScalarButton
           v-else

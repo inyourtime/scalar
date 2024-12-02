@@ -1,5 +1,42 @@
 # @scalar/themes
 
+## 0.9.53
+
+### Patch Changes
+
+- Updated dependencies [baaad1c]
+- Updated dependencies [c984ac8]
+  - @scalar/types@0.0.22
+
+## 0.9.52
+
+### Patch Changes
+
+- 1fa0d20: feat(themes): add commonjs export for themes
+
+## 0.9.51
+
+### Patch Changes
+
+- 91123e8: chore: export each theme individually for easier access
+- Updated dependencies [9d23f95]
+  - @scalar/types@0.0.21
+
+## 0.9.50
+
+### Patch Changes
+
+- 1b06f64: fix(api-reference): conflicting styles with bulma, galaxy bug on docs
+
+## 0.9.49
+
+### Patch Changes
+
+- d379b81: feat(themes): expose tailwind preset as js not just ts
+- f67c3bc: feat: add framework themes
+- Updated dependencies [f67c3bc]
+  - @scalar/types@0.0.20
+
 ## 0.9.48
 
 ### Patch Changes

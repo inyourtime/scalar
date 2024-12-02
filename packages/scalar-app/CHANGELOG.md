@@ -1,5 +1,88 @@
 # scalar-app
 
+## 0.1.96
+
+### Patch Changes
+
+- Updated dependencies [2dd6aa3]
+- Updated dependencies [6389557]
+- Updated dependencies [7605d6f]
+- Updated dependencies [d08a7ae]
+- Updated dependencies [baaad1c]
+- Updated dependencies [642d112]
+- Updated dependencies [7278742]
+- Updated dependencies [bae9997]
+- Updated dependencies [3ca88dc]
+- Updated dependencies [f6cd5ed]
+  - @scalar/components@0.13.0
+  - @scalar/import@0.2.0
+  - @scalar/api-client@2.2.4
+  - @scalar/themes@0.9.53
+
+## 0.1.95
+
+### Patch Changes
+
+- Updated dependencies [1fa0d20]
+  - @scalar/themes@0.9.52
+  - @scalar/api-client@2.2.3
+  - @scalar/components@0.12.76
+
+## 0.1.94
+
+### Patch Changes
+
+- Updated dependencies [794a50d]
+- Updated dependencies [85a9aea]
+- Updated dependencies [91123e8]
+- Updated dependencies [6140275]
+  - @scalar/api-client@2.2.2
+  - @scalar/themes@0.9.51
+  - @scalar/components@0.12.75
+
+## 0.1.93
+
+### Patch Changes
+
+- 6c843e6: feat(api-client): polish non-macos layouts
+- Updated dependencies [5da67b2]
+- Updated dependencies [6b0d817]
+- Updated dependencies [6b0d817]
+- Updated dependencies [6c843e6]
+- Updated dependencies [324834d]
+- Updated dependencies [1b06f64]
+- Updated dependencies [8066c8c]
+  - @scalar/api-client@2.2.1
+  - @scalar/components@0.12.74
+  - @scalar/themes@0.9.50
+
+## 0.1.92
+
+### Patch Changes
+
+- Updated dependencies [d379b81]
+- Updated dependencies [daa2663]
+- Updated dependencies [f67c3bc]
+- Updated dependencies [28a6b05]
+- Updated dependencies [37abd4f]
+  - @scalar/themes@0.9.49
+  - @scalar/api-client@2.2.0
+  - @scalar/components@0.12.73
+
+## 0.1.91
+
+### Patch Changes
+
+- Updated dependencies [cb3e89f]
+- Updated dependencies [0adbfd5]
+- Updated dependencies [9b4def7]
+- Updated dependencies [44a7100]
+- Updated dependencies [12fed75]
+- Updated dependencies [1e3214c]
+  - @scalar/api-client@2.1.52
+  - @scalar/components@0.12.72
+  - @scalar/import@0.1.2
+
 ## 0.1.90
 
 ### Patch Changes

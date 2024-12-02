@@ -1,5 +1,104 @@
 # @scalar/api-reference-editor
 
+## 0.1.131
+
+### Patch Changes
+
+- baaad1c: refactor: deprecated the `proxy` configuration attribute, and use `proxyUrl` everywhere
+- Updated dependencies [6389557]
+- Updated dependencies [7605d6f]
+- Updated dependencies [c9b6873]
+- Updated dependencies [d08a7ae]
+- Updated dependencies [baaad1c]
+- Updated dependencies [642d112]
+- Updated dependencies [c984ac8]
+- Updated dependencies [bae9997]
+- Updated dependencies [c984ac8]
+  - @scalar/oas-utils@0.2.82
+  - @scalar/api-reference@1.25.72
+  - @scalar/api-client@2.2.4
+  - @scalar/types@0.0.22
+  - @scalar/use-codemirror@0.11.44
+  - @scalar/use-hooks@0.1.6
+
+## 0.1.130
+
+### Patch Changes
+
+- @scalar/api-client@2.2.3
+- @scalar/api-reference@1.25.71
+- @scalar/oas-utils@0.2.81
+- @scalar/use-hooks@0.1.5
+- @scalar/use-codemirror@0.11.43
+
+## 0.1.129
+
+### Patch Changes
+
+- Updated dependencies [794a50d]
+- Updated dependencies [85a9aea]
+- Updated dependencies [9d23f95]
+- Updated dependencies [8004539]
+- Updated dependencies [9d23f95]
+- Updated dependencies [9002259]
+  - @scalar/api-client@2.2.2
+  - @scalar/types@0.0.21
+  - @scalar/api-reference@1.25.70
+  - @scalar/oas-utils@0.2.80
+  - @scalar/use-hooks@0.1.4
+  - @scalar/use-codemirror@0.11.42
+
+## 0.1.128
+
+### Patch Changes
+
+- Updated dependencies [5da67b2]
+- Updated dependencies [6b0d817]
+- Updated dependencies [6b0d817]
+- Updated dependencies [6c843e6]
+- Updated dependencies [1b06f64]
+- Updated dependencies [8066c8c]
+- Updated dependencies [fda0e5c]
+- Updated dependencies [6dd7eda]
+  - @scalar/api-client@2.2.1
+  - @scalar/api-reference@1.25.69
+  - @scalar/oas-utils@0.2.79
+  - @scalar/use-codemirror@0.11.41
+  - @scalar/use-hooks@0.1.3
+
+## 0.1.127
+
+### Patch Changes
+
+- Updated dependencies [daa2663]
+- Updated dependencies [f67c3bc]
+- Updated dependencies [37abd4f]
+- Updated dependencies [37abd4f]
+  - @scalar/api-reference@1.25.68
+  - @scalar/api-client@2.2.0
+  - @scalar/oas-utils@0.2.78
+  - @scalar/types@0.0.20
+  - @scalar/use-hooks@0.1.2
+  - @scalar/use-codemirror@0.11.40
+
+## 0.1.126
+
+### Patch Changes
+
+- Updated dependencies [cb3e89f]
+- Updated dependencies [594a96c]
+- Updated dependencies [0adbfd5]
+- Updated dependencies [9b4def7]
+- Updated dependencies [9b4def7]
+- Updated dependencies [44a7100]
+- Updated dependencies [1e3214c]
+- Updated dependencies [2a6117e]
+  - @scalar/api-client@2.1.52
+  - @scalar/api-reference@1.25.67
+  - @scalar/use-hooks@0.1.1
+  - @scalar/oas-utils@0.2.77
+  - @scalar/use-codemirror@0.11.39
+
 ## 0.1.125
 
 ### Patch Changes

@@ -4,6 +4,7 @@ import {
   getSecretCredentialsFromAuthentication,
   getUrlFromServerState,
   useAuthenticationStore,
+  useExampleStore,
   useServerStore,
 } from '#legacy'
 import { ScalarCodeBlock } from '@scalar/components'
@@ -54,7 +55,7 @@ const ssrHash = createHash(
 const ssrStateKey =
   `components-Content-Operation-Example-Request${ssrHash}` satisfies ExampleRequestSSRKey
 
-const selectedExampleKey = ref<string>()
+const { selectedExampleKey, operationId } = useExampleStore()
 
 const {
   httpClient,
@@ -129,10 +130,16 @@ async function generateSnippet() {
     )
   }
 
-  // Generate a request object
+  // Generate a request from operation server or fallback to global server URL
+  const serverUrl = computed(() => {
+    const operationServer = props.operation.information?.servers?.[0]
+    const { modifiedUrl } = getUrlFromServerState(serverState, operationServer)
+    return modifiedUrl
+  })
+
   const harRequest = getHarRequest(
     {
-      url: getUrlFromServerState(serverState).modifiedUrl,
+      url: serverUrl.value,
     },
     getRequestFromOperation(
       props.operation,
@@ -304,7 +311,12 @@ function updateHttpClient(value: string) {
             operation.information?.requestBody?.content?.['application/json']
               ?.examples ?? []
           "
-          @update:modelValue="(value) => (selectedExampleKey = value)" />
+          @update:modelValue="
+            (value) => (
+              (selectedExampleKey = value),
+              (operationId = operation.operationId)
+            )
+          " />
       </div>
       <slot name="footer" />
     </CardFooter>

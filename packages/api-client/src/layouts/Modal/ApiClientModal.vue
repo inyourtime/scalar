@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { type HotKeyEvent, handleHotKeyDown } from '@/libs'
 import { useWorkspace } from '@/store'
+import { useActiveEntities } from '@/store/active-entities'
 import { addScalarClassesToHeadless } from '@scalar/components'
 import { useFocusTrap } from '@vueuse/integrations/useFocusTrap'
 import {
@@ -13,7 +14,8 @@ import {
 } from 'vue'
 import { RouterView } from 'vue-router'
 
-const { activeWorkspace, modalState, events } = useWorkspace()
+const { activeWorkspace } = useActiveEntities()
+const { modalState, events } = useWorkspace()
 const client = ref<HTMLElement | null>(null)
 const id = useId()
 
@@ -88,8 +90,8 @@ onBeforeUnmount(() => {
 
 <style>
 @import '@scalar/components/style.css';
-@import '@/assets/tailwind.css';
-@import '@/assets/variables.css';
+@import '@/tailwind/tailwind.css';
+@import '@/tailwind/variables.css';
 </style>
 
 <style scoped>

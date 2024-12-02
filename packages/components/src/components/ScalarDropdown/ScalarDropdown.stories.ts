@@ -17,6 +17,9 @@ const meta = {
       control: 'select',
       options: placements,
     },
+    class: {
+      control: 'text',
+    },
   },
   render: (args) => ({
     components: {
@@ -29,7 +32,7 @@ const meta = {
       return { args }
     },
     template: `
-<div class="flex items-center justify-center w-full h-screen">
+<div class="flex justify-center w-full min-h-96">
   <ScalarDropdown v-bind="args">
     <ScalarButton>Click Me</ScalarButton>
     <template #items>
@@ -49,3 +52,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Base: Story = {}
+
+export const CustomClasses: Story = {
+  args: { class: 'border-red' },
+}
