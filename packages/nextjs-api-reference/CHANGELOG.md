@@ -1,5 +1,41 @@
 # @scalar/nextjs-api-reference
 
+## 0.5.0
+
+### Minor Changes
+
+- 63350ce: chore: react 19 upgrade minor bump
+
+### Patch Changes
+
+- 90529fc: chore: upgrade to react 19
+
+## 0.4.108
+
+### Patch Changes
+
+- 776dac0: chore: bump next.js peerDependencies fr fr
+
+## 0.4.107
+
+### Patch Changes
+
+- 4bb4d67: chore: bump nextjs peerDependencies
+
+## 0.4.106
+
+### Patch Changes
+
+- Updated dependencies [c263aaf]
+  - @scalar/types@0.0.25
+
+## 0.4.105
+
+### Patch Changes
+
+- Updated dependencies [fbef0c3]
+  - @scalar/types@0.0.24
+
 ## 0.4.104
 
 ### Patch Changes

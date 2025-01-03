@@ -1,5 +1,31 @@
 # @scalar/themes
 
+## 0.9.58
+
+### Patch Changes
+
+- 6407b2b: feat(api-reference): extend font weights for links and sidebar items
+
+## 0.9.57
+
+### Patch Changes
+
+- Updated dependencies [c263aaf]
+  - @scalar/types@0.0.25
+
+## 0.9.56
+
+### Patch Changes
+
+- 23daedd: feat(components): create ScalarHeader component
+
+## 0.9.55
+
+### Patch Changes
+
+- Updated dependencies [fbef0c3]
+  - @scalar/types@0.0.24
+
 ## 0.9.54
 
 ### Patch Changes

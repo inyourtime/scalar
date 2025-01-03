@@ -12,7 +12,7 @@ const props = defineProps<{
   paramKey: keyof RequestExample['parameters']
 }>()
 
-const { activeRequest, activeExample } = useActiveEntities()
+const { activeRequest, activeExample, activeServer } = useActiveEntities()
 const { requestMutators, requestExampleMutators } = useWorkspace()
 
 const params = computed(() => {
@@ -31,6 +31,7 @@ const updateRow = (rowIdx: number, field: 'key' | 'value', value: string) => {
 
   const parameters = activeExample.value.parameters[props.paramKey]
   const oldKey = parameters[rowIdx]?.key
+  if (!oldKey) return
 
   /** Change variable in path as well */
   if (field === 'key') {
@@ -68,7 +69,6 @@ const updateRow = (rowIdx: number, field: 'key' | 'value', value: string) => {
 const setPathVariable = (url: string) => {
   if (!activeExample.value) return
 
-  /** matching regex for nested curly braces {value} */
   const pathVariables = url.match(REGEX.PATH)?.map((v) => v.slice(1, -1)) || []
   const parameters = activeExample.value.parameters[props.paramKey]
 
@@ -86,6 +86,10 @@ const setPathVariable = (url: string) => {
 
   parameters.splice(0, parameters.length, ...updatedParameters)
 
+  // if (pathVariables.length === 0) {
+  //   parameters.splice(0, parameters.length)
+  // }
+
   requestExampleMutators.edit(
     activeExample.value.uid,
     `parameters.${props.paramKey}`,
@@ -93,11 +97,26 @@ const setPathVariable = (url: string) => {
   )
 }
 
+const handlePathVariableUpdate = (url: string) => {
+  if (url) {
+    setPathVariable(url)
+  }
+}
+
 watch(
-  () => activeRequest.value?.path,
+  () => activeRequest.value,
   (newURL) => {
-    if (newURL) {
-      setPathVariable(newURL)
+    if (newURL && activeServer.value?.url) {
+      handlePathVariableUpdate(activeServer.value?.url)
+    }
+  },
+)
+
+watch(
+  () => activeServer.value?.url,
+  (newServerUrl, oldServerUrl) => {
+    if (newServerUrl && newServerUrl !== oldServerUrl) {
+      handlePathVariableUpdate(newServerUrl)
     }
   },
 )
@@ -114,13 +133,5 @@ watch(
       isEnabledHidden
       :items="params"
       @updateRow="updateRow" />
-
-    <!-- Empty state -->
-    <div
-      v-else
-      class="text-c-3 px-4 text-sm border rounded min-h-12 justify-center flex items-center bg-b-1 mx-1">
-      You can use variables in your path:
-      <code class="bg-b-2 ml-1 px-1 rounded">/endpoint/{my_path_variable}</code>
-    </div>
   </ViewLayoutCollapse>
 </template>

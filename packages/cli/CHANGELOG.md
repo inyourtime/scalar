@@ -1,5 +1,168 @@
 # @scalar/cli
 
+## 0.2.282
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.99
+
+## 0.2.281
+
+### Patch Changes
+
+- Updated dependencies [3156ecd]
+  - @scalar/oas-utils@0.2.95
+  - @scalar/api-reference@1.25.98
+  - @scalar/mock-server@0.2.101
+
+## 0.2.280
+
+### Patch Changes
+
+- Updated dependencies [a36fada]
+  - @scalar/oas-utils@0.2.94
+  - @scalar/api-reference@1.25.97
+  - @scalar/mock-server@0.2.100
+
+## 0.2.279
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.96
+
+## 0.2.278
+
+### Patch Changes
+
+- Updated dependencies [ca2d98b]
+- Updated dependencies [6890d7e]
+- Updated dependencies [bc8f883]
+  - @scalar/oas-utils@0.2.93
+  - @scalar/api-reference@1.25.95
+  - @scalar/mock-server@0.2.99
+
+## 0.2.277
+
+### Patch Changes
+
+- Updated dependencies [02b4201]
+- Updated dependencies [9cf76af]
+  - @scalar/api-reference@1.25.94
+  - @scalar/oas-utils@0.2.92
+  - @scalar/mock-server@0.2.98
+
+## 0.2.276
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.93
+
+## 0.2.275
+
+### Patch Changes
+
+- Updated dependencies [fd80d43]
+- Updated dependencies [47d1d82]
+  - @scalar/api-reference@1.25.92
+
+## 0.2.274
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.91
+
+## 0.2.273
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.90
+
+## 0.2.272
+
+### Patch Changes
+
+- Updated dependencies [3c7d7dd]
+- Updated dependencies [3791738]
+  - @scalar/api-reference@1.25.89
+  - @scalar/openapi-parser@0.10.2
+  - @scalar/mock-server@0.2.97
+  - @scalar/oas-utils@0.2.91
+
+## 0.2.271
+
+### Patch Changes
+
+- Updated dependencies [6407b2b]
+- Updated dependencies [c65f3fc]
+- Updated dependencies [c65f3fc]
+- Updated dependencies [c65f3fc]
+  - @scalar/api-reference@1.25.88
+  - @scalar/oas-utils@0.2.91
+  - @scalar/mock-server@0.2.96
+
+## 0.2.270
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.87
+
+## 0.2.269
+
+### Patch Changes
+
+- Updated dependencies [573d113]
+- Updated dependencies [c263aaf]
+  - @scalar/oas-utils@0.2.90
+  - @scalar/openapi-parser@0.10.1
+  - @scalar/api-reference@1.25.86
+  - @scalar/mock-server@0.2.95
+
+## 0.2.268
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.85
+
+## 0.2.267
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.84
+- @scalar/oas-utils@0.2.89
+- @scalar/mock-server@0.2.94
+
+## 0.2.266
+
+### Patch Changes
+
+- Updated dependencies [7a2b32d]
+- Updated dependencies [c78beda]
+  - @scalar/api-reference@1.25.83
+
+## 0.2.265
+
+### Patch Changes
+
+- Updated dependencies [bd84466]
+  - @scalar/api-reference@1.25.82
+
+## 0.2.264
+
+### Patch Changes
+
+- fbef0c3: fix: doesn’t validate files with external references
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+  - @scalar/openapi-parser@0.10.0
+  - @scalar/api-reference@1.25.81
+  - @scalar/mock-server@0.2.93
+  - @scalar/oas-utils@0.2.88
+
 ## 0.2.263
 
 ### Patch Changes

@@ -1,5 +1,60 @@
 # @scalar/components
 
+## 0.13.11
+
+### Patch Changes
+
+- 794ae62: fix(components): fix menu that is two words
+
+## 0.13.10
+
+### Patch Changes
+
+- 46ebb44: fix(components): fix menu logo size
+
+## 0.13.9
+
+### Patch Changes
+
+- 33c8393: style: increases search input gap
+
+## 0.13.8
+
+### Patch Changes
+
+- c65f3fc: chore(components): ScalarMenu component cleanup
+- Updated dependencies [6407b2b]
+- Updated dependencies [c65f3fc]
+  - @scalar/code-highlight@0.0.19
+  - @scalar/themes@0.9.58
+  - @scalar/use-hooks@0.1.11
+
+## 0.13.7
+
+### Patch Changes
+
+- @scalar/themes@0.9.57
+- @scalar/code-highlight@0.0.18
+- @scalar/use-hooks@0.1.10
+
+## 0.13.6
+
+### Patch Changes
+
+- 23daedd: feat(components): create ScalarHeader component
+- Updated dependencies [23daedd]
+  - @scalar/themes@0.9.56
+  - @scalar/code-highlight@0.0.18
+  - @scalar/use-hooks@0.1.9
+
+## 0.13.5
+
+### Patch Changes
+
+- @scalar/themes@0.9.55
+- @scalar/code-highlight@0.0.18
+- @scalar/use-hooks@0.1.8
+
 ## 0.13.4
 
 ### Patch Changes

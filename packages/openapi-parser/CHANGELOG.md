@@ -1,5 +1,27 @@
 # @scalar/openapi-parser
 
+## 0.10.2
+
+### Patch Changes
+
+- 3791738: fix(openapi-parser): correct schema upgrade for "format: binary"
+
+## 0.10.1
+
+### Patch Changes
+
+- c263aaf: feat: better deal with empty OpenAPI documents
+
+## 0.10.0
+
+### Minor Changes
+
+- fbef0c3: fix(openapi-parser): improve performance
+
+### Patch Changes
+
+- fbef0c3: fix: doesn’t validate files with external references
+
 ## 0.9.0
 
 ### Minor Changes

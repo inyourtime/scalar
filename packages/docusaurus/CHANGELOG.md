@@ -1,5 +1,123 @@
 # @scalar/docusaurus
 
+## 0.4.177
+
+### Patch Changes
+
+- @scalar/api-reference-react@0.4.8
+
+## 0.4.176
+
+### Patch Changes
+
+- @scalar/api-reference-react@0.4.7
+
+## 0.4.175
+
+### Patch Changes
+
+- @scalar/api-reference-react@0.4.6
+
+## 0.4.174
+
+### Patch Changes
+
+- @scalar/api-reference-react@0.4.5
+
+## 0.4.173
+
+### Patch Changes
+
+- @scalar/api-reference-react@0.4.4
+
+## 0.4.172
+
+### Patch Changes
+
+- @scalar/api-reference-react@0.4.3
+
+## 0.4.171
+
+### Patch Changes
+
+- @scalar/api-reference-react@0.4.2
+
+## 0.4.170
+
+### Patch Changes
+
+- @scalar/api-reference-react@0.4.1
+
+## 0.4.169
+
+### Patch Changes
+
+- 90529fc: chore: upgrade to react 19
+- Updated dependencies [63350ce]
+- Updated dependencies [90529fc]
+  - @scalar/api-reference-react@0.4.0
+
+## 0.4.168
+
+### Patch Changes
+
+- Updated dependencies [0dfab46]
+  - @scalar/api-reference-react@0.3.166
+
+## 0.4.167
+
+### Patch Changes
+
+- @scalar/api-reference-react@0.3.165
+
+## 0.4.166
+
+### Patch Changes
+
+- @scalar/api-reference-react@0.3.164
+
+## 0.4.165
+
+### Patch Changes
+
+- @scalar/api-reference-react@0.3.163
+
+## 0.4.164
+
+### Patch Changes
+
+- @scalar/api-reference-react@0.3.162
+
+## 0.4.163
+
+### Patch Changes
+
+- @scalar/api-reference-react@0.3.161
+
+## 0.4.162
+
+### Patch Changes
+
+- @scalar/api-reference-react@0.3.160
+
+## 0.4.161
+
+### Patch Changes
+
+- @scalar/api-reference-react@0.3.159
+
+## 0.4.160
+
+### Patch Changes
+
+- @scalar/api-reference-react@0.3.158
+
+## 0.4.159
+
+### Patch Changes
+
+- @scalar/api-reference-react@0.3.157
+
 ## 0.4.158
 
 ### Patch Changes

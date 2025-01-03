@@ -1,5 +1,140 @@
 # @scalar/aspnetcore
 
+## 1.2.72
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.99
+
+## 1.2.71
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.98
+
+## 1.2.70
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.97
+
+## 1.2.69
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.96
+
+## 1.2.68
+
+### Patch Changes
+
+- Updated dependencies [6890d7e]
+- Updated dependencies [bc8f883]
+  - @scalar/api-reference@1.25.95
+
+## 1.2.67
+
+### Patch Changes
+
+- Updated dependencies [02b4201]
+- Updated dependencies [9cf76af]
+  - @scalar/api-reference@1.25.94
+
+## 1.2.66
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.93
+
+## 1.2.65
+
+### Patch Changes
+
+- Updated dependencies [fd80d43]
+- Updated dependencies [47d1d82]
+  - @scalar/api-reference@1.25.92
+
+## 1.2.64
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.91
+
+## 1.2.63
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.90
+
+## 1.2.62
+
+### Patch Changes
+
+- Updated dependencies [3c7d7dd]
+  - @scalar/api-reference@1.25.89
+
+## 1.2.61
+
+### Patch Changes
+
+- Updated dependencies [6407b2b]
+- Updated dependencies [c65f3fc]
+- Updated dependencies [c65f3fc]
+- Updated dependencies [c65f3fc]
+  - @scalar/api-reference@1.25.88
+
+## 1.2.60
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.87
+
+## 1.2.59
+
+### Patch Changes
+
+- Updated dependencies [c263aaf]
+  - @scalar/api-reference@1.25.86
+
+## 1.2.58
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.85
+
+## 1.2.57
+
+### Patch Changes
+
+- de024a5: fix: Typo in ScalarTarget.JavaScript
+  - @scalar/api-reference@1.25.84
+
+## 1.2.56
+
+### Patch Changes
+
+- Updated dependencies [7a2b32d]
+- Updated dependencies [c78beda]
+  - @scalar/api-reference@1.25.83
+
+## 1.2.55
+
+### Patch Changes
+
+- Updated dependencies [bd84466]
+  - @scalar/api-reference@1.25.82
+
+## 1.2.54
+
+### Patch Changes
+
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+  - @scalar/api-reference@1.25.81
+
 ## 1.2.53
 
 ### Patch Changes

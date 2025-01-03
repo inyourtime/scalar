@@ -31,7 +31,7 @@ const { activate: activateFocusTrap, deactivate: deactivateFocusTrap } =
 
 /** Handles the hotkey events as well as custom config */
 const handleKeyDown = (ev: KeyboardEvent) =>
-  handleHotKeyDown(ev, events.hotKeys, activeWorkspace.value.hotKeyConfig)
+  handleHotKeyDown(ev, events.hotKeys, activeWorkspace.value?.hotKeyConfig)
 
 watch(
   () => modalState.open,
@@ -100,10 +100,6 @@ onBeforeUnmount(() => {
 </style>
 
 <style scoped>
-.scalar .scalar-api-client {
-  max-height: calc(100% - calc(var(--scalar-app-header-height)));
-  border-radius: 8px;
-}
 .scalar .scalar-app-layout {
   background: var(--scalar-background-1);
   height: calc(100% - 120px);

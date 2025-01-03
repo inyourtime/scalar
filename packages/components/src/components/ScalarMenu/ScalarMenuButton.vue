@@ -1,32 +1,34 @@
 <script setup lang="ts">
-import { ScalarIcon } from '../../'
-import { useBindCx } from '../../hooks/useBindCx'
+import type {
+  ScalarMenuButtonProps,
+  ScalarMenuButtonSlots,
+} from '@/components/ScalarMenu/types'
 
-defineProps<{
-  open?: boolean
-}>()
+import { ScalarHeaderButton } from '../ScalarHeader'
+import { ScalarIcon } from '../ScalarIcon'
 
-defineOptions({ inheritAttrs: false })
-const { cx } = useBindCx()
+defineProps<ScalarMenuButtonProps>()
+
+defineSlots<ScalarMenuButtonSlots>()
 </script>
 <template>
-  <button
-    class=""
-    type="button"
-    v-bind="
-      cx(
-        'group/button flex items-center gap-1 rounded bg-transparent px-2.5 py-2 hover:bg-b-2',
-      )
-    ">
+  <ScalarHeaderButton class="gap-0.5 px-2">
     <div class="h-5 w-auto">
-      <slot><ScalarIcon icon="Logo" /></slot>
+      <slot name="logo">
+        <ScalarIcon icon="Logo" />
+      </slot>
+    </div>
+    <div
+      v-if="$slots.label"
+      class="ml-0.75 truncate">
+      <slot name="label" />
     </div>
     <span class="sr-only">
-      <slot name="label">{{ open ? 'Close Menu' : 'Open Menu' }}</slot>
+      <slot name="sr-label">{{ open ? 'Close Menu' : 'Open Menu' }}</slot>
     </span>
     <ScalarIcon
-      class="text-c-3 group-hover/button:text-c-1"
+      class="shrink-0 text-c-3 group-hover/button:text-c-1"
       :icon="open ? 'ChevronUp' : 'ChevronDown'"
-      size="sm" />
-  </button>
+      size="md" />
+  </ScalarHeaderButton>
 </template>

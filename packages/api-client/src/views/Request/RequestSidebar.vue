@@ -2,11 +2,13 @@
 import Rabbit from '@/assets/rabbit.ascii?raw'
 import RabbitJump from '@/assets/rabbitjump.ascii?raw'
 import { Sidebar } from '@/components'
+import EnvironmentSelector from '@/components/EnvironmentSelector/EnvironmentSelector.vue'
 import HttpMethod from '@/components/HttpMethod/HttpMethod.vue'
 import ScalarAsciiArt from '@/components/ScalarAsciiArt.vue'
 import { useSearch } from '@/components/Search/useSearch'
 import SidebarButton from '@/components/Sidebar/SidebarButton.vue'
-import { useSidebar } from '@/hooks'
+import SidebarToggle from '@/components/Sidebar/SidebarToggle.vue'
+import { useLayout, useSidebar } from '@/hooks'
 import type { HotKeyEvent } from '@/libs'
 import { useWorkspace } from '@/store'
 import { useActiveEntities } from '@/store/active-entities'
@@ -25,26 +27,30 @@ import { LibraryIcon } from '@scalar/icons'
 import { useToasts } from '@scalar/use-toasts'
 import {
   computed,
+  nextTick,
   onBeforeUnmount,
   onMounted,
   reactive,
+  ref,
   useId,
   watch,
 } from 'vue'
 import { useRouter } from 'vue-router'
 
 import RequestSidebarItem from './RequestSidebarItem.vue'
+import { WorkspaceDropdown } from './components'
 
 const props = defineProps<{
-  showSidebar: boolean
-  isReadonly: boolean
+  isSidebarOpen: boolean
 }>()
 
 const emit = defineEmits<{
-  (e: 'update:showSidebar', v: boolean): void
+  (e: 'update:modelValue', v: boolean): void
+  (e: 'update:isSidebarOpen', v: boolean): void
   (e: 'newTab', { name, uid }: { name: string; uid: string }): void
   (e: 'clearDrafts'): void
 }>()
+const { layout } = useLayout()
 
 const workspaceContext = useWorkspace()
 const {
@@ -102,11 +108,8 @@ const {
 const handleHotKey = (event?: HotKeyEvent) => {
   if (!event) return
 
-  if (event.toggleSidebar) emit('update:showSidebar', props.showSidebar)
-
-  if (event.focusRequestSearch) {
-    searchInputRef.value?.focus()
-  }
+  if (event.toggleSidebar) emit('update:isSidebarOpen', props.isSidebarOpen)
+  if (event.focusRequestSearch) searchInputRef.value?.focus()
 }
 
 onMounted(() => events.hotKeys.on(handleHotKey))
@@ -137,8 +140,10 @@ watch(
     activeWorkspaceCollections.value.map((collection) => collection.watchMode),
   (newWatchModes, oldWatchModes) => {
     newWatchModes.forEach((newWatchMode, index) => {
-      if (!props.isReadonly && newWatchMode !== oldWatchModes[index]) {
+      if (!isReadOnly && newWatchMode !== oldWatchModes[index]) {
         const currentCollection = activeWorkspaceCollections.value[index]
+        if (!currentCollection) return
+
         const message = `${currentCollection.info?.title}: Watch Mode ${newWatchMode ? 'enabled' : 'disabled'}`
         toast(message, 'info')
       }
@@ -159,7 +164,9 @@ const handleClearDrafts = () => {
 
   if (draftCollection) {
     draftCollection.requests.forEach((requestUid) => {
-      requestMutators.delete(requests[requestUid], draftCollection.uid)
+      if (requests[requestUid]) {
+        requestMutators.delete(requests[requestUid], draftCollection.uid)
+      }
     })
   }
 
@@ -170,31 +177,77 @@ const handleClearDrafts = () => {
 
     if (draftCollection) {
       requestMutators.add(request, draftCollection.uid)
-      replace(`/workspace/${activeWorkspace.value.uid}/request/${request.uid}`)
+      // TODO: Use named routes instead
+      replace(`/workspace/${activeWorkspace.value?.uid}/request/${request.uid}`)
     }
   } else {
     const firstCollection = activeWorkspaceCollections.value[0]
     const firstRequest = firstCollection?.requests[0]
 
     if (firstRequest) {
-      replace(`/workspace/${activeWorkspace.value.uid}/request/${firstRequest}`)
+      // TODO: Use named routes instead
+      replace(
+        `/workspace/${activeWorkspace.value?.uid}/request/${firstRequest}`,
+      )
     }
+  }
+}
+
+const isSearchVisible = ref(false)
+
+const toggleSearch = () => {
+  // Simply toggle the visibility
+  isSearchVisible.value = !isSearchVisible.value
+
+  // If we're hiding the search, clear the text
+  if (!isSearchVisible.value) {
+    searchText.value = ''
+  }
+
+  // If we're showing the search, focus it
+  if (isSearchVisible.value) {
+    nextTick(() => {
+      searchInputRef.value?.focus()
+    })
   }
 }
 </script>
 <template>
   <Sidebar
-    v-show="showSidebar"
-    :class="[showSidebar ? 'sidebar-active-width' : '']"
-    :showSidebar="showSidebar"
-    @update:showSidebar="$emit('update:showSidebar', $event)">
+    v-show="isSidebarOpen"
+    :class="[isSidebarOpen ? 'sidebar-active-width' : '']"
+    :isSidebarOpen="isSidebarOpen"
+    @update:isSidebarOpen="$emit('update:isSidebarOpen', $event)">
     <template
-      v-if="!isReadonly"
+      v-if="!isReadOnly"
       #header>
     </template>
     <template #content>
+      <div class="flex items-center h-[48px] px-3 top-0 bg-b-1 sticky z-20">
+        <SidebarToggle
+          class="xl:hidden"
+          :class="[{ '!flex': layout === 'modal' }]"
+          :modelValue="isSidebarOpen"
+          @update:modelValue="$emit('update:isSidebarOpen', $event)" />
+        <WorkspaceDropdown v-if="!isReadOnly" />
+        <span
+          v-if="!isReadOnly"
+          class="text-c-3">
+          /
+        </span>
+        <EnvironmentSelector v-if="!isReadOnly" />
+        <button
+          class="ml-auto"
+          type="button"
+          @click="toggleSearch">
+          <ScalarIcon
+            class="text-c-3 text-sm hover:bg-b-2 p-1.75 rounded-lg max-w-8 max-h-8"
+            icon="Search" />
+        </button>
+      </div>
       <div
-        class="search-button-fade sticky px-3 py-2.5 top-0 z-10"
+        v-show="isSearchVisible || searchText"
+        class="search-button-fade sticky px-3 py-2.5 z-10 pt-0 top-[48px] focus-within:z-20"
         role="search">
         <ScalarSearchInput
           ref="searchInputRef"
@@ -202,6 +255,7 @@ const handleClearDrafts = () => {
           :aria-activedescendant="selectedResultId"
           :aria-controls="searchResultsId"
           sidebar
+          @blur="isSearchVisible = searchText.length > 0"
           @input="fuseSearch"
           @keydown.down.stop="navigateSearchResults('down')"
           @keydown.enter.stop="selectSearchResult()"
@@ -210,7 +264,7 @@ const handleClearDrafts = () => {
       <div
         class="flex flex-1 flex-col overflow-visible px-3 pb-3 pt-0"
         :class="{
-          'pb-14': !isReadonly,
+          'pb-14': !isReadOnly,
         }"
         @dragenter.prevent
         @dragover.prevent>
@@ -247,7 +301,7 @@ const handleClearDrafts = () => {
           <RequestSidebarItem
             v-for="collection in activeWorkspaceCollections"
             :key="collection.uid"
-            :isDraggable="!isReadonly && collection.info?.title !== 'Drafts'"
+            :isDraggable="!isReadOnly && collection.info?.title !== 'Drafts'"
             :isDroppable="isDroppable"
             :menuItem="menuItem"
             :parentUids="[]"
@@ -303,7 +357,7 @@ const handleClearDrafts = () => {
           </div>
         </div>
         <ScalarButton
-          v-if="!isReadonly"
+          v-if="!isReadOnly"
           class="mb-1.5 w-full h-fit hidden opacity-0 p-1.5"
           :class="{
             'flex opacity-100': activeWorkspaceRequests.length <= 1,
@@ -312,7 +366,7 @@ const handleClearDrafts = () => {
           Import Collection
         </ScalarButton>
         <SidebarButton
-          v-if="!isReadonly"
+          v-if="!isReadOnly"
           :click="events.commandPalette.emit"
           hotkey="K">
           <template #title>Add Item</template>
@@ -332,8 +386,8 @@ const handleClearDrafts = () => {
 <style scoped>
 .search-button-fade {
   background: linear-gradient(
-    var(--scalar-background-1) 44px,
-    color-mix(in srgb, var(--scalar-background-1), transparent) 50px,
+    var(--scalar-background-1) 32px,
+    color-mix(in srgb, var(--scalar-background-1), transparent) 38px,
     transparent
   );
 }

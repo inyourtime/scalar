@@ -7,7 +7,7 @@
   "bugs": "https://github.com/scalar/scalar/issues/new/choose",
   "repository": {
     "type": "git",
-    "url": "https://github.com/scalar/scalar.git",
+    "url": "git+https://github.com/scalar/scalar.git",
     "directory": "packages/api-reference"
   },
   "keywords": [
@@ -20,7 +20,7 @@
     "vue",
     "vue3"
   ],
-  "version": "1.25.80",
+  "version": "1.25.99",
   "engines": {
     "node": ">=18"
   },
@@ -81,7 +81,6 @@
     "@vueuse/core": "^10.10.0",
     "fuse.js": "^7.0.0",
     "github-slugger": "^2.0.0",
-    "httpsnippet-lite": "^3.0.5",
     "nanoid": "^5.0.7",
     "vue": "^3.5.12"
   },

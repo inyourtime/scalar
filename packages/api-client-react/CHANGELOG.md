@@ -1,5 +1,133 @@
 # @scalar/api-client-react
 
+## 1.1.8
+
+### Patch Changes
+
+- Updated dependencies [4f6ebab]
+  - @scalar/api-client@2.2.28
+
+## 1.1.7
+
+### Patch Changes
+
+- Updated dependencies [3156ecd]
+  - @scalar/api-client@2.2.27
+
+## 1.1.6
+
+### Patch Changes
+
+- @scalar/api-client@2.2.26
+
+## 1.1.5
+
+### Patch Changes
+
+- Updated dependencies [00feb3e]
+  - @scalar/api-client@2.2.25
+
+## 1.1.4
+
+### Patch Changes
+
+- Updated dependencies [6890d7e]
+- Updated dependencies [ca2d98b]
+- Updated dependencies [6890d7e]
+  - @scalar/api-client@2.2.24
+
+## 1.1.3
+
+### Patch Changes
+
+- Updated dependencies [02b4201]
+  - @scalar/api-client@2.2.23
+
+## 1.1.2
+
+### Patch Changes
+
+- Updated dependencies [4619a8c]
+  - @scalar/api-client@2.2.22
+
+## 1.1.1
+
+### Patch Changes
+
+- Updated dependencies [9b3a053]
+- Updated dependencies [d4b17f5]
+  - @scalar/api-client@2.2.21
+
+## 1.1.0
+
+### Minor Changes
+
+- 63350ce: chore: react 19 upgrade minor bump
+
+### Patch Changes
+
+- 90529fc: chore: upgrade to react 19
+  - @scalar/api-client@2.2.20
+
+## 1.0.110
+
+### Patch Changes
+
+- Updated dependencies [53d99b7]
+  - @scalar/api-client@2.2.19
+
+## 1.0.109
+
+### Patch Changes
+
+- Updated dependencies [3c7d7dd]
+- Updated dependencies [33c8393]
+- Updated dependencies [66905d2]
+  - @scalar/api-client@2.2.18
+
+## 1.0.108
+
+### Patch Changes
+
+- Updated dependencies [c65f3fc]
+  - @scalar/api-client@2.2.17
+
+## 1.0.107
+
+### Patch Changes
+
+- Updated dependencies [875a04a]
+  - @scalar/api-client@2.2.16
+
+## 1.0.106
+
+### Patch Changes
+
+- @scalar/api-client@2.2.15
+
+## 1.0.105
+
+### Patch Changes
+
+- Updated dependencies [984e394]
+- Updated dependencies [40ec239]
+  - @scalar/api-client@2.2.14
+
+## 1.0.104
+
+### Patch Changes
+
+- Updated dependencies [23daedd]
+  - @scalar/api-client@2.2.13
+
+## 1.0.103
+
+### Patch Changes
+
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+  - @scalar/api-client@2.2.12
+
 ## 1.0.102
 
 ### Patch Changes

@@ -1,5 +1,61 @@
 # @scalar/oas-utils
 
+## 0.2.95
+
+### Patch Changes
+
+- 3156ecd: fix: revert migration change from earlier
+
+## 0.2.94
+
+### Patch Changes
+
+- a36fada: fix: returns non drafts collections without changes in 2.4.0 migration
+
+## 0.2.93
+
+### Patch Changes
+
+- ca2d98b: chore: adds drafts server migration
+
+## 0.2.92
+
+### Patch Changes
+
+- 02b4201: fix(api-client): strict TS config (enable noUncheckedIndexedAccess)
+
+## 0.2.91
+
+### Patch Changes
+
+- Updated dependencies [6407b2b]
+  - @scalar/themes@0.9.58
+
+## 0.2.90
+
+### Patch Changes
+
+- 573d113: feat: add isDefined type safe filter helper
+- c263aaf: feat: better deal with empty OpenAPI documents
+- Updated dependencies [c263aaf]
+  - @scalar/types@0.0.25
+  - @scalar/themes@0.9.57
+
+## 0.2.89
+
+### Patch Changes
+
+- Updated dependencies [23daedd]
+  - @scalar/themes@0.9.56
+
+## 0.2.88
+
+### Patch Changes
+
+- Updated dependencies [fbef0c3]
+  - @scalar/types@0.0.24
+  - @scalar/themes@0.9.55
+
 ## 0.2.87
 
 ### Patch Changes

@@ -9,7 +9,7 @@ import type { RequestMethod } from '@scalar/oas-utils/entities/spec'
 import { REQUEST_METHODS } from '@scalar/oas-utils/helpers'
 import { isMacOS } from '@scalar/use-tooltip'
 import { useMagicKeys, whenever } from '@vueuse/core'
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 import HttpMethod from '../HttpMethod/HttpMethod.vue'
 import AddressBarHistory from './AddressBarHistory.vue'
@@ -19,16 +19,18 @@ defineEmits<{
   (e: 'importCurl', value: string): void
 }>()
 
-const { activeRequest, activeExample, activeServer } = useActiveEntities()
+const { activeRequest, activeExample, activeServer, activeCollection } =
+  useActiveEntities()
 const { isReadOnly, requestMutators, requestHistory, events } = useWorkspace()
 
 const selectedRequest = ref(requestHistory[0])
 const addressBarRef = ref<typeof CodeInput | null>(null)
 
 const keys = useMagicKeys()
-whenever(isMacOS() ? keys.meta_enter : keys.ctrl_enter, () =>
-  events.executeRequest.emit(),
+const executeKey = computed(() =>
+  isMacOS() ? keys.meta_enter : keys.ctrl_enter,
 )
+whenever(executeKey, () => events.executeRequest.emit())
 
 /** update the instance path parameters on change */
 const onUrlChange = (newPath: string) => {
@@ -134,7 +136,7 @@ onBeforeUnmount(() => events.hotKeys.off(handleHotKey))
 <template>
   <div
     v-if="activeRequest && activeExample"
-    class="order-last lg:order-none lg:w-auto w-full">
+    class="scalar-address-bar order-last lg:order-none lg:w-auto w-full">
     <div class="m-auto flex flex-row items-center">
       <!-- Address Bar -->
       <Listbox
@@ -165,7 +167,7 @@ onBeforeUnmount(() => events.hotKeys.off(handleHotKey))
             <div class="fade-left"></div>
 
             <!-- Servers -->
-            <AddressBarServers />
+            <AddressBarServers v-if="activeCollection?.servers?.length" />
 
             <!-- Path + URL + env vars -->
             <CodeInput
@@ -179,7 +181,12 @@ onBeforeUnmount(() => events.hotKeys.off(handleHotKey))
               :emitOnBlur="false"
               importCurl
               :modelValue="activeRequest.path"
-              :placeholder="activeServer ? '' : 'Enter a URL or cURL command'"
+              :placeholder="
+                activeServer?.uid &&
+                activeCollection?.servers?.includes(activeServer.uid)
+                  ? ''
+                  : 'Enter a URL or cURL command'
+              "
               server
               @curl="$emit('importCurl', $event)"
               @submit="handleExecuteRequest"

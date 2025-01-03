@@ -3,7 +3,7 @@ import ViewLayoutCollapse from '@/components/ViewLayout/ViewLayoutCollapse.vue'
 import { useWorkspace } from '@/store'
 import { useActiveEntities } from '@/store/active-entities'
 import RequestTable from '@/views/Request/RequestSection/RequestTable.vue'
-import { ScalarButton } from '@scalar/components'
+import { ScalarButton, ScalarTooltip } from '@scalar/components'
 import {
   type RequestExample,
   requestExampleParametersSchema,
@@ -50,6 +50,8 @@ const updateRow = (rowIdx: number, field: 'key' | 'value', value: string) => {
   const currentParams = params.value
   if (currentParams.length > rowIdx) {
     const updatedParams = [...currentParams]
+    if (!updatedParams[rowIdx]) return
+
     updatedParams[rowIdx] = { ...updatedParams[rowIdx], [field]: value }
 
     /** enable row key or value is filled */
@@ -112,9 +114,7 @@ const deleteAllRows = () => {
   if (!activeRequest.value || !activeExample.value) return
 
   // filter out params that are enabled or required
-  const exampleParams = params.value.filter(
-    (param) => param.enabled || param.required,
-  )
+  const exampleParams = params.value.filter((param) => param.required)
 
   requestExampleMutators.edit(
     activeExample.value.uid,
@@ -135,7 +135,7 @@ function defaultRow() {
   } else if (params.value.length >= 1) {
     /** ensure we always have a trailing empty row */
     const lastParam = params.value[params.value.length - 1]
-    if (lastParam.key !== '' && lastParam.value !== '') {
+    if (lastParam && lastParam.key !== '' && lastParam.value !== '') {
       addRow()
     }
   }
@@ -163,13 +163,29 @@ watch(
     <template #actions>
       <div
         class="text-c-2 flex whitespace-nowrap opacity-0 group-hover/params:opacity-100 has-[:focus-visible]:opacity-100 request-meta-buttons">
-        <ScalarButton
-          class="px-1 transition-none"
-          size="sm"
-          variant="ghost"
-          @click.stop="deleteAllRows">
-          Clear<span class="sr-only">All {{ title }}</span>
-        </ScalarButton>
+        <!-- TODO fix this DOC-2740 -->
+        <!-- <ScalarTooltip
+          side="right"
+          :sideOffset="12">
+          <template #trigger>
+            <ScalarButton
+              class="px-1 transition-none"
+              size="sm"
+              variant="ghost"
+              @click.stop="deleteAllRows">
+              Clear
+              <span class="sr-only">All {{ title }}</span>
+            </ScalarButton>
+          </template>
+          <template #content>
+            <div
+              class="grid gap-1.5 pointer-events-none min-w-48 w-content shadow-lg rounded bg-b-1 z-context p-2 text-xxs leading-5 z-10 text-c-1">
+              <div class="flex items-center text-c-2">
+                <span>Clear optional parameters</span>
+              </div>
+            </div>
+          </template>
+        </ScalarTooltip> -->
       </div>
     </template>
     <div ref="tableWrapperRef">

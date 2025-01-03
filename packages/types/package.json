@@ -7,7 +7,7 @@
   "bugs": "https://github.com/scalar/scalar/issues/new/choose",
   "repository": {
     "type": "git",
-    "url": "https://github.com/scalar/scalar.git",
+    "url": "git+https://github.com/scalar/scalar.git",
     "directory": "packages/types"
   },
   "keywords": [
@@ -16,7 +16,7 @@
     "scalar",
     "references"
   ],
-  "version": "0.0.23",
+  "version": "0.0.25",
   "engines": {
     "node": ">=18"
   },
@@ -60,6 +60,7 @@
     "@unhead/schema": "^1.11.11"
   },
   "devDependencies": {
-    "@scalar/build-tooling": "workspace:*"
+    "@scalar/build-tooling": "workspace:*",
+    "@scalar/snippetz": "workspace:*"
   }
 }

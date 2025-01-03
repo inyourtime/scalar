@@ -7,8 +7,10 @@ import {
   createActiveEntitiesStore,
   createWorkspaceStore,
 } from '@scalar/api-client/store'
-import { addScalarClassesToHeadless } from '@scalar/components'
-import { ScalarErrorBoundary } from '@scalar/components'
+import {
+  ScalarErrorBoundary,
+  addScalarClassesToHeadless,
+} from '@scalar/components'
 import { defaultStateFactory } from '@scalar/oas-utils/helpers'
 import {
   type ThemeId,
@@ -97,6 +99,7 @@ const {
 } = useSidebar()
 
 const {
+  getReferenceHash,
   getPathRoutingId,
   getSectionId,
   getTagId,
@@ -104,6 +107,7 @@ const {
   isIntersectionEnabled,
   pathRouting,
   updateHash,
+  replaceUrlState,
 } = useNavState()
 
 pathRouting.value = props.configuration.pathRouting
@@ -150,9 +154,9 @@ onMounted(() => {
   }
 
   // This is what updates the hash ref from hash changes
-  window.onhashchange = () =>
-    scrollToSection(decodeURIComponent(window.location.hash.replace(/^#/, '')))
-
+  window.onhashchange = () => {
+    scrollToSection(getReferenceHash())
+  }
   // Handle back for path routing
   window.onpopstate = () =>
     pathRouting.value &&
@@ -171,8 +175,7 @@ const debouncedScroll = useDebounceFn((value) => {
       ? props.configuration.pathRouting.basePath
       : window.location.pathname
 
-    window.history.replaceState({}, '', basePath + window.location.search)
-    hash.value = ''
+    replaceUrlState('', basePath + window.location.search)
   }
 })
 
@@ -249,7 +252,7 @@ provideUseId(() => {
 // Create the workspace store and provide it
 const workspaceStore = createWorkspaceStore({
   isReadOnly: true,
-  proxyUrl: props.configuration.proxy,
+  proxyUrl: props.configuration.proxyUrl || props.configuration.proxy,
   themeId: props.configuration.theme,
   useLocalStorage: false,
   hideClientButton: props.configuration.hideClientButton,
@@ -258,11 +261,14 @@ const workspaceStore = createWorkspaceStore({
 watch(
   () => props.rawSpec,
   (spec) =>
+    spec &&
     workspaceStore.importSpecFile(spec, 'default', {
       shouldLoad: false,
+      documentUrl: props.configuration.spec?.url,
       setCollectionSecurity: true,
       ...props.configuration,
     }),
+  { immediate: true },
 )
 
 provide(WORKSPACE_SYMBOL, workspaceStore)
@@ -420,8 +426,6 @@ const themeStyleTag = computed(
           name="footer" />
       </div>
     </template>
-    <!-- REST API Client Overlay -->
-    <!-- Fonts are fetched by @scalar/api-reference already, we can safely set `withDefaultFonts: false` -->
     <ApiClientModal :configuration="configuration" />
   </div>
   <ScalarToasts />

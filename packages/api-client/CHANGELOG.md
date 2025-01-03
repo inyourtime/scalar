@@ -1,5 +1,186 @@
 # @scalar/api-client
 
+## 2.2.28
+
+### Patch Changes
+
+- 4f6ebab: fix: runtime error with radix tooltip
+- Updated dependencies [794ae62]
+  - @scalar/components@0.13.11
+  - @scalar/use-codemirror@0.11.55
+
+## 2.2.27
+
+### Patch Changes
+
+- 3156ecd: fix: revert migration change from earlier
+- Updated dependencies [3156ecd]
+  - @scalar/oas-utils@0.2.95
+  - @scalar/import@0.2.15
+  - @scalar/postman-to-openapi@0.1.18
+
+## 2.2.26
+
+### Patch Changes
+
+- Updated dependencies [a36fada]
+  - @scalar/oas-utils@0.2.94
+  - @scalar/import@0.2.14
+  - @scalar/postman-to-openapi@0.1.17
+
+## 2.2.25
+
+### Patch Changes
+
+- 00feb3e: fix: params not saving or sending
+
+## 2.2.24
+
+### Patch Changes
+
+- 6890d7e: style: updates address bar server ui for multi server type
+- ca2d98b: fix: sets active server on send request for non draft request only
+- 6890d7e: fix: updates selected server logic on collection server selection
+- Updated dependencies [ca2d98b]
+  - @scalar/oas-utils@0.2.93
+  - @scalar/import@0.2.13
+  - @scalar/postman-to-openapi@0.1.16
+
+## 2.2.23
+
+### Patch Changes
+
+- 02b4201: fix(api-client): strict TS config (enable noUncheckedIndexedAccess)
+- Updated dependencies [02b4201]
+  - @scalar/oas-utils@0.2.92
+  - @scalar/import@0.2.12
+  - @scalar/postman-to-openapi@0.1.15
+
+## 2.2.22
+
+### Patch Changes
+
+- 4619a8c: fix: showSidebar config option for client
+
+## 2.2.21
+
+### Patch Changes
+
+- 9b3a053: feat: adds collection to import curl modal
+- d4b17f5: feat: updates request params clear action
+- Updated dependencies [ec44fe1]
+- Updated dependencies [46ebb44]
+- Updated dependencies [ec44fe1]
+  - @scalar/use-codemirror@0.11.54
+  - @scalar/components@0.13.10
+
+## 2.2.20
+
+### Patch Changes
+
+- Updated dependencies [90529fc]
+  - @scalar/draggable@0.1.8
+
+## 2.2.19
+
+### Patch Changes
+
+- 53d99b7: style(api-client): add enviornment / workspace to sidebar
+
+## 2.2.18
+
+### Patch Changes
+
+- 3c7d7dd: fix: reverts sets server variables values in client
+- 33c8393: style: fixes spacing and padding inconcistensies
+- 66905d2: fix: adds active request safety check for request body
+- Updated dependencies [33c8393]
+- Updated dependencies [3791738]
+  - @scalar/components@0.13.9
+  - @scalar/openapi-parser@0.10.2
+  - @scalar/use-codemirror@0.11.53
+  - @scalar/import@0.2.11
+  - @scalar/oas-utils@0.2.91
+
+## 2.2.17
+
+### Patch Changes
+
+- c65f3fc: feat: make it work in SSG environments
+- Updated dependencies [6407b2b]
+- Updated dependencies [c65f3fc]
+- Updated dependencies [c65f3fc]
+  - @scalar/themes@0.9.58
+  - @scalar/use-hooks@0.1.11
+  - @scalar/components@0.13.8
+  - @scalar/oas-utils@0.2.91
+  - @scalar/use-codemirror@0.11.52
+  - @scalar/import@0.2.10
+  - @scalar/postman-to-openapi@0.1.14
+
+## 2.2.16
+
+### Patch Changes
+
+- 875a04a: fix: path params missing from client
+
+## 2.2.15
+
+### Patch Changes
+
+- Updated dependencies [c263aaf]
+- Updated dependencies [573d113]
+- Updated dependencies [c263aaf]
+  - @scalar/types@0.0.25
+  - @scalar/oas-utils@0.2.90
+  - @scalar/openapi-parser@0.10.1
+  - @scalar/themes@0.9.57
+  - @scalar/import@0.2.9
+  - @scalar/postman-to-openapi@0.1.13
+  - @scalar/components@0.13.7
+  - @scalar/use-hooks@0.1.10
+  - @scalar/use-codemirror@0.11.51
+
+## 2.2.14
+
+### Patch Changes
+
+- 984e394: fix: hides flow row for unique scheme flow
+- 40ec239: fix: updates address bar servers dropdown display logic
+
+## 2.2.13
+
+### Patch Changes
+
+- 23daedd: feat(components): create ScalarHeader component
+- Updated dependencies [23daedd]
+  - @scalar/components@0.13.6
+  - @scalar/themes@0.9.56
+  - @scalar/use-codemirror@0.11.50
+  - @scalar/oas-utils@0.2.89
+  - @scalar/use-hooks@0.1.9
+  - @scalar/import@0.2.8
+  - @scalar/postman-to-openapi@0.1.12
+
+## 2.2.12
+
+### Patch Changes
+
+- fbef0c3: fix: displays server path variables
+- fbef0c3: fix: sets server variables values in client
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+  - @scalar/openapi-parser@0.10.0
+  - @scalar/types@0.0.24
+  - @scalar/import@0.2.7
+  - @scalar/oas-utils@0.2.88
+  - @scalar/themes@0.9.55
+  - @scalar/postman-to-openapi@0.1.11
+  - @scalar/components@0.13.5
+  - @scalar/use-hooks@0.1.8
+  - @scalar/use-codemirror@0.11.49
+
 ## 2.2.11
 
 ### Patch Changes

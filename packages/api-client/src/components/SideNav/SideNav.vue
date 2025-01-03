@@ -15,8 +15,10 @@ const { layout } = useLayout()
 <template>
   <nav
     aria-label="App Navigation"
-    class="flex items-center justify-center sm:justify-between gap-1.5 app-drag-region"
-    :class="layout === 'web' ? 'border h-12' : 'sm:flex-col px-2 pb-2'"
+    class="flex items-center justify-center sm:justify-between gap-1.5 app-drag-region pt-2"
+    :class="
+      layout === 'web' ? 'border h-header !pt-0' : 'sm:flex-col px-2 pb-2'
+    "
     role="navigation">
     <SideNavGroup class="app-no-drag-region">
       <a
@@ -57,7 +59,7 @@ const { layout } = useLayout()
       </li>
       <li
         v-if="layout !== 'desktop'"
-        class="hidden sm:ml-2 sm:flex items-center justify-center">
+        class="hidden sm:ml-1.5 sm:flex items-center justify-center">
         <DownloadAppButton />
       </li>
     </SideNavGroup>

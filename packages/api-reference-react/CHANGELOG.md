@@ -1,5 +1,145 @@
 # @scalar/api-reference-react
 
+## 0.4.8
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.99
+
+## 0.4.7
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.98
+
+## 0.4.6
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.97
+
+## 0.4.5
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.96
+
+## 0.4.4
+
+### Patch Changes
+
+- Updated dependencies [6890d7e]
+- Updated dependencies [bc8f883]
+  - @scalar/api-reference@1.25.95
+
+## 0.4.3
+
+### Patch Changes
+
+- Updated dependencies [02b4201]
+- Updated dependencies [9cf76af]
+  - @scalar/api-reference@1.25.94
+
+## 0.4.2
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.93
+
+## 0.4.1
+
+### Patch Changes
+
+- Updated dependencies [fd80d43]
+- Updated dependencies [47d1d82]
+  - @scalar/api-reference@1.25.92
+
+## 0.4.0
+
+### Minor Changes
+
+- 63350ce: chore: react 19 upgrade minor bump
+
+### Patch Changes
+
+- 90529fc: chore: upgrade to react 19
+  - @scalar/api-reference@1.25.91
+
+## 0.3.166
+
+### Patch Changes
+
+- 0dfab46: chore: remove api-reference-react peerDependencies
+  - @scalar/api-reference@1.25.90
+
+## 0.3.165
+
+### Patch Changes
+
+- Updated dependencies [3c7d7dd]
+  - @scalar/api-reference@1.25.89
+
+## 0.3.164
+
+### Patch Changes
+
+- Updated dependencies [6407b2b]
+- Updated dependencies [c65f3fc]
+- Updated dependencies [c65f3fc]
+- Updated dependencies [c65f3fc]
+  - @scalar/api-reference@1.25.88
+
+## 0.3.163
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.87
+
+## 0.3.162
+
+### Patch Changes
+
+- Updated dependencies [c263aaf]
+  - @scalar/api-reference@1.25.86
+
+## 0.3.161
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.85
+
+## 0.3.160
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.84
+
+## 0.3.159
+
+### Patch Changes
+
+- Updated dependencies [7a2b32d]
+- Updated dependencies [c78beda]
+  - @scalar/api-reference@1.25.83
+
+## 0.3.158
+
+### Patch Changes
+
+- Updated dependencies [bd84466]
+  - @scalar/api-reference@1.25.82
+
+## 0.3.157
+
+### Patch Changes
+
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+  - @scalar/api-reference@1.25.81
+
 ## 0.3.156
 
 ### Patch Changes

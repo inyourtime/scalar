@@ -58,10 +58,12 @@ type CreateWorkspaceStoreOptions = {
   useLocalStorage: boolean
   /** Puts the client into read only mode, usually reservered for the modal */
   isReadOnly: boolean
-  proxyUrl: ReferenceConfiguration['proxyUrl']
+  /** Should be renamed to theme to match the references config */
   themeId: ReferenceConfiguration['theme']
-  hideClientButton: ReferenceConfiguration['hideClientButton']
-}
+} & Pick<
+  ReferenceConfiguration,
+  'proxyUrl' | 'showSidebar' | 'hideClientButton'
+>
 
 /**
  /**
@@ -73,6 +75,7 @@ type CreateWorkspaceStoreOptions = {
 export const createWorkspaceStore = ({
   useLocalStorage = true,
   isReadOnly = false,
+  showSidebar = true,
   proxyUrl,
   themeId,
   hideClientButton,
@@ -144,12 +147,17 @@ export const createWorkspaceStore = ({
     importSpecFileFactory(storeContext)
 
   /** Helper function to manage the sidebar width */
-  const sidebarWidth = ref(localStorage.getItem('sidebarWidth') || '280px')
+  const sidebarWidth = ref(
+    (useLocalStorage ? localStorage?.getItem('sidebarWidth') : undefined) ||
+      '280px',
+  )
 
   // Set the sidebar width
   const setSidebarWidth = (width: string) => {
     sidebarWidth.value = width
-    localStorage.setItem('sidebarWidth', width)
+    if (useLocalStorage) {
+      localStorage?.setItem('sidebarWidth', width)
+    }
   }
 
   /** This state is to be used by the API Client Modal component to control the modal */
@@ -162,19 +170,21 @@ export const createWorkspaceStore = ({
   })
 
   /**
-   * For development, expose this method for debugging our data stores
+   * For debugging purposes, expose this method for dumping the data stores
    */
-  window.dataDump = () => ({
-    collections: toRaw(collections),
-    cookies: toRaw(cookies),
-    environments: toRaw(environments),
-    requestExamples: toRaw(requestExamples),
-    requests: toRaw(requests),
-    securitySchemes: toRaw(securitySchemes),
-    servers: toRaw(servers),
-    tags: toRaw(tags),
-    workspaces: toRaw(workspaces),
-  })
+  if (typeof window !== 'undefined') {
+    window.dataDump = () => ({
+      collections: toRaw(collections),
+      cookies: toRaw(cookies),
+      environments: toRaw(environments),
+      requestExamples: toRaw(requestExamples),
+      requests: toRaw(requests),
+      securitySchemes: toRaw(securitySchemes),
+      servers: toRaw(servers),
+      tags: toRaw(tags),
+      workspaces: toRaw(workspaces),
+    })
+  }
 
   // ---------------------------------------------------------------------------
   // Events Busses
@@ -194,11 +204,15 @@ export const createWorkspaceStore = ({
     securitySchemes,
     modalState,
     events,
-    proxyUrl,
     sidebarWidth,
     setSidebarWidth,
+    proxyUrl,
+    // ---------------------------------------------------------------------------
+    // CONFIGURATION "PROPS"
+    // TODO: move these to their own store
     isReadOnly,
     hideClientButton,
+    showSidebar,
     // ---------------------------------------------------------------------------
     // METHODS
     importSpecFile,

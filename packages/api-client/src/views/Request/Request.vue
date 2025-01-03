@@ -2,6 +2,7 @@
 import ImportCurlModal from '@/components/ImportCurl/ImportCurlModal.vue'
 import ViewLayout from '@/components/ViewLayout/ViewLayout.vue'
 import ViewLayoutContent from '@/components/ViewLayout/ViewLayoutContent.vue'
+import { useLayout } from '@/hooks'
 import { ERRORS } from '@/libs'
 import { importCurlCommand } from '@/libs/importers/curl'
 import { createRequestOperation } from '@/libs/send-request'
@@ -12,6 +13,7 @@ import RequestSubpageHeader from '@/views/Request/RequestSubpageHeader.vue'
 import ResponseSection from '@/views/Request/ResponseSection/ResponseSection.vue'
 import { useOpenApiWatcher } from '@/views/Request/hooks/useOpenApiWatcher'
 import type { RequestPayload } from '@scalar/oas-utils/entities/spec'
+import { isDefined } from '@scalar/oas-utils/helpers'
 import { safeJSON } from '@scalar/object-utils/parse'
 import { useBreakpoints } from '@scalar/use-hooks/useBreakpoints'
 import { useToasts } from '@scalar/use-toasts'
@@ -23,9 +25,9 @@ import RequestSidebar from './RequestSidebar.vue'
 defineEmits<{
   (e: 'newTab', item: { name: string; uid: string }): void
 }>()
-
 const workspaceContext = useWorkspace()
 const { toast } = useToasts()
+const { layout } = useLayout()
 const {
   activeCollection,
   activeExample,
@@ -33,12 +35,14 @@ const {
   activeRequest,
   activeWorkspace,
   activeServer,
+  activeWorkspaceCollections,
 } = useActiveEntities()
 const {
   cookies,
   isReadOnly,
   modalState,
   requestHistory,
+  showSidebar,
   securitySchemes,
   requestMutators,
   serverMutators,
@@ -46,19 +50,25 @@ const {
   events,
 } = workspaceContext
 
-const showSideBar = ref(!isReadOnly)
+// Extend the RequestPayload type to include url
+type ExtendedRequestPayload = RequestPayload & {
+  url?: string
+}
+
+const isSidebarOpen = ref(!isReadOnly)
 const requestAbortController = ref<AbortController>()
-const parsedCurl = ref<RequestPayload>()
+const parsedCurl = ref<ExtendedRequestPayload>()
 const selectedServerUid = ref('')
 const router = useRouter()
 
 const activeHistoryEntry = computed(() =>
   requestHistory.findLast((r) => r.request.uid === activeExample.value?.uid),
 )
-
 /** Show / hide the sidebar when we resize the screen */
 const { mediaQueries } = useBreakpoints()
-watch(mediaQueries.md, (isMedium) => (showSideBar.value = isMedium))
+watch(mediaQueries.xl, (isXL) => (isSidebarOpen.value = isXL), {
+  immediate: layout !== 'modal',
+})
 
 /**
  * Selected scheme UIDs
@@ -93,18 +103,26 @@ const executeRequest = async () => {
   const environment =
     e.error || typeof e.data !== 'object' ? {} : (e.data ?? {})
 
-  const globalCookies = activeWorkspace.value.cookies.map((c) => cookies[c])
+  const globalCookies =
+    activeWorkspace.value?.cookies.map((c) => cookies[c]).filter(isDefined) ??
+    []
+
+  // Sets server to non drafts request only
+  const server =
+    activeCollection.value?.info?.title === 'Drafts'
+      ? undefined
+      : activeServer.value
 
   const [error, requestOperation] = createRequestOperation({
     request: activeRequest.value,
     example: activeExample.value,
     selectedSecuritySchemeUids: selectedSecuritySchemeUids.value,
-    proxyUrl: activeWorkspace.value.proxyUrl ?? '',
+    proxyUrl: activeWorkspace.value?.proxyUrl ?? '',
     environment,
     globalCookies,
     status: events.requestStatus,
     securitySchemes: securitySchemes,
-    server: activeServer.value,
+    server,
   })
 
   // Error from createRequestOperation
@@ -139,10 +157,25 @@ useOpenApiWatcher()
  */
 onBeforeUnmount(() => events.executeRequest.off(executeRequest))
 
-function createRequestFromCurl({ requestName }: { requestName: string }) {
+function createRequestFromCurl({
+  requestName,
+  collectionUid,
+}: {
+  requestName: string
+  collectionUid: string
+}) {
   if (!parsedCurl.value) return
 
-  if (parsedCurl.value.servers) {
+  const collection = activeWorkspaceCollections.value.find(
+    (c) => c.uid === collectionUid,
+  )
+
+  if (!collection) return
+
+  const isDrafts = collection?.info?.title === 'Drafts'
+
+  // Prevent adding servers to drafts
+  if (!isDrafts && parsedCurl.value.servers) {
     // Find existing server to avoid duplication
     const existingServer = Object.values(servers).find(
       (s) => s.url === parsedCurl?.value?.servers?.[0],
@@ -152,24 +185,25 @@ function createRequestFromCurl({ requestName }: { requestName: string }) {
     } else {
       selectedServerUid.value = serverMutators.add(
         { url: parsedCurl.value.servers[0] },
-        activeWorkspace.value.collections[0],
+        collection.uid,
       ).uid
     }
   }
 
+  // Add the request and use the url if it's a draft as a path
   const newRequest = requestMutators.add(
     {
       summary: requestName,
-      path: parsedCurl?.value?.path,
+      path: isDrafts ? parsedCurl?.value?.url : parsedCurl?.value?.path,
       method: parsedCurl?.value?.method,
       parameters: parsedCurl?.value?.parameters,
-      selectedServerUid: selectedServerUid.value,
+      selectedServerUid: isDrafts ? undefined : selectedServerUid.value,
       requestBody: parsedCurl?.value?.requestBody,
     },
-    activeWorkspace.value.collections[0],
+    collection.uid,
   )
 
-  if (newRequest) {
+  if (newRequest && activeWorkspace.value?.uid) {
     router.push(
       `/workspace/${activeWorkspace.value.uid}/request/${newRequest.uid}`,
     )
@@ -188,30 +222,34 @@ function handleCurlImport(curl: string) {
     :class="{
       '!mr-0 !mb-0 !border-0': isReadOnly,
     }">
-    <RequestSubpageHeader
-      v-model="showSideBar"
-      :isReadonly="isReadOnly"
-      @hideModal="() => modalState.hide()"
-      @importCurl="handleCurlImport" />
-    <ViewLayout>
+    <div class="flex h-full">
       <RequestSidebar
-        :isReadonly="isReadOnly"
-        :showSidebar="showSideBar"
+        v-if="showSidebar"
+        :isSidebarOpen="isSidebarOpen"
         @newTab="$emit('newTab', $event)"
-        @update:showSidebar="(show) => (showSideBar = show)" />
-      <!-- TODO possible loading state -->
-      <ViewLayoutContent
-        v-if="activeExample"
-        class="flex-1"
-        :class="[showSideBar ? 'sidebar-active-hide-layout' : '']">
-        <RequestSection
-          :selectedSecuritySchemeUids="selectedSecuritySchemeUids" />
-        <ResponseSection :response="activeHistoryEntry?.response" />
-      </ViewLayoutContent>
-    </ViewLayout>
+        @update:isSidebarOpen="(val) => (isSidebarOpen = val)" />
+      <div class="flex flex-1 flex-col h-full">
+        <RequestSubpageHeader
+          v-model="isSidebarOpen"
+          @hideModal="() => modalState.hide()"
+          @importCurl="handleCurlImport" />
+        <ViewLayout>
+          <!-- TODO possible loading state -->
+          <ViewLayoutContent
+            v-if="activeExample"
+            class="flex-1"
+            :class="[isSidebarOpen ? 'sidebar-active-hide-layout' : '']">
+            <RequestSection
+              :selectedSecuritySchemeUids="selectedSecuritySchemeUids" />
+            <ResponseSection :response="activeHistoryEntry?.response" />
+          </ViewLayoutContent>
+        </ViewLayout>
+      </div>
+    </div>
   </div>
   <ImportCurlModal
     v-if="parsedCurl"
+    :collectionUid="activeCollection?.uid ?? ''"
     :parsedCurl="parsedCurl"
     :state="modalState"
     @close="modalState.hide()"

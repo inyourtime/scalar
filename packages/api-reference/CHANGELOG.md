@@ -1,5 +1,206 @@
 # @scalar/api-reference
 
+## 1.25.99
+
+### Patch Changes
+
+- Updated dependencies [4f6ebab]
+- Updated dependencies [794ae62]
+  - @scalar/api-client@2.2.28
+  - @scalar/components@0.13.11
+
+## 1.25.98
+
+### Patch Changes
+
+- Updated dependencies [3156ecd]
+  - @scalar/api-client@2.2.27
+  - @scalar/oas-utils@0.2.95
+
+## 1.25.97
+
+### Patch Changes
+
+- Updated dependencies [a36fada]
+  - @scalar/oas-utils@0.2.94
+  - @scalar/api-client@2.2.26
+
+## 1.25.96
+
+### Patch Changes
+
+- Updated dependencies [00feb3e]
+  - @scalar/api-client@2.2.25
+
+## 1.25.95
+
+### Patch Changes
+
+- 6890d7e: fix: fix(api-reference): sets request server in request example hook
+- bc8f883: fix: ensure spec exists before trying to create store
+- Updated dependencies [6890d7e]
+- Updated dependencies [ca2d98b]
+- Updated dependencies [ca2d98b]
+- Updated dependencies [6890d7e]
+  - @scalar/api-client@2.2.24
+  - @scalar/oas-utils@0.2.93
+
+## 1.25.94
+
+### Patch Changes
+
+- 02b4201: fix(api-client): strict TS config (enable noUncheckedIndexedAccess)
+- 9cf76af: fix: add immediete to load the workspace store
+- Updated dependencies [02b4201]
+  - @scalar/api-client@2.2.23
+  - @scalar/oas-utils@0.2.92
+
+## 1.25.93
+
+### Patch Changes
+
+- Updated dependencies [4619a8c]
+  - @scalar/api-client@2.2.22
+
+## 1.25.92
+
+### Patch Changes
+
+- fd80d43: fix(api-reference): correct `hash.value` encoding to ensure scrolling
+- 47d1d82: feat: add debounce to client config update to improve perf
+- Updated dependencies [9b3a053]
+- Updated dependencies [46ebb44]
+- Updated dependencies [d4b17f5]
+  - @scalar/api-client@2.2.21
+  - @scalar/components@0.13.10
+
+## 1.25.91
+
+### Patch Changes
+
+- @scalar/api-client@2.2.20
+
+## 1.25.90
+
+### Patch Changes
+
+- Updated dependencies [53d99b7]
+  - @scalar/api-client@2.2.19
+
+## 1.25.89
+
+### Patch Changes
+
+- 3c7d7dd: fix: reverts sets server variables values in client
+- Updated dependencies [3c7d7dd]
+- Updated dependencies [33c8393]
+- Updated dependencies [3791738]
+- Updated dependencies [33c8393]
+- Updated dependencies [66905d2]
+  - @scalar/api-client@2.2.18
+  - @scalar/components@0.13.9
+  - @scalar/openapi-parser@0.10.2
+  - @scalar/oas-utils@0.2.91
+
+## 1.25.88
+
+### Patch Changes
+
+- 6407b2b: feat(api-reference): extend font weights for links and sidebar items
+- c65f3fc: fix: workspace store uses deprecated proxy attribute
+- c65f3fc: feat: make it work in SSG environments
+- c65f3fc: chore: remove RenderedReference export
+- Updated dependencies [6407b2b]
+- Updated dependencies [c65f3fc]
+- Updated dependencies [c65f3fc]
+  - @scalar/code-highlight@0.0.19
+  - @scalar/themes@0.9.58
+  - @scalar/api-client@2.2.17
+  - @scalar/use-hooks@0.1.11
+  - @scalar/components@0.13.8
+  - @scalar/oas-utils@0.2.91
+
+## 1.25.87
+
+### Patch Changes
+
+- Updated dependencies [875a04a]
+  - @scalar/api-client@2.2.16
+
+## 1.25.86
+
+### Patch Changes
+
+- c263aaf: feat: better deal with empty OpenAPI documents
+- Updated dependencies [c263aaf]
+- Updated dependencies [573d113]
+- Updated dependencies [c263aaf]
+  - @scalar/types@0.0.25
+  - @scalar/oas-utils@0.2.90
+  - @scalar/openapi-parser@0.10.1
+  - @scalar/api-client@2.2.15
+  - @scalar/themes@0.9.57
+  - @scalar/code-highlight@0.0.18
+  - @scalar/components@0.13.7
+  - @scalar/use-hooks@0.1.10
+
+## 1.25.85
+
+### Patch Changes
+
+- Updated dependencies [984e394]
+- Updated dependencies [40ec239]
+  - @scalar/api-client@2.2.14
+
+## 1.25.84
+
+### Patch Changes
+
+- Updated dependencies [23daedd]
+  - @scalar/api-client@2.2.13
+  - @scalar/components@0.13.6
+  - @scalar/themes@0.9.56
+  - @scalar/code-highlight@0.0.18
+  - @scalar/oas-utils@0.2.89
+  - @scalar/use-hooks@0.1.9
+
+## 1.25.83
+
+### Patch Changes
+
+- 7a2b32d: fix: hides dark mode toggle only if configured
+- c78beda: fix: missing open in api client button
+
+## 1.25.82
+
+### Patch Changes
+
+- bd84466: Removes hardcoded test prefix
+
+## 1.25.81
+
+### Patch Changes
+
+- fbef0c3: feat: increases visible enum value item number
+- fbef0c3: Adds support for hash prefixing. Requires manual control of useNavState.
+- fbef0c3: fix(api-reference): correct anchor id encoding to ensure correct page scrolling #4173
+- fbef0c3: fix: sets server variables values in client
+- fbef0c3: chore: remove httpsnippet-lite
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+  - @scalar/openapi-parser@0.10.0
+  - @scalar/api-client@2.2.12
+  - @scalar/snippetz@0.2.9
+  - @scalar/types@0.0.24
+  - @scalar/oas-utils@0.2.88
+  - @scalar/themes@0.9.55
+  - @scalar/code-highlight@0.0.18
+  - @scalar/components@0.13.5
+  - @scalar/use-hooks@0.1.8
+
 ## 1.25.80
 
 ### Patch Changes

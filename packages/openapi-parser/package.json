@@ -7,7 +7,7 @@
   "bugs": "https://github.com/scalar/scalar/issues/new/choose",
   "repository": {
     "type": "git",
-    "url": "https://github.com/scalar/scalar.git",
+    "url": "git+https://github.com/scalar/scalar.git",
     "directory": "packages/openapi-parser"
   },
   "keywords": [
@@ -17,7 +17,7 @@
     "parser",
     "typescript"
   ],
-  "version": "0.9.0",
+  "version": "0.10.2",
   "engines": {
     "node": ">=18"
   },
@@ -72,7 +72,8 @@
     "@google-cloud/storage": "^7.12.1",
     "@scalar/build-tooling": "workspace:*",
     "@scalar/openapi-types": "workspace:*",
-    "@types/node": "^20.14.10",
+    "@scalar/types": "workspace:*",
+    "@types/node": "^20.17.10",
     "glob": "^10.3.10",
     "json-to-ast": "^2.1.0",
     "just-diff": "^6.0.2",

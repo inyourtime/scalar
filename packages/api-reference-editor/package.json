@@ -7,13 +7,13 @@
   "bugs": "https://github.com/scalar/scalar/issues/new/choose",
   "repository": {
     "type": "git",
-    "url": "https://github.com/scalar/scalar.git",
+    "url": "git+https://github.com/scalar/scalar.git",
     "directory": "packages/api-reference-editor"
   },
   "keywords": [
     "editor openapi swagger api-reference"
   ],
-  "version": "0.1.139",
+  "version": "0.1.158",
   "engines": {
     "node": ">=18"
   },

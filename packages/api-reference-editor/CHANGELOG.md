@@ -1,5 +1,201 @@
 # @scalar/api-reference-editor
 
+## 0.1.158
+
+### Patch Changes
+
+- Updated dependencies [4f6ebab]
+  - @scalar/api-client@2.2.28
+  - @scalar/api-reference@1.25.99
+  - @scalar/use-codemirror@0.11.55
+
+## 0.1.157
+
+### Patch Changes
+
+- Updated dependencies [3156ecd]
+  - @scalar/api-client@2.2.27
+  - @scalar/oas-utils@0.2.95
+  - @scalar/api-reference@1.25.98
+
+## 0.1.156
+
+### Patch Changes
+
+- Updated dependencies [a36fada]
+  - @scalar/oas-utils@0.2.94
+  - @scalar/api-client@2.2.26
+  - @scalar/api-reference@1.25.97
+
+## 0.1.155
+
+### Patch Changes
+
+- Updated dependencies [00feb3e]
+  - @scalar/api-client@2.2.25
+  - @scalar/api-reference@1.25.96
+
+## 0.1.154
+
+### Patch Changes
+
+- Updated dependencies [6890d7e]
+- Updated dependencies [ca2d98b]
+- Updated dependencies [ca2d98b]
+- Updated dependencies [6890d7e]
+- Updated dependencies [6890d7e]
+- Updated dependencies [bc8f883]
+  - @scalar/api-client@2.2.24
+  - @scalar/oas-utils@0.2.93
+  - @scalar/api-reference@1.25.95
+
+## 0.1.153
+
+### Patch Changes
+
+- Updated dependencies [02b4201]
+- Updated dependencies [9cf76af]
+  - @scalar/api-reference@1.25.94
+  - @scalar/api-client@2.2.23
+  - @scalar/oas-utils@0.2.92
+
+## 0.1.152
+
+### Patch Changes
+
+- Updated dependencies [4619a8c]
+  - @scalar/api-client@2.2.22
+  - @scalar/api-reference@1.25.93
+
+## 0.1.151
+
+### Patch Changes
+
+- Updated dependencies [9b3a053]
+- Updated dependencies [ec44fe1]
+- Updated dependencies [d4b17f5]
+- Updated dependencies [ec44fe1]
+- Updated dependencies [fd80d43]
+- Updated dependencies [47d1d82]
+  - @scalar/api-client@2.2.21
+  - @scalar/use-codemirror@0.11.54
+  - @scalar/api-reference@1.25.92
+
+## 0.1.150
+
+### Patch Changes
+
+- @scalar/api-client@2.2.20
+- @scalar/api-reference@1.25.91
+
+## 0.1.149
+
+### Patch Changes
+
+- Updated dependencies [53d99b7]
+  - @scalar/api-client@2.2.19
+  - @scalar/api-reference@1.25.90
+
+## 0.1.148
+
+### Patch Changes
+
+- Updated dependencies [3c7d7dd]
+- Updated dependencies [33c8393]
+- Updated dependencies [66905d2]
+  - @scalar/api-reference@1.25.89
+  - @scalar/api-client@2.2.18
+  - @scalar/use-codemirror@0.11.53
+  - @scalar/oas-utils@0.2.91
+
+## 0.1.147
+
+### Patch Changes
+
+- Updated dependencies [6407b2b]
+- Updated dependencies [c65f3fc]
+- Updated dependencies [c65f3fc]
+- Updated dependencies [c65f3fc]
+  - @scalar/api-reference@1.25.88
+  - @scalar/api-client@2.2.17
+  - @scalar/use-hooks@0.1.11
+  - @scalar/oas-utils@0.2.91
+  - @scalar/use-codemirror@0.11.52
+
+## 0.1.146
+
+### Patch Changes
+
+- Updated dependencies [875a04a]
+  - @scalar/api-client@2.2.16
+  - @scalar/api-reference@1.25.87
+
+## 0.1.145
+
+### Patch Changes
+
+- Updated dependencies [c263aaf]
+- Updated dependencies [573d113]
+- Updated dependencies [c263aaf]
+  - @scalar/types@0.0.25
+  - @scalar/oas-utils@0.2.90
+  - @scalar/api-reference@1.25.86
+  - @scalar/api-client@2.2.15
+  - @scalar/use-hooks@0.1.10
+  - @scalar/use-codemirror@0.11.51
+
+## 0.1.144
+
+### Patch Changes
+
+- Updated dependencies [984e394]
+- Updated dependencies [40ec239]
+  - @scalar/api-client@2.2.14
+  - @scalar/api-reference@1.25.85
+
+## 0.1.143
+
+### Patch Changes
+
+- Updated dependencies [23daedd]
+  - @scalar/api-client@2.2.13
+  - @scalar/api-reference@1.25.84
+  - @scalar/use-codemirror@0.11.50
+  - @scalar/oas-utils@0.2.89
+  - @scalar/use-hooks@0.1.9
+
+## 0.1.142
+
+### Patch Changes
+
+- Updated dependencies [7a2b32d]
+- Updated dependencies [c78beda]
+  - @scalar/api-reference@1.25.83
+
+## 0.1.141
+
+### Patch Changes
+
+- Updated dependencies [bd84466]
+  - @scalar/api-reference@1.25.82
+
+## 0.1.140
+
+### Patch Changes
+
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+  - @scalar/api-reference@1.25.81
+  - @scalar/api-client@2.2.12
+  - @scalar/types@0.0.24
+  - @scalar/oas-utils@0.2.88
+  - @scalar/use-hooks@0.1.8
+  - @scalar/use-codemirror@0.11.49
+
 ## 0.1.139
 
 ### Patch Changes

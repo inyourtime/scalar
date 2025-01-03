@@ -22,10 +22,15 @@ const requestServerOptions = computed(() =>
 )
 
 const collectionServerOptions = computed(() =>
-  activeCollection.value?.servers?.map((serverUid: string) => ({
-    id: serverUid,
-    label: servers[serverUid]?.url ?? 'Unknown server',
-  })),
+  // Filters out servers already present in the request
+  activeCollection.value?.servers
+    ?.filter(
+      (serverUid: string) => !activeRequest.value?.servers?.includes(serverUid),
+    )
+    .map((serverUid: string) => ({
+      id: serverUid,
+      label: servers[serverUid]?.url ?? 'Unknown server',
+    })),
 )
 
 /** If we have both request and collection servers we show the labels */
@@ -39,11 +44,11 @@ watch([activeCollection, activeRequest], ([collection, request]) => {
   if (!collection || collection.selectedServerUid || request?.selectedServerUid)
     return
 
-  collectionMutators.edit(
-    collection.uid,
-    'selectedServerUid',
-    collection.servers[0],
-  )
+  const firstServer = collection.servers?.[0]
+
+  if (firstServer) {
+    collectionMutators.edit(collection.uid, 'selectedServerUid', firstServer)
+  }
 })
 
 /** Add server */
@@ -61,10 +66,6 @@ const serverUrlWithoutTrailingSlash = computed(() => {
 </script>
 <template>
   <ScalarDropdown
-    v-if="
-      (requestServerOptions && requestServerOptions?.length > 1) ||
-      (collectionServerOptions && collectionServerOptions?.length > 1)
-    "
     class="w-max"
     teleport>
     <button
@@ -77,8 +78,8 @@ const serverUrlWithoutTrailingSlash = computed(() => {
       <!-- Request -->
       <div
         v-if="showDropdownLabels"
-        class="text-xxs text-c-2 ml-8">
-        Request Servers
+        class="text-xxs text-c-2 px-2.5 py-1">
+        Request
       </div>
       <AddressBarServerItem
         v-for="serverOption in requestServerOptions"
@@ -88,7 +89,7 @@ const serverUrlWithoutTrailingSlash = computed(() => {
 
       <template v-if="showDropdownLabels">
         <ScalarDropdownDivider />
-        <div class="text-xxs text-c-2 ml-8">Collection Servers</div>
+        <div class="text-xxs text-c-2 px-2.5 py-1">Collection</div>
       </template>
 
       <!-- Collection -->
@@ -115,9 +116,4 @@ const serverUrlWithoutTrailingSlash = computed(() => {
       </template>
     </template>
   </ScalarDropdown>
-  <div
-    v-else-if="serverUrlWithoutTrailingSlash"
-    class="flex whitespace-nowrap items-center font-code lg:text-sm text-xs">
-    {{ serverUrlWithoutTrailingSlash }}
-  </div>
 </template>

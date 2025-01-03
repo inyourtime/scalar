@@ -1,5 +1,198 @@
 # @scalar/play-button
 
+## 0.2.175
+
+### Patch Changes
+
+- Updated dependencies [4f6ebab]
+  - @scalar/api-client@2.2.28
+  - @scalar/api-reference@1.25.99
+
+## 0.2.174
+
+### Patch Changes
+
+- Updated dependencies [3156ecd]
+  - @scalar/api-client@2.2.27
+  - @scalar/oas-utils@0.2.95
+  - @scalar/api-reference@1.25.98
+
+## 0.2.173
+
+### Patch Changes
+
+- Updated dependencies [a36fada]
+  - @scalar/oas-utils@0.2.94
+  - @scalar/api-client@2.2.26
+  - @scalar/api-reference@1.25.97
+
+## 0.2.172
+
+### Patch Changes
+
+- Updated dependencies [00feb3e]
+  - @scalar/api-client@2.2.25
+  - @scalar/api-reference@1.25.96
+
+## 0.2.171
+
+### Patch Changes
+
+- Updated dependencies [6890d7e]
+- Updated dependencies [ca2d98b]
+- Updated dependencies [ca2d98b]
+- Updated dependencies [6890d7e]
+- Updated dependencies [6890d7e]
+- Updated dependencies [bc8f883]
+  - @scalar/api-client@2.2.24
+  - @scalar/oas-utils@0.2.93
+  - @scalar/api-reference@1.25.95
+
+## 0.2.170
+
+### Patch Changes
+
+- Updated dependencies [02b4201]
+- Updated dependencies [9cf76af]
+  - @scalar/api-reference@1.25.94
+  - @scalar/api-client@2.2.23
+  - @scalar/oas-utils@0.2.92
+
+## 0.2.169
+
+### Patch Changes
+
+- Updated dependencies [4619a8c]
+  - @scalar/api-client@2.2.22
+  - @scalar/api-reference@1.25.93
+
+## 0.2.168
+
+### Patch Changes
+
+- Updated dependencies [9b3a053]
+- Updated dependencies [d4b17f5]
+- Updated dependencies [fd80d43]
+- Updated dependencies [47d1d82]
+  - @scalar/api-client@2.2.21
+  - @scalar/api-reference@1.25.92
+
+## 0.2.167
+
+### Patch Changes
+
+- @scalar/api-client@2.2.20
+- @scalar/api-reference@1.25.91
+
+## 0.2.166
+
+### Patch Changes
+
+- Updated dependencies [53d99b7]
+  - @scalar/api-client@2.2.19
+  - @scalar/api-reference@1.25.90
+
+## 0.2.165
+
+### Patch Changes
+
+- Updated dependencies [3c7d7dd]
+- Updated dependencies [3791738]
+- Updated dependencies [33c8393]
+- Updated dependencies [66905d2]
+  - @scalar/api-reference@1.25.89
+  - @scalar/api-client@2.2.18
+  - @scalar/openapi-parser@0.10.2
+  - @scalar/oas-utils@0.2.91
+
+## 0.2.164
+
+### Patch Changes
+
+- Updated dependencies [6407b2b]
+- Updated dependencies [c65f3fc]
+- Updated dependencies [c65f3fc]
+- Updated dependencies [c65f3fc]
+  - @scalar/api-reference@1.25.88
+  - @scalar/themes@0.9.58
+  - @scalar/api-client@2.2.17
+  - @scalar/oas-utils@0.2.91
+
+## 0.2.163
+
+### Patch Changes
+
+- Updated dependencies [875a04a]
+  - @scalar/api-client@2.2.16
+  - @scalar/api-reference@1.25.87
+
+## 0.2.162
+
+### Patch Changes
+
+- Updated dependencies [c263aaf]
+- Updated dependencies [573d113]
+- Updated dependencies [c263aaf]
+  - @scalar/types@0.0.25
+  - @scalar/oas-utils@0.2.90
+  - @scalar/openapi-parser@0.10.1
+  - @scalar/api-reference@1.25.86
+  - @scalar/api-client@2.2.15
+  - @scalar/themes@0.9.57
+
+## 0.2.161
+
+### Patch Changes
+
+- Updated dependencies [984e394]
+- Updated dependencies [40ec239]
+  - @scalar/api-client@2.2.14
+  - @scalar/api-reference@1.25.85
+
+## 0.2.160
+
+### Patch Changes
+
+- Updated dependencies [23daedd]
+  - @scalar/api-client@2.2.13
+  - @scalar/themes@0.9.56
+  - @scalar/api-reference@1.25.84
+  - @scalar/oas-utils@0.2.89
+
+## 0.2.159
+
+### Patch Changes
+
+- Updated dependencies [7a2b32d]
+- Updated dependencies [c78beda]
+  - @scalar/api-reference@1.25.83
+
+## 0.2.158
+
+### Patch Changes
+
+- Updated dependencies [bd84466]
+  - @scalar/api-reference@1.25.82
+
+## 0.2.157
+
+### Patch Changes
+
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+- Updated dependencies [fbef0c3]
+  - @scalar/openapi-parser@0.10.0
+  - @scalar/api-reference@1.25.81
+  - @scalar/api-client@2.2.12
+  - @scalar/types@0.0.24
+  - @scalar/oas-utils@0.2.88
+  - @scalar/themes@0.9.55
+
 ## 0.2.156
 
 ### Patch Changes

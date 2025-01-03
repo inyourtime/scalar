@@ -6,10 +6,10 @@
   "bugs": "https://github.com/scalar/scalar/issues/new/choose",
   "repository": {
     "type": "git",
-    "url": "https://github.com/scalar/scalar.git",
+    "url": "git+https://github.com/scalar/scalar.git",
     "directory": "packages/snippetz"
   },
-  "version": "0.2.8",
+  "version": "0.2.9",
   "engines": {
     "node": ">=18"
   },
@@ -30,6 +30,16 @@
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./utils": {
+      "import": "./dist/utils/index.js",
+      "types": "./dist/utils/index.d.ts",
+      "default": "./dist/utils/index.js"
+    },
+    "./types": {
+      "import": "./dist/types/index.js",
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/types/index.js"
     },
     "./plugins/swift/nsurlsession": {
       "import": "./dist/plugins/swift/nsurlsession/index.js",
@@ -200,11 +210,6 @@
       "import": "./dist/plugins/c/libcurl/index.js",
       "types": "./dist/plugins/c/libcurl/index.d.ts",
       "default": "./dist/plugins/c/libcurl/index.js"
-    },
-    "./core": {
-      "import": "./dist/core/index.js",
-      "types": "./dist/core/index.d.ts",
-      "default": "./dist/core/index.js"
     }
   },
   "files": [

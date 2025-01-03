@@ -1,16 +1,24 @@
-import type { AnyObject } from '../types'
+import type { OpenAPIV3_1 } from '@scalar/openapi-types'
+import type { UnknownObject } from '@scalar/types/utils'
+
 import { traverse } from './traverse'
 
 /**
- * Upgrade from OpenAPI 3.0.x to 3.1.0
+ * Upgrade from OpenAPI 3.0.x to 3.1.1
  *
  * https://www.openapis.org/blog/2021/02/16/migrating-from-openapi-3-0-to-3-1-0
  */
-export function upgradeFromThreeToThreeOne(originalSpecification: AnyObject) {
+export function upgradeFromThreeToThreeOne(
+  originalSpecification: UnknownObject,
+) {
   let specification = originalSpecification
 
   // Version
-  if (specification.openapi?.startsWith('3.0')) {
+  if (
+    specification !== null &&
+    typeof specification.openapi === 'string' &&
+    specification.openapi.startsWith('3.0')
+  ) {
     specification.openapi = '3.1.1'
   } else {
     // Skip if it’s something else than 3.0.x
@@ -68,19 +76,29 @@ export function upgradeFromThreeToThreeOne(originalSpecification: AnyObject) {
   })
 
   // Multipart file uploads with a binary file
-  specification = traverse(specification, (schema) => {
+  specification = traverse(specification, (schema, path) => {
     if (schema.type === 'object' && schema.properties !== undefined) {
-      // Types
-      const entries: [string, any][] = Object.entries(schema.properties)
+      // Check if this is a multipart request body schema
+      const parentPath = path.slice(0, -1)
+      const isMultipart = parentPath.some((segment, index) => {
+        return (
+          segment === 'content' && path[index + 1] === 'multipart/form-data'
+        )
+      })
 
-      for (const [_, value] of entries) {
-        if (
-          typeof value === 'object' &&
-          value.type === 'string' &&
-          value.format === 'binary'
-        ) {
-          value.contentEncoding = 'application/octet-stream'
-          delete value.format
+      if (isMultipart) {
+        // Types
+        const entries: [string, any][] = Object.entries(schema.properties)
+
+        for (const [_, value] of entries) {
+          if (
+            typeof value === 'object' &&
+            value.type === 'string' &&
+            value.format === 'binary'
+          ) {
+            value.contentMediaType = 'application/octet-stream'
+            delete value.format
+          }
         }
       }
     }
@@ -89,9 +107,16 @@ export function upgradeFromThreeToThreeOne(originalSpecification: AnyObject) {
   })
 
   // Uploading a binary file in a POST request
-  specification = traverse(specification, (schema) => {
+  specification = traverse(specification, (schema, path) => {
+    if (path.includes('content') && path.includes('application/octet-stream')) {
+      return {}
+    }
+
     if (schema.type === 'string' && schema.format === 'binary') {
-      return undefined
+      return {
+        type: 'string',
+        contentMediaType: 'application/octet-stream',
+      }
     }
 
     return schema
@@ -114,7 +139,7 @@ export function upgradeFromThreeToThreeOne(originalSpecification: AnyObject) {
   //   specification.$schema = 'http://json-schema.org/draft-07/schema#'
   // }
 
-  return specification
+  return specification as OpenAPIV3_1.Document
 }
 
 /** Determine if the current path is within a schema */

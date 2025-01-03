@@ -1,5 +1,44 @@
 # @scalar/nextjs-openapi
 
+## 0.0.27
+
+### Patch Changes
+
+- 90529fc: chore: upgrade to react 19
+- Updated dependencies [63350ce]
+- Updated dependencies [90529fc]
+  - @scalar/nextjs-api-reference@0.5.0
+
+## 0.0.26
+
+### Patch Changes
+
+- Updated dependencies [776dac0]
+  - @scalar/nextjs-api-reference@0.4.108
+
+## 0.0.25
+
+### Patch Changes
+
+- Updated dependencies [4bb4d67]
+  - @scalar/nextjs-api-reference@0.4.107
+
+## 0.0.24
+
+### Patch Changes
+
+- Updated dependencies [c263aaf]
+  - @scalar/types@0.0.25
+  - @scalar/nextjs-api-reference@0.4.106
+
+## 0.0.23
+
+### Patch Changes
+
+- Updated dependencies [fbef0c3]
+  - @scalar/types@0.0.24
+  - @scalar/nextjs-api-reference@0.4.105
+
 ## 0.0.22
 
 ### Patch Changes

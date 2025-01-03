@@ -24,7 +24,7 @@ const responseHeaders = computed(() => {
     ? Object.keys(headers)
         .map((key) => ({
           name: key,
-          value: headers[key],
+          value: headers[key] ?? '',
           required: false,
         }))
         .filter(
@@ -131,7 +131,7 @@ const shouldVirtualize = computed(() => {
       </div>
     </template>
     <div
-      class="custom-scroll h-full relative grid gap-[.5px] px-2 xl:px-3 py-2.5 justify-stretch"
+      class="custom-scroll h-full relative grid justify-stretch"
       :class="{
         'content-start': response,
       }">
