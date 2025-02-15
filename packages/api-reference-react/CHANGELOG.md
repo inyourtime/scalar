@@ -1,5 +1,153 @@
 # @scalar/api-reference-react
 
+## 0.4.27
+
+### Patch Changes
+
+- fac2800: refactor: directly import the scalar galaxy example in the playground
+- Updated dependencies [600ce16]
+- Updated dependencies [6e077ba]
+- Updated dependencies [305d084]
+- Updated dependencies [4de3124]
+- Updated dependencies [f2b082a]
+  - @scalar/api-reference@1.25.118
+
+## 0.4.26
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.117
+
+## 0.4.25
+
+### Patch Changes
+
+- Updated dependencies [28f23d9]
+  - @scalar/api-reference@1.25.116
+
+## 0.4.24
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.115
+
+## 0.4.23
+
+### Patch Changes
+
+- Updated dependencies [2497761]
+- Updated dependencies [d1325d0]
+- Updated dependencies [db3cf68]
+- Updated dependencies [f9bf5f1]
+  - @scalar/api-reference@1.25.114
+
+## 0.4.22
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.113
+
+## 0.4.21
+
+### Patch Changes
+
+- Updated dependencies [be34e7d]
+- Updated dependencies [2edbab2]
+  - @scalar/api-reference@1.25.112
+
+## 0.4.20
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.111
+
+## 0.4.19
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.110
+
+## 0.4.18
+
+### Patch Changes
+
+- Updated dependencies [09dee7e]
+- Updated dependencies [702c386]
+- Updated dependencies [a4ec7fa]
+  - @scalar/api-reference@1.25.109
+
+## 0.4.17
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.108
+
+## 0.4.16
+
+### Patch Changes
+
+- Updated dependencies [a871c83]
+  - @scalar/api-reference@1.25.107
+
+## 0.4.15
+
+### Patch Changes
+
+- Updated dependencies [5501ee3]
+- Updated dependencies [6062a69]
+- Updated dependencies [1bee104]
+- Updated dependencies [b552db5]
+  - @scalar/api-reference@1.25.106
+
+## 0.4.14
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.105
+
+## 0.4.13
+
+### Patch Changes
+
+- Updated dependencies [ace02fe]
+- Updated dependencies [60cd6f1]
+- Updated dependencies [39df543]
+- Updated dependencies [e866487]
+- Updated dependencies [d2b1525]
+  - @scalar/api-reference@1.25.104
+
+## 0.4.12
+
+### Patch Changes
+
+- Updated dependencies [f9f5bdb]
+  - @scalar/api-reference@1.25.103
+
+## 0.4.11
+
+### Patch Changes
+
+- Updated dependencies [9e2e8be]
+- Updated dependencies [273e927]
+- Updated dependencies [0642732]
+- Updated dependencies [58d5f6c]
+  - @scalar/api-reference@1.25.102
+
+## 0.4.10
+
+### Patch Changes
+
+- @scalar/api-reference@1.25.101
+
+## 0.4.9
+
+### Patch Changes
+
+- Updated dependencies [b291406]
+- Updated dependencies [b291406]
+- Updated dependencies [c37fb70]
+  - @scalar/api-reference@1.25.100
+
 ## 0.4.8
 
 ### Patch Changes

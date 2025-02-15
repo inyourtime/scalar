@@ -1,5 +1,99 @@
 # @scalar/mock-server
 
+## 0.2.111
+
+### Patch Changes
+
+- Updated dependencies [4de3124]
+- Updated dependencies [f500435]
+- Updated dependencies [da5cf08]
+- Updated dependencies [b5727ef]
+- Updated dependencies [4de3124]
+- Updated dependencies [34e6f52]
+  - @scalar/openapi-parser@0.10.6
+  - @scalar/oas-utils@0.2.104
+
+## 0.2.110
+
+### Patch Changes
+
+- Updated dependencies [0f5df68]
+- Updated dependencies [a30e7cc]
+- Updated dependencies [937f791]
+  - @scalar/oas-utils@0.2.103
+  - @scalar/openapi-parser@0.10.5
+
+## 0.2.109
+
+### Patch Changes
+
+- Updated dependencies [a34f834]
+- Updated dependencies [ef98b9c]
+- Updated dependencies [a34f834]
+- Updated dependencies [ebdf762]
+- Updated dependencies [f9bf5f1]
+  - @scalar/oas-utils@0.2.102
+  - @scalar/openapi-types@0.1.7
+  - @scalar/openapi-parser@0.10.4
+
+## 0.2.108
+
+### Patch Changes
+
+- Updated dependencies [be34e7d]
+  - @scalar/oas-utils@0.2.101
+  - @scalar/openapi-parser@0.10.4
+
+## 0.2.107
+
+### Patch Changes
+
+- Updated dependencies [12e7232]
+- Updated dependencies [901970f]
+- Updated dependencies [f1f39b0]
+  - @scalar/oas-utils@0.2.100
+  - @scalar/openapi-parser@0.10.4
+
+## 0.2.106
+
+### Patch Changes
+
+- Updated dependencies [c803e2d]
+  - @scalar/oas-utils@0.2.99
+
+## 0.2.105
+
+### Patch Changes
+
+- @scalar/oas-utils@0.2.98
+- @scalar/openapi-parser@0.10.4
+
+## 0.2.104
+
+### Patch Changes
+
+- c93e719: fix: returns writeOnly attributes
+
+## 0.2.103
+
+### Patch Changes
+
+- Updated dependencies [7df4472]
+- Updated dependencies [13333e6]
+- Updated dependencies [64df4fc]
+  - @scalar/oas-utils@0.2.97
+  - @scalar/openapi-types@0.1.6
+  - @scalar/openapi-parser@0.10.4
+
+## 0.2.102
+
+### Patch Changes
+
+- Updated dependencies [cf0e7b1]
+- Updated dependencies [8dce84f]
+  - @scalar/oas-utils@0.2.96
+  - @scalar/openapi-parser@0.10.3
+
 ## 0.2.101
 
 ### Patch Changes

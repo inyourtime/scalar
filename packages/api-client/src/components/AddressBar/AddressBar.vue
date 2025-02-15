@@ -1,36 +1,30 @@
 <script setup lang="ts">
 import CodeInput from '@/components/CodeInput/CodeInput.vue'
-import type { HotKeyEvent } from '@/libs'
+import { ServerDropdown } from '@/components/Server'
+import { useLayout } from '@/hooks'
 import { useWorkspace } from '@/store'
 import { useActiveEntities } from '@/store/active-entities'
-import { Listbox } from '@headlessui/vue'
 import { ScalarButton, ScalarIcon } from '@scalar/components'
 import type { RequestMethod } from '@scalar/oas-utils/entities/spec'
 import { REQUEST_METHODS } from '@scalar/oas-utils/helpers'
-import { isMacOS } from '@scalar/use-tooltip'
-import { useMagicKeys, whenever } from '@vueuse/core'
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { ref, useId, watch } from 'vue'
 
 import HttpMethod from '../HttpMethod/HttpMethod.vue'
 import AddressBarHistory from './AddressBarHistory.vue'
-import AddressBarServers from './AddressBarServer.vue'
 
 defineEmits<{
   (e: 'importCurl', value: string): void
 }>()
 
+const id = useId()
+
 const { activeRequest, activeExample, activeServer, activeCollection } =
   useActiveEntities()
-const { isReadOnly, requestMutators, requestHistory, events } = useWorkspace()
+const { requestMutators, events } = useWorkspace()
 
-const selectedRequest = ref(requestHistory[0])
+const { layout } = useLayout()
+
 const addressBarRef = ref<typeof CodeInput | null>(null)
-
-const keys = useMagicKeys()
-const executeKey = computed(() =>
-  isMacOS() ? keys.meta_enter : keys.ctrl_enter,
-)
-whenever(executeKey, () => events.executeRequest.emit())
 
 /** update the instance path parameters on change */
 const onUrlChange = (newPath: string) => {
@@ -109,10 +103,16 @@ function getBackgroundColor() {
 }
 
 function handleExecuteRequest() {
-  if (isRequesting.value) return
+  if (isRequesting.value || !activeRequest.value) return
   isRequesting.value = true
-  events.executeRequest.emit()
+  events.executeRequest.emit({ requestUid: activeRequest.value.uid })
 }
+
+/** Handle hotkeys */
+events.hotKeys.on((event) => {
+  if (event?.focusAddressBar) addressBarRef.value?.focus()
+  if (event?.executeRequest) handleExecuteRequest()
+})
 
 /**
  * TODO: Should we handle query params here somehow?
@@ -122,96 +122,86 @@ function updateRequestPath(url: string) {
 
   requestMutators.edit(activeRequest.value.uid, 'path', url)
 }
-
-/** Handle hotkeys */
-function handleHotKey(event?: HotKeyEvent) {
-  if (event?.focusAddressBar) {
-    addressBarRef.value?.focus()
-  }
-}
-
-onMounted(() => events.hotKeys.on(handleHotKey))
-onBeforeUnmount(() => events.hotKeys.off(handleHotKey))
 </script>
 <template>
   <div
     v-if="activeRequest && activeExample"
-    class="scalar-address-bar order-last lg:order-none lg:w-auto w-full">
+    :id="id"
+    class="scalar-address-bar order-last lg:order-none lg:w-auto w-full [--scalar-address-bar-height:32px] h-[--scalar-address-bar-height]">
     <div class="m-auto flex flex-row items-center">
       <!-- Address Bar -->
-      <Listbox
-        v-slot="{ open }"
-        v-model="selectedRequest">
+      <div
+        class="addressbar-bg-states group text-xxs relative flex w-full xl:min-w-[720px] xl:max-w-[720px] lg:min-w-[580px] lg:max-w-[580px] order-last lg:order-none flex-1 flex-row items-stretch rounded-lg p-0.75 max-w-[calc(100dvw-24px)]">
         <div
-          :class="[
-            'addressbar-bg-states text-xxs relative flex w-full xl:min-w-[720px] xl:max-w-[720px] lg:min-w-[580px] lg:max-w-[580px] order-last overflow-hidden lg:order-none flex-1 flex-row items-stretch rounded-lg border-1/2 p-[3px]',
-            { 'border-transparent overflow-visible rounded-b-none': open },
-          ]">
+          class="border rounded-lg pointer-events-none absolute left-0 top-0 block h-full w-full overflow-hidden">
           <div
-            class="pointer-events-none absolute left-0 top-0 block h-full w-full overflow-hidden">
-            <div
-              class="bg-mix-transparent bg-mix-amount-90 absolute left-0 top-0 h-full w-full z-context"
-              :class="getBackgroundColor()"
-              :style="{ transform: `translate3d(-${percentage}%,0,0)` }"></div>
-          </div>
-          <div class="flex gap-1">
-            <HttpMethod
-              :isEditable="!isReadOnly"
-              isSquare
-              :method="activeRequest.method"
-              teleport
-              @change="updateRequestMethod" />
-          </div>
-          <div
-            class="codemirror-bg-switcher scroll-timeline-x scroll-timeline-x-hidden relative flex w-full">
-            <div class="fade-left"></div>
-
-            <!-- Servers -->
-            <AddressBarServers v-if="activeCollection?.servers?.length" />
-
-            <!-- Path + URL + env vars -->
-            <CodeInput
-              ref="addressBarRef"
-              aria-label="Path"
-              class="outline-none"
-              disableCloseBrackets
-              :disabled="isReadOnly"
-              disableEnter
-              disableTabIndent
-              :emitOnBlur="false"
-              importCurl
-              :modelValue="activeRequest.path"
-              :placeholder="
-                activeServer?.uid &&
-                activeCollection?.servers?.includes(activeServer.uid)
-                  ? ''
-                  : 'Enter a URL or cURL command'
-              "
-              server
-              @curl="$emit('importCurl', $event)"
-              @submit="handleExecuteRequest"
-              @update:modelValue="updateRequestPath" />
-            <div class="fade-right"></div>
-          </div>
-
-          <AddressBarHistory :open="open" />
-          <ScalarButton
-            class="relative h-auto shrink-0 overflow-hidden !pl-2 !pr-2.5 !py-1 font-bold"
-            :disabled="isRequesting"
-            @click="handleExecuteRequest">
-            <span
-              aria-hidden="true"
-              class="inline-flex gap-1 items-center">
-              <ScalarIcon
-                class="relative shrink-0 fill-current"
-                icon="Play"
-                size="xs" />
-              <span class="text-xxs lg:flex hidden">Send</span>
-            </span>
-            <span class="sr-only"> Send Request </span>
-          </ScalarButton>
+            class="bg-mix-transparent bg-mix-amount-90 absolute left-0 top-0 h-full w-full z-context"
+            :class="getBackgroundColor()"
+            :style="{ transform: `translate3d(-${percentage}%,0,0)` }"></div>
         </div>
-      </Listbox>
+        <div class="flex gap-1 z-context-plus">
+          <HttpMethod
+            :isEditable="layout !== 'modal'"
+            isSquare
+            :method="activeRequest.method"
+            teleport
+            @change="updateRequestMethod" />
+        </div>
+
+        <div
+          class="codemirror-bg-switcher scroll-timeline-x scroll-timeline-x-hidden z-context-plus relative flex w-full">
+          <!-- Servers -->
+          <ServerDropdown
+            v-if="activeCollection?.servers?.length"
+            :collection="activeCollection"
+            layout="client"
+            :operation="activeRequest"
+            :server="activeServer"
+            :target="id" />
+
+          <div class="fade-left"></div>
+          <!-- Path + URL + env vars -->
+          <CodeInput
+            ref="addressBarRef"
+            aria-label="Path"
+            class="outline-none min-w-fit"
+            disableCloseBrackets
+            :disabled="layout === 'modal'"
+            disableEnter
+            disableTabIndent
+            :emitOnBlur="false"
+            importCurl
+            :modelValue="activeRequest.path"
+            :placeholder="
+              activeServer?.uid &&
+              activeCollection?.servers?.includes(activeServer.uid)
+                ? ''
+                : 'Enter a URL or cURL command'
+            "
+            server
+            @curl="$emit('importCurl', $event)"
+            @submit="handleExecuteRequest"
+            @update:modelValue="updateRequestPath" />
+          <div class="fade-right"></div>
+        </div>
+
+        <AddressBarHistory :target="id" />
+        <ScalarButton
+          class="relative h-auto shrink-0 z-context-plus overflow-hidden pl-2 pr-2.5 py-1 font-bold"
+          :disabled="isRequesting"
+          @click="handleExecuteRequest">
+          <span
+            aria-hidden="true"
+            class="inline-flex gap-1 items-center">
+            <ScalarIcon
+              class="relative shrink-0 fill-current"
+              icon="Play"
+              size="xs" />
+            <span class="text-xxs lg:flex hidden">Send</span>
+          </span>
+          <span class="sr-only"> Send Request </span>
+        </ScalarButton>
+      </div>
     </div>
   </div>
 </template>
@@ -235,7 +225,7 @@ onBeforeUnmount(() => events.hotKeys.off(handleHotKey))
   -ms-overflow-style: none; /* IE and Edge */
 }
 .scroll-timeline-x-hidden {
-  overflow: hidden;
+  overflow-x: auto;
 }
 .scroll-timeline-x-hidden :deep(.cm-scroller) {
   scrollbar-width: none;

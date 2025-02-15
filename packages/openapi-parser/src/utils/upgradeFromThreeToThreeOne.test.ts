@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import {
   isSchemaPath,
   upgradeFromThreeToThreeOne,
-} from './upgradeFromThreeToThreeOne'
+} from './upgradeFromThreeToThreeOne.ts'
 
 describe('isSchemaPath', () => {
   it('correctly identifies schema paths', () => {
@@ -124,7 +124,7 @@ describe('upgradeFromThreeToThreeOne', () => {
         result.paths['/test'].get.responses['200'].content['application/json']
           .schema,
       ).toEqual({
-        type: ['null', 'string'],
+        type: ['string', 'null'],
       })
     })
   })
@@ -249,6 +249,63 @@ describe('upgradeFromThreeToThreeOne', () => {
           default: {
             value: 10,
           },
+        },
+      })
+    })
+
+    it('doesn’t transform arrays into objects', () => {
+      const result = upgradeFromThreeToThreeOne({
+        openapi: '3.0.0',
+        info: {
+          title: 'Sample API',
+          version: '1.0.0',
+          description: 'A simple example API',
+        },
+        tags: [
+          {
+            'name': 'users',
+            'description': 'Operations about users',
+            'x-internal': true,
+          },
+        ],
+        paths: {
+          '/users': {
+            post: {
+              tags: ['users'],
+              summary: 'hello',
+              description: 'Returns a list of users',
+              operationId: 'getUsers',
+              requestBody: {
+                content: {
+                  'application/json': {
+                    schema: {
+                      type: 'object',
+                      properties: {
+                        foobar: {
+                          type: 'array',
+                          example: ['Portfolio1', 'Portfolio2'],
+                          items: {
+                            type: 'string',
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      })
+
+      expect(
+        result.paths['/users'].post.requestBody.content['application/json']
+          .schema.properties.foobar,
+      ).toStrictEqual({
+        type: 'array',
+        examples: [['Portfolio1', 'Portfolio2']],
+        items: {
+          type: 'string',
         },
       })
     })

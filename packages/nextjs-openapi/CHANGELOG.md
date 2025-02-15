@@ -1,5 +1,73 @@
 # @scalar/nextjs-openapi
 
+## 0.0.35
+
+### Patch Changes
+
+- Updated dependencies [f500435]
+- Updated dependencies [b5727ef]
+- Updated dependencies [34e6f52]
+- Updated dependencies [f2b082a]
+  - @scalar/types@0.0.32
+  - @scalar/nextjs-api-reference@0.5.8
+
+## 0.0.34
+
+### Patch Changes
+
+- Updated dependencies [a30e7cc]
+  - @scalar/types@0.0.31
+  - @scalar/nextjs-api-reference@0.5.7
+
+## 0.0.33
+
+### Patch Changes
+
+- @scalar/nextjs-api-reference@0.5.6
+- @scalar/types@0.0.30
+
+## 0.0.32
+
+### Patch Changes
+
+- Updated dependencies [be34e7d]
+  - @scalar/types@0.0.29
+  - @scalar/nextjs-api-reference@0.5.5
+
+## 0.0.31
+
+### Patch Changes
+
+- Updated dependencies [702c386]
+- Updated dependencies [f1f39b0]
+  - @scalar/types@0.0.28
+  - @scalar/nextjs-api-reference@0.5.4
+
+## 0.0.30
+
+### Patch Changes
+
+- 0261b6f: chore: move to new integrations/ folder
+- Updated dependencies [0261b6f]
+  - @scalar/nextjs-api-reference@0.5.3
+
+## 0.0.29
+
+### Patch Changes
+
+- Updated dependencies [b552db5]
+  - @scalar/types@0.0.27
+  - @scalar/nextjs-api-reference@0.5.2
+
+## 0.0.28
+
+### Patch Changes
+
+- Updated dependencies [60cd6f1]
+- Updated dependencies [60cd6f1]
+  - @scalar/types@0.0.26
+  - @scalar/nextjs-api-reference@0.5.1
+
 ## 0.0.27
 
 ### Patch Changes

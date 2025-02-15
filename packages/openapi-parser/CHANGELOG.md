@@ -1,5 +1,30 @@
 # @scalar/openapi-parser
 
+## 0.10.6
+
+### Patch Changes
+
+- 4de3124: feat: make 'null' the second type in an array when upgrading
+- 34e6f52: feat: upgrade to stricter tsconfig
+
+## 0.10.5
+
+### Patch Changes
+
+- a30e7cc: fix: package doesn’t work with `moduleResolution: NodeNext`
+
+## 0.10.4
+
+### Patch Changes
+
+- 64df4fc: fix: example arrays are transformed to objects
+
+## 0.10.3
+
+### Patch Changes
+
+- 8dce84f: Call `onDereference` after dereference process
+
 ## 0.10.2
 
 ### Patch Changes

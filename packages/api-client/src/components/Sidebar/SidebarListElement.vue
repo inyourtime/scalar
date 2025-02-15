@@ -17,7 +17,7 @@ const props = defineProps<{
   isDeletable?: boolean
   isCopyable?: boolean
   isRenameable?: boolean
-  type: 'environment' | 'cookies' | 'server'
+  type: 'environment' | 'cookies' | 'servers'
 }>()
 
 const emit = defineEmits<{
@@ -68,6 +68,7 @@ const handleRename = (id: string) => {
       class="h-8 text-c-2 hover:bg-b-2 group relative block flex items-center gap-1.5 rounded py-1 pr-1.5 font-medium no-underline"
       :class="[variable.color ? 'pl-1' : 'pl-1.5']"
       exactActiveClass="active-link"
+      role="button"
       :to="
         collectionId
           ? `/workspace/${activeWorkspace?.uid}/${type}/${collectionId}/${variable.uid}`
@@ -87,11 +88,14 @@ const handleRename = (id: string) => {
         v-if="variable.icon"
         class="text-sidebar-c-2 size-3.5 stroke-[2.25]"
         :icon="variable.icon" />
-      <span class="empty-variable-name text-sm">{{ variable.name }}</span>
+      <span
+        class="empty-variable-name text-sm line-clamp-1 break-all group-hover:pr-5">
+        {{ variable.name }}
+      </span>
       <SidebarListElementActions
-        :isCopyable="isCopyable"
-        :isDeletable="isDeletable"
-        :isRenameable="isRenameable"
+        :isCopyable="Boolean(isCopyable)"
+        :isDeletable="Boolean(isDeletable)"
+        :isRenameable="Boolean(isRenameable)"
         :variable="{ ...variable, isDefault: variable.isDefault ?? false }"
         :warningMessage="warningMessage"
         @delete="handleDelete"
@@ -104,10 +108,7 @@ const handleRename = (id: string) => {
   @apply bg-b-2 text-c-1;
 }
 .empty-variable-name:empty:before {
-  content: 'No Name';
+  content: 'Untitled';
   color: var(--scalar-color-3);
-}
-.cookie > a {
-  @apply pl-10;
 }
 </style>

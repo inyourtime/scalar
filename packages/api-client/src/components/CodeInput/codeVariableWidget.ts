@@ -1,7 +1,6 @@
 /* eslint-disable vue/one-component-per-file */
 import { parseEnvVariables } from '@/libs'
 import { type EnvVariables, getEnvColor } from '@/libs/env-helpers'
-import type { WorkspaceStore } from '@/store'
 import { ScalarButton, ScalarIcon, ScalarTooltip } from '@scalar/components'
 import type { Environment } from '@scalar/oas-utils/entities/environment'
 import type { Workspace } from '@scalar/oas-utils/entities/workspace'
@@ -17,31 +16,29 @@ import {
 } from '@scalar/use-codemirror'
 import { createApp, defineComponent, h } from 'vue'
 
-type IsReadOnly = WorkspaceStore['isReadOnly']
-
 /**
  * Displays the value of a variable of the active environment in a pill
  */
 class PillWidget extends WidgetType {
   private app: any
-  environment?: Environment
-  envVariables?: EnvVariables
-  workspace?: Workspace
-  isReadOnly?: IsReadOnly
+  environment: Environment | undefined
+  envVariables: EnvVariables | undefined
+  workspace: Workspace | undefined
+  isReadOnly: boolean
 
   constructor(
     private variableName: string,
-    environment?: Environment,
-    envVariables?: EnvVariables,
-    workspace?: Workspace,
-    isReadOnly?: IsReadOnly,
+    environment: Environment | undefined,
+    envVariables: EnvVariables | undefined,
+    workspace: Workspace | undefined,
+    isReadOnly: boolean | undefined,
   ) {
     super()
     this.variableName = variableName
     this.environment = environment
     this.envVariables = envVariables
     this.workspace = workspace
-    this.isReadOnly = isReadOnly
+    this.isReadOnly = isReadOnly ?? false
   }
 
   toDOM() {
@@ -79,9 +76,10 @@ class PillWidget extends WidgetType {
                       class:
                         'gap-1.5 justify-start font-normal px-1 py-1.5 h-auto transition-colors rounded no-underline text-xxs w-full hover:bg-b-2',
                       variant: 'ghost',
-                      // TODO: Use router instead
-                      onClick: () =>
-                        (window.location.href = `/workspace/${this.workspace?.uid}/environment`),
+                      onClick: () => {
+                        // TODO: Use named route instead
+                        window.location.href = `/workspace/${this.workspace?.uid}/environment`
+                      },
                     },
                     {
                       default: () => [
@@ -130,19 +128,19 @@ class PillWidget extends WidgetType {
     return span
   }
 
-  destroy() {
+  override destroy() {
     if (this.app) {
       this.app.unmount()
     }
   }
 
-  eq(other: WidgetType) {
+  override eq(other: WidgetType) {
     return (
       other instanceof PillWidget && other.variableName === this.variableName
     )
   }
 
-  ignoreEvent() {
+  override ignoreEvent() {
     return false
   }
 }
@@ -151,10 +149,10 @@ class PillWidget extends WidgetType {
  * Styles the active environment variable pill
  */
 export const pillPlugin = (props: {
-  environment?: Environment
-  envVariables?: EnvVariables
-  workspace?: Workspace
-  isReadOnly?: IsReadOnly
+  environment: Environment | undefined
+  envVariables: EnvVariables | undefined
+  workspace: Workspace | undefined
+  isReadOnly: boolean | undefined
 }) =>
   ViewPlugin.fromClass(
     class {

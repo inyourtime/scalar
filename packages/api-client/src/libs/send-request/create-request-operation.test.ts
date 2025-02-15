@@ -1,17 +1,19 @@
 /**
  * @vitest-environment jsdom
  */
-import { createRequestOperation } from '@/libs'
 import {
   type RequestPayload,
   type ServerPayload,
   createExampleFromRequest,
   requestExampleSchema,
   requestSchema,
+  securitySchemeSchema,
   serverSchema,
 } from '@scalar/oas-utils/entities/spec'
 import { beforeAll, describe, expect, it, vi } from 'vitest'
 import type { z } from 'zod'
+
+import { createRequestOperation } from './create-request-operation'
 
 const PROXY_PORT = 5051
 const VOID_PORT = 5052
@@ -32,7 +34,9 @@ export const createRequestPayload = (
   metaRequestPayload: MetaRequestPayload = {},
 ) => {
   const request = requestSchema.parse(metaRequestPayload.requestPayload ?? {})
-  const server = serverSchema.parse(metaRequestPayload.serverPayload ?? {})
+  const server = metaRequestPayload.serverPayload
+    ? serverSchema.parse(metaRequestPayload.serverPayload)
+    : undefined
   let example = createExampleFromRequest(request, 'example')
 
   // Overwrite any example properties
@@ -278,6 +282,20 @@ describe('create-request-operation', () => {
     })
   })
 
+  it('creates query parameters from the url', async () => {
+    const [error, requestOperation] = createRequestOperation(
+      createRequestPayload({
+        serverPayload: { url: VOID_URL },
+        requestPayload: {
+          path: '/path?test=query',
+        },
+      }),
+    )
+    if (error) throw error
+
+    expect(requestOperation.request.url).toBe(`${VOID_URL}/path?test=query`)
+  })
+
   it('returns the request object with an uppercase method', async () => {
     const [error, requestOperation] = createRequestOperation(
       createRequestPayload({
@@ -336,37 +354,72 @@ describe('create-request-operation', () => {
     })
   })
 
-  it('merges query parameters', async () => {
-    const [error, requestOperation] = createRequestOperation(
-      createRequestPayload({
-        serverPayload: {
-          url: `${VOID_URL}/api?orange=apple`,
-        },
-        requestPayload: {
-          path: '?example=parameter',
-        },
-        requestExamplePayload: {
-          parameters: {
-            query: [
-              {
-                key: 'foo',
-                value: 'bar',
-                enabled: true,
-              },
-            ],
+  describe('merges query parameters', () => {
+    it('with server url', async () => {
+      const [error, requestOperation] = createRequestOperation(
+        createRequestPayload({
+          serverPayload: {
+            url: `${VOID_URL}/api?orange=apple`,
           },
-        },
-      }),
-    )
-    if (error) throw error
+          requestPayload: {
+            path: '?example=parameter',
+          },
+          requestExamplePayload: {
+            parameters: {
+              query: [
+                {
+                  key: 'foo',
+                  value: 'bar',
+                  enabled: true,
+                },
+              ],
+            },
+          },
+        }),
+      )
+      if (error) throw error
 
-    const [requestError, result] = await requestOperation.sendRequest()
+      const [requestError, result] = await requestOperation.sendRequest()
 
-    expect(requestError).toBe(null)
-    expect(JSON.parse(result?.response.data as string).query).toStrictEqual({
-      example: 'parameter',
-      foo: 'bar',
-      orange: 'apple',
+      expect(requestError).toBe(null)
+      expect(JSON.parse(result?.response.data as string).query).toStrictEqual({
+        example: 'parameter',
+        foo: 'bar',
+        orange: 'apple',
+      })
+    })
+
+    it('without server url', async () => {
+      const [error, requestOperation] = createRequestOperation(
+        createRequestPayload({
+          serverPayload: {
+            url: '',
+          },
+          requestPayload: {
+            path: `${VOID_URL}/?example=parameter`,
+          },
+          requestExamplePayload: {
+            parameters: {
+              query: [
+                {
+                  key: 'foo',
+                  value: 'bar',
+                  enabled: true,
+                },
+              ],
+            },
+          },
+        }),
+      )
+      if (error) throw error
+
+      const [requestError, result] = await requestOperation.sendRequest()
+
+      expect(requestError).toBe(null)
+      expect(JSON.parse(result?.response.data as string).query).toStrictEqual({
+        example: 'parameter',
+        foo: 'bar',
+      })
     })
   })
 
@@ -386,7 +439,34 @@ describe('create-request-operation', () => {
     expect(JSON.parse(result?.response.data as string).query).toStrictEqual({})
   })
 
-  it('should ignore query parameters with empty values', async () => {
+  it('should ignore query parameters with empty values that are not enabled', async () => {
+    const [error, requestOperation] = createRequestOperation(
+      createRequestPayload({
+        serverPayload: {
+          url: VOID_URL,
+        },
+        requestExamplePayload: {
+          parameters: {
+            query: [
+              {
+                key: 'foo',
+                value: '',
+                enabled: false,
+              },
+            ],
+          },
+        },
+      }),
+    )
+    if (error) throw error
+
+    const [requestError, result] = await requestOperation.sendRequest()
+
+    expect(requestError).toBe(null)
+    expect(JSON.parse(result?.response.data as string).query).toStrictEqual({})
+  })
+
+  it('should maintain query parameters with empty values that are enabled', async () => {
     const [error, requestOperation] = createRequestOperation(
       createRequestPayload({
         serverPayload: {
@@ -410,7 +490,9 @@ describe('create-request-operation', () => {
     const [requestError, result] = await requestOperation.sendRequest()
 
     expect(requestError).toBe(null)
-    expect(JSON.parse(result?.response.data as string).query).toStrictEqual({})
+    expect(JSON.parse(result?.response.data as string).query).toStrictEqual({
+      foo: '',
+    })
   })
 
   it('works with no content', async () => {
@@ -577,6 +659,272 @@ describe('create-request-operation', () => {
       method: 'GET',
       path: '/me',
       body: '',
+    })
+  })
+
+  it('sends cookies', async () => {
+    const [error, requestOperation] = createRequestOperation({
+      ...createRequestPayload({
+        serverPayload: { url: VOID_URL },
+        proxyUrl: PROXY_URL,
+        requestExamplePayload: {
+          parameters: {
+            cookies: [
+              {
+                key: 'cookie',
+                value: 'custom-value',
+                enabled: true,
+              },
+            ],
+            headers: [
+              {
+                key: 'Cookie',
+                value: 'cookie-header=example-value;',
+                enabled: true,
+              },
+            ],
+          },
+        },
+      }),
+      securitySchemes: {
+        'api-key': securitySchemeSchema.parse({
+          uid: 'api-key',
+          type: 'apiKey',
+          nameKey: 'api_key',
+          name: 'auth-cookie',
+          in: 'cookie',
+          value: 'super-secret-token',
+          description: 'API key',
+        }),
+      },
+      selectedSecuritySchemeUids: ['api-key'],
+    })
+
+    if (error) throw error
+
+    const [requestError, result] = await requestOperation.sendRequest()
+
+    expect(requestError).toBe(null)
+    expect(JSON.parse(result?.response.data as string)?.cookies).toStrictEqual({
+      'cookie': 'custom-value',
+      'auth-cookie': 'super-secret-token',
+      'cookie-header': 'example-value',
+    })
+  })
+
+  describe('authentication', () => {
+    it('adds apiKey auth in header', async () => {
+      const [error, requestOperation] = createRequestOperation({
+        ...createRequestPayload({
+          serverPayload: { url: VOID_URL },
+        }),
+        securitySchemes: {
+          'api-key': {
+            type: 'apiKey',
+            name: 'X-API-KEY',
+            in: 'header',
+            value: 'test-key',
+            uid: 'api-key',
+            nameKey: 'X-API-KEY',
+          },
+        },
+        selectedSecuritySchemeUids: ['api-key'],
+      })
+      if (error) throw error
+
+      const [requestError, result] = await requestOperation.sendRequest()
+
+      expect(requestError).toBe(null)
+      expect(JSON.parse(result?.response.data as string).headers).toMatchObject(
+        {
+          'x-api-key': 'test-key',
+        },
+      )
+    })
+
+    it('adds apiKey auth in query', async () => {
+      const [error, requestOperation] = createRequestOperation({
+        ...createRequestPayload({
+          serverPayload: { url: VOID_URL },
+        }),
+        securitySchemes: {
+          'api-key': {
+            type: 'apiKey',
+            name: 'api_key',
+            in: 'query',
+            value: 'test-key',
+            uid: 'api-key',
+            nameKey: 'api_key',
+          },
+        },
+        selectedSecuritySchemeUids: ['api-key'],
+      })
+      if (error) throw error
+
+      const [requestError, result] = await requestOperation.sendRequest()
+
+      expect(requestError).toBe(null)
+      expect(JSON.parse(result?.response.data as string).query).toMatchObject({
+        api_key: 'test-key',
+      })
+    })
+
+    it('adds basic auth header', async () => {
+      const [error, requestOperation] = createRequestOperation({
+        ...createRequestPayload({
+          serverPayload: { url: VOID_URL },
+        }),
+        securitySchemes: {
+          'basic-auth': {
+            type: 'http',
+            scheme: 'basic',
+            bearerFormat: 'Basic',
+            token: '',
+            username: 'user',
+            password: 'pass',
+            uid: 'basic-auth',
+            nameKey: 'Authorization',
+          },
+        },
+        selectedSecuritySchemeUids: ['basic-auth'],
+      })
+      if (error) throw error
+
+      const [requestError, result] = await requestOperation.sendRequest()
+
+      expect(requestError).toBe(null)
+      expect(JSON.parse(result?.response.data as string).headers).toMatchObject(
+        {
+          authorization: `Basic ${btoa('user:pass')}`,
+        },
+      )
+    })
+
+    it('adds bearer token header', async () => {
+      const [error, requestOperation] = createRequestOperation({
+        ...createRequestPayload({
+          serverPayload: { url: VOID_URL },
+        }),
+        securitySchemes: {
+          'bearer-auth': {
+            type: 'http',
+            scheme: 'bearer',
+            bearerFormat: 'Bearer',
+            username: '',
+            password: '',
+            uid: 'bearer-auth',
+            nameKey: 'Authorization',
+            token: 'xxxx',
+          },
+        },
+        selectedSecuritySchemeUids: ['bearer-auth'],
+      })
+      if (error) throw error
+
+      const [requestError, result] = await requestOperation.sendRequest()
+
+      expect(requestError).toBe(null)
+      expect(JSON.parse(result?.response.data as string).headers).toMatchObject(
+        {
+          authorization: 'Bearer xxxx',
+        },
+      )
+    })
+
+    it('handles complex auth', async () => {
+      const [error, requestOperation] = createRequestOperation({
+        ...createRequestPayload({
+          serverPayload: { url: VOID_URL },
+        }),
+        securitySchemes: {
+          'api-key': {
+            type: 'apiKey',
+            name: 'api_key',
+            in: 'query',
+            value: 'xxxx',
+            uid: 'api-key',
+            nameKey: 'api_key',
+          },
+          'bearer-auth': {
+            type: 'http',
+            scheme: 'bearer',
+            bearerFormat: 'Bearer',
+            username: '',
+            password: '',
+            uid: 'bearer-auth',
+            nameKey: 'Authorization',
+            token: 'xxxx',
+          },
+        },
+        selectedSecuritySchemeUids: [['bearer-auth', 'api-key']],
+      })
+      if (error) throw error
+
+      const [requestError, result] = await requestOperation.sendRequest()
+
+      expect(requestError).toBe(null)
+      const parsed = JSON.parse(result?.response.data as string)
+      expect(parsed.headers.authorization).toEqual('Bearer xxxx')
+      expect(parsed.query.api_key).toEqual('xxxx')
+    })
+
+    it('adds oauth2 token header', async () => {
+      const [error, requestOperation] = createRequestOperation({
+        ...createRequestPayload({
+          serverPayload: { url: VOID_URL },
+        }),
+        securitySchemes: {
+          'oauth2-auth': {
+            type: 'oauth2',
+            uid: 'oauth2-auth',
+            nameKey: 'Authorization',
+            flows: {
+              implicit: {
+                'type': 'implicit',
+                'token': 'oauth-token',
+                'authorizationUrl': 'https://example.com/auth',
+                'refreshUrl': 'https://example.com/refresh',
+                'scopes': {},
+                'selectedScopes': [],
+                'x-scalar-client-id': 'client-id',
+                'x-scalar-redirect-uri': 'https://example.com/callback',
+              },
+            },
+          },
+        },
+        selectedSecuritySchemeUids: ['oauth2-auth'],
+      })
+      if (error) throw error
+
+      const [requestError, result] = await requestOperation.sendRequest()
+
+      expect(requestError).toBe(null)
+      expect(JSON.parse(result?.response.data as string).headers).toMatchObject(
+        {
+          authorization: 'Bearer oauth-token',
+        },
+      )
+    })
+
+    it('accepts a lowercase auth header', () => {
+      const [error, requestOperation] = createRequestOperation({
+        ...createRequestPayload({
+          serverPayload: { url: VOID_URL },
+        }),
+        securitySchemes: {
+          'api-key': {
+            type: 'apiKey',
+            name: 'x-api-key',
+            in: 'header',
+            value: 'test-key',
+            uid: 'api-key',
+            nameKey: 'api-key',
+          },
+        },
+        selectedSecuritySchemeUids: ['api-key'],
+      })
+      if (error) throw error
+      expect(requestOperation.request.headers.get('x-api-key')).toBe('test-key')
     })
   })
 })

@@ -1,9 +1,8 @@
-import path from 'path'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 import { defineConfig } from 'vitest/config'
 
 import pkg from './package.json'
-import { nodeExternals } from './vite-plugins'
+import { nodeExternals } from './vite-plugins/nodeExternals.ts'
 
 export default defineConfig({
   plugins: [

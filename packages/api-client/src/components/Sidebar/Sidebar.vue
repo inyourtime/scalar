@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useLayout } from '@/hooks'
 import { useWorkspace } from '@/store'
 import { useBreakpoints } from '@scalar/use-hooks/useBreakpoints'
 import { ref } from 'vue'
@@ -12,7 +13,8 @@ const props = withDefaults(
     isSidebarOpen: true,
   },
 )
-const { isReadOnly, sidebarWidth, setSidebarWidth } = useWorkspace()
+const { sidebarWidth, setSidebarWidth } = useWorkspace()
+const { layout } = useLayout()
 const isDragging = ref(false)
 
 const sidebarRef = ref<HTMLElement | null>(null)
@@ -68,8 +70,8 @@ const startDrag = (event: MouseEvent) => {
     :style="{ width: breakpoints.lg ? sidebarWidth : '100%' }">
     <slot name="header" />
     <div
-      v-if="!isReadOnly && title"
-      class="min-h-12 xl:min-h-client-header flex items-center justify-between px-3 py-1.5 md:px-4 md:py-2.5 text-sm">
+      v-if="layout !== 'modal' && title"
+      class="min-h-12 xl:min-h-client-header flex items-center justify-between px-3 py-1.5 md:px-[18px] md:py-2.5 text-sm">
       <h2 class="font-medium m-0 text-sm whitespace-nowrap">
         {{ title }}
       </h2>
@@ -80,13 +82,13 @@ const startDrag = (event: MouseEvent) => {
     <div
       class="custom-scroll sidebar-height pb-0 md:pb-[37px] w-[inherit]"
       :class="{
-        'sidebar-mask': !isReadOnly,
+        'sidebar-mask': layout !== 'modal',
       }">
       <slot name="content" />
     </div>
     <template v-if="breakpoints.lg">
       <div
-        class="relative z-10 pt-0 md:px-2.5 md:pb-2.5 sticky bottom-0 w-[inherit] has-[.empty-sidebar-item]:border-t-1/2">
+        class="bg-b-1 relative z-10 pt-0 md:px-2.5 md:pb-2.5 sticky bottom-0 w-[inherit] has-[.empty-sidebar-item]:border-t-1/2">
         <slot name="button" />
       </div>
       <div

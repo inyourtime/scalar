@@ -1,7 +1,7 @@
 import type { OpenAPIV3_1 } from '@scalar/openapi-types'
 import type { UnknownObject } from '@scalar/types/utils'
 
-import { traverse } from './traverse'
+import { traverse } from './traverse.ts'
 
 /**
  * Upgrade from OpenAPI 3.0.x to 3.1.1
@@ -28,7 +28,7 @@ export function upgradeFromThreeToThreeOne(
   // Nullable types
   specification = traverse(specification, (schema) => {
     if (schema.type !== 'undefined' && schema.nullable === true) {
-      schema.type = ['null', schema.type]
+      schema.type = [schema.type, 'null']
       delete schema.nullable
     }
 

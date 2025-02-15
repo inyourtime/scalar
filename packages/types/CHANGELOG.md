@@ -1,5 +1,55 @@
 # @scalar/types
 
+## 0.0.32
+
+### Patch Changes
+
+- f500435: chore: stricter TypeScript configuration
+- b5727ef: feat: allow pre-selecting multiple and complex auth
+- 34e6f52: feat: upgrade to stricter tsconfig
+- f2b082a: feat: add onLoaded event
+
+## 0.0.31
+
+### Patch Changes
+
+- a30e7cc: fix: package doesn’t work with `moduleResolution: NodeNext`
+
+## 0.0.30
+
+### Patch Changes
+
+- Updated dependencies [f9bf5f1]
+  - @scalar/openapi-types@0.1.7
+
+## 0.0.29
+
+### Patch Changes
+
+- be34e7d: feat: adds value to server variables schema
+
+## 0.0.28
+
+### Patch Changes
+
+- 702c386: feat: add support for stability
+- f1f39b0: feat: rewmove custom Server type
+
+## 0.0.27
+
+### Patch Changes
+
+- b552db5: feat: add url customization functions for references
+
+## 0.0.26
+
+### Patch Changes
+
+- 60cd6f1: feat: render the operation description from the new store
+- 60cd6f1: chore: deprecated the TransformedOperation type
+- Updated dependencies [13333e6]
+  - @scalar/openapi-types@0.1.6
+
 ## 0.0.25
 
 ### Patch Changes

@@ -1,7 +1,12 @@
 <script setup lang="ts">
-import { type Icon, ScalarIcon, ScalarIconButton } from '@scalar/components'
+import { scrollToId, sleep } from '@/helpers'
+import {
+  type Icon,
+  ScalarIcon,
+  ScalarSidebarGroupToggle,
+} from '@scalar/components'
+import { combineUrlAndPath } from '@scalar/oas-utils/helpers'
 
-import { joinWithSlash, scrollToId, sleep } from '../../helpers'
 import { useNavState } from '../../hooks'
 import SidebarHttpBadge from './SidebarHttpBadge.vue'
 
@@ -46,7 +51,7 @@ const handleClick = async () => {
 // Build relative URL and add hash
 const generateLink = () => {
   if (pathRouting.value) {
-    return joinWithSlash(pathRouting.value.basePath, props.item.id)
+    return combineUrlAndPath(pathRouting.value.basePath, props.item.id)
   } else if (typeof window !== 'undefined') {
     const newUrl = new URL(window.location.href)
     newUrl.hash = getFullHash(props.item.id)
@@ -94,14 +99,17 @@ const onAnchorClick = async (ev: Event) => {
       <p
         v-if="hasChildren"
         class="sidebar-heading-chevron">
-        <ScalarIconButton
+        <button
           :aria-expanded="open"
           class="toggle-nested-icon"
-          :icon="open ? 'ChevronDown' : 'ChevronRight'"
-          :label="`${open ? 'Collapse' : 'Expand'} ${item.title}`"
-          size="xs"
-          thickness="1.5"
-          @click.stop="handleClick" />
+          type="button"
+          @click.stop="handleClick">
+          <ScalarSidebarGroupToggle :open="open">
+            <template #label>
+              {{ open ? 'Collapse' : 'Expand' }} {{ item.title }}
+            </template>
+          </ScalarSidebarGroupToggle>
+        </button>
         &hairsp;
       </p>
       <a
@@ -272,10 +280,12 @@ const onAnchorClick = async (ev: Event) => {
   box-shadow: inset 0 0 0 1px var(--scalar-color-accent);
 }
 .toggle-nested-icon {
-  border: none;
-  color: currentColor;
-  padding: 2px;
-  color: var(--scalar-sidebar-color-2);
+  color: var(--scalar-color-3);
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .active_page .toggle-nested-icon {
   color: var(--scalar-sidebar-color-active, var(--scalar-color-accent));

@@ -6,6 +6,7 @@ import { useLayout } from '@/hooks'
 import { ERRORS } from '@/libs'
 import { importCurlCommand } from '@/libs/importers/curl'
 import { createRequestOperation } from '@/libs/send-request'
+import { PathId } from '@/routes'
 import { useWorkspace } from '@/store'
 import { useActiveEntities } from '@/store/active-entities'
 import RequestSection from '@/views/Request/RequestSection/RequestSection.vue'
@@ -39,7 +40,6 @@ const {
 } = useActiveEntities()
 const {
   cookies,
-  isReadOnly,
   modalState,
   requestHistory,
   showSidebar,
@@ -55,7 +55,7 @@ type ExtendedRequestPayload = RequestPayload & {
   url?: string
 }
 
-const isSidebarOpen = ref(!isReadOnly)
+const isSidebarOpen = ref(layout !== 'modal')
 const requestAbortController = ref<AbortController>()
 const parsedCurl = ref<ExtendedRequestPayload>()
 const selectedServerUid = ref('')
@@ -80,7 +80,7 @@ watch(mediaQueries.xl, (isXL) => (isSidebarOpen.value = isXL), {
  */
 const selectedSecuritySchemeUids = computed(
   () =>
-    (isReadOnly
+    (layout === 'modal'
       ? activeCollection.value?.selectedSecuritySchemeUids
       : activeRequest.value?.selectedSecuritySchemeUids) ?? [],
 )
@@ -184,7 +184,7 @@ function createRequestFromCurl({
       selectedServerUid.value = existingServer.uid
     } else {
       selectedServerUid.value = serverMutators.add(
-        { url: parsedCurl.value.servers[0] },
+        { url: parsedCurl.value.servers[0] ?? '/' },
         collection.uid,
       ).uid
     }
@@ -204,9 +204,14 @@ function createRequestFromCurl({
   )
 
   if (newRequest && activeWorkspace.value?.uid) {
-    router.push(
-      `/workspace/${activeWorkspace.value.uid}/request/${newRequest.uid}`,
-    )
+    router.push({
+      name: 'request',
+      params: {
+        [PathId.Workspace]: activeWorkspace.value.uid,
+        [PathId.Collection]: collection.uid,
+        [PathId.Request]: newRequest.uid,
+      },
+    })
   }
   modalState.hide()
 }
@@ -220,7 +225,7 @@ function handleCurlImport(curl: string) {
   <div
     class="flex flex-1 flex-col pt-0 h-full bg-b-1 relative z-0 overflow-hidden"
     :class="{
-      '!mr-0 !mb-0 !border-0': isReadOnly,
+      '!mr-0 !mb-0 !border-0': layout === 'modal',
     }">
     <div class="flex h-full">
       <RequestSidebar

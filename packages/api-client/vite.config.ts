@@ -1,10 +1,10 @@
 import {
   ViteWatchWorkspace,
+  alias,
   createViteBuildOptions,
   findEntryPoints,
 } from '@scalar/build-tooling'
 import vue from '@vitejs/plugin-vue'
-import { URL, fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
 import svgLoader from 'vite-svg-loader'
 
@@ -14,9 +14,7 @@ export default defineConfig({
     PACKAGE_VERSION: JSON.stringify(process.env.npm_package_version),
   },
   resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
-    },
+    alias: alias(import.meta.url),
     dedupe: ['vue'],
   },
   optimizeDeps: {
@@ -24,6 +22,12 @@ export default defineConfig({
   },
   server: {
     port: 5065,
+    /**
+     * We proxy requests to void.scalar.com to test same-domain cookies.
+     */
+    proxy: {
+      '/void': 'https://void.scalar.com',
+    },
   },
   build: createViteBuildOptions({
     entry: await findEntryPoints({ allowCss: true }),

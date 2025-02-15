@@ -1,47 +1,87 @@
 <script setup lang="ts">
+import { DropdownMenu } from 'radix-vue/namespaced'
 import { computed } from 'vue'
 
 import {
-  ScalarButton,
+  ScalarDropdownButton,
+  ScalarDropdownMenu,
   ScalarIcon,
-  ScalarListbox,
-  type ScalarListboxOption,
+  ScalarListboxCheckbox,
 } from '../..'
-import { useBindCx } from '../../hooks/useBindCx'
+import { ScalarMenuLink, type ScalarMenuTeamOption } from './'
+import ScalarMenuTeamProfile from './ScalarMenuTeamProfile.vue'
 
 const props = defineProps<{
-  team?: ScalarListboxOption | undefined
-  teams: ScalarListboxOption[]
+  /** The currently selected team */
+  team?: ScalarMenuTeamOption | undefined
+  /** The list of teams to choose from */
+  teams: ScalarMenuTeamOption[]
 }>()
 
 const emit = defineEmits<{
-  (e: 'update:team', value: ScalarListboxOption | undefined): void
+  /** Emitted when the selected team changes */
+  (e: 'update:team', value: ScalarMenuTeamOption | undefined): void
+  /** Emitted when the user clicks the "Create new team" button */
+  (e: 'add'): void
 }>()
 
-const model = computed<ScalarListboxOption | undefined>({
-  get: () => props.team,
-  set: (v) => emit('update:team', v),
+/** A model that tracks the team id */
+const model = computed<string | undefined>({
+  get: () => props.team?.id,
+  set: (v) =>
+    emit(
+      'update:team',
+      props.teams.find((t) => t.id === v),
+    ),
 })
 
 defineOptions({ inheritAttrs: false })
-const { cx } = useBindCx()
 </script>
 <template>
-  <div v-bind="cx('flex flex-col pb-px')">
-    <ScalarListbox
-      v-model="model"
-      :options="teams"
-      placement="bottom-end"
-      resize>
-      <ScalarButton
-        class="h-auto px-2.5 py-1 text-xs leading shadow-none"
-        variant="outlined">
-        <div class="truncate">{{ team?.label }}</div>
-        <ScalarIcon
-          class="ml-auto text-c-2"
-          icon="ChevronDown"
-          size="sm" />
-      </ScalarButton>
-    </ScalarListbox>
-  </div>
+  <DropdownMenu.Sub>
+    <ScalarMenuLink
+      :is="DropdownMenu.SubTrigger"
+      icon="UserSwitch"
+      v-bind="$attrs">
+      <div>Change team</div>
+      <ScalarIcon
+        class="ml-auto text-c-2 -mr-0.25"
+        icon="ChevronRight"
+        size="sm" />
+    </ScalarMenuLink>
+    <DropdownMenu.Portal>
+      <DropdownMenu.SubContent
+        :as="ScalarDropdownMenu"
+        class="max-h-radix-popper"
+        :sideOffset="3">
+        <DropdownMenu.RadioGroup
+          v-model="model"
+          class="contents">
+          <DropdownMenu.RadioItem
+            v-for="t in teams"
+            :key="t.id"
+            :as="ScalarDropdownButton"
+            class="group/item"
+            :value="t.id">
+            <ScalarMenuTeamProfile
+              class="-ml-0.75 flex-1 min-w-0"
+              :label="t.label"
+              :src="t.src" />
+            <ScalarListboxCheckbox
+              class="ml-auto"
+              :selected="t.id === model" />
+          </DropdownMenu.RadioItem>
+        </DropdownMenu.RadioGroup>
+        <DropdownMenu.Item
+          :as="ScalarDropdownButton"
+          @click="emit('add')">
+          <ScalarIcon
+            class="bg-b-3 -ml-0.75 rounded p-0.75 size-5 text-c-3"
+            icon="Add"
+            thickness="1.75" />
+          Create new team
+        </DropdownMenu.Item>
+      </DropdownMenu.SubContent>
+    </DropdownMenu.Portal>
+  </DropdownMenu.Sub>
 </template>

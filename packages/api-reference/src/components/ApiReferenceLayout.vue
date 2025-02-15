@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { CONFIGURATION_SYMBOL } from '@/hooks/useConfig'
 import { useHttpClientStore } from '@/stores/useHttpClientStore'
 import { provideUseId } from '@headlessui/vue'
+import { LAYOUT_SYMBOL } from '@scalar/api-client/hooks'
 import {
   ACTIVE_ENTITIES_SYMBOL,
   WORKSPACE_SYMBOL,
@@ -34,15 +36,7 @@ import {
 } from 'vue'
 
 import { ApiClientModal } from '../features/ApiClientModal'
-import {
-  HIDE_DOWNLOAD_BUTTON_SYMBOL,
-  HIDE_TEST_REQUEST_BUTTON_SYMBOL,
-  INTEGRATION_SYMBOL,
-  OPENAPI_DOCUMENT_URL_SYMBOL,
-  downloadSpecBus,
-  downloadSpecFile,
-  sleep,
-} from '../helpers'
+import { downloadSpecBus, downloadSpecFile, sleep } from '../helpers'
 import { useDeprecationWarnings, useNavState, useSidebar } from '../hooks'
 import type {
   ReferenceLayoutProps,
@@ -251,11 +245,11 @@ provideUseId(() => {
 
 // Create the workspace store and provide it
 const workspaceStore = createWorkspaceStore({
-  isReadOnly: true,
   proxyUrl: props.configuration.proxyUrl || props.configuration.proxy,
   themeId: props.configuration.theme,
   useLocalStorage: false,
   hideClientButton: props.configuration.hideClientButton,
+  integration: props.configuration._integration,
 })
 // Populate the workspace store
 watch(
@@ -277,20 +271,11 @@ provide(WORKSPACE_SYMBOL, workspaceStore)
 const activeEntitiesStore = createActiveEntitiesStore(workspaceStore)
 provide(ACTIVE_ENTITIES_SYMBOL, activeEntitiesStore)
 
-provide(
-  HIDE_DOWNLOAD_BUTTON_SYMBOL,
-  () => props.configuration.hideDownloadButton,
-)
-provide(
-  HIDE_TEST_REQUEST_BUTTON_SYMBOL,
-  () => props.configuration.hideTestRequestButton,
-)
-provide(OPENAPI_DOCUMENT_URL_SYMBOL, () => props.configuration.spec?.url)
-provide(INTEGRATION_SYMBOL, () =>
-  props.configuration._integration !== null
-    ? props.configuration._integration
-    : 'vue',
-)
+// Provide the client layout
+provide(LAYOUT_SYMBOL, 'modal')
+
+// Provide the configuration
+provide(CONFIGURATION_SYMBOL, props.configuration ?? {})
 
 // ---------------------------------------------------------------------------/
 // HANDLE MAPPING CONFIGURATION TO INTERNAL REFERENCE STATE
@@ -392,10 +377,8 @@ const themeStyleTag = computed(
         :aria-label="`Open API Documentation for ${parsedSpec.info?.title}`"
         class="references-rendered">
         <Content
-          :baseServerURL="configuration.baseServerURL"
           :layout="configuration.layout"
-          :parsedSpec="parsedSpec"
-          :servers="configuration.servers">
+          :parsedSpec="parsedSpec">
           <template #start>
             <slot
               v-bind="referenceSlotProps"

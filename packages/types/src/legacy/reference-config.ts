@@ -6,7 +6,7 @@ import type {
 } from '@scalar/openapi-types'
 import type { UseSeoMetaInput } from '@unhead/schema'
 
-import type { HarRequest, TargetId } from '../external'
+import type { HarRequest, TargetId } from '../external/index.ts'
 
 /**
  * This re-export is needed due to a typescript issue
@@ -25,6 +25,13 @@ export type ClientInfo = {
   link: string
   description: string
 }
+
+/**
+ * Alias for the OpenAPI 3.1 ServerObject type
+ *
+ * @deprecated Use OpenAPIV3_1.ServerObject instead
+ */
+export type Server = OpenAPIV3_1.ServerObject
 
 export type TargetInfo = {
   key: TargetId
@@ -76,7 +83,7 @@ export type ReferenceConfiguration = {
    */
   proxy?: string
   /** URL to a request proxy for the API client */
-  proxyUrl?: string
+  proxyUrl?: string | undefined
   /** Whether the spec input should show */
   isEditable?: boolean
   /** Whether to show the sidebar */
@@ -176,6 +183,74 @@ export type ReferenceConfiguration = {
    */
   pathRouting?: PathRouting
   /**
+   * If you want to customize the heading portion of the hash you can pass in a function that receives the heading
+   * and returns a string ID. This will then be used to generate the url hash. You control the whole hash with this
+   * function.
+   *
+   * Note: you must pass this function through js, setting a data attribute will not work!
+   *
+   * @default
+   * (heading: Heading) => `#description/${heading.slug}`
+   */
+  generateHeadingSlug?: (heading: Heading) => string
+  /**
+   * If you want to customize the model portion of the hash you can pass in a function that receives the model name
+   * and returns a string ID. This will then be used to generate the url hash. model/ will get prepended to the result
+   * of this function as seen far below.
+   *
+   * Note: you must pass this function through js, setting a data attribute will not work!
+   *
+   * @default
+   * (model) => slug(model.name)
+   *
+   * which would give the full hash of `#model/${slug(model.name)}`
+   */
+  generateModelSlug?: (model: { name: string }) => string
+  /**
+   * If you want to customize the tag portion of the hash you can pass in a function that receives the tag
+   * and returns a string ID. This will then be used to generate the url hash. tag/ will get prepended to the result
+   * of this function as seen far below.
+   *
+   * Note: you must pass this function through js, setting a data attribute will not work!
+   *
+   * @default
+   * (tag) => slug(tag.name)
+   *
+   * which would give the full hash of `#tag/tag-name`
+   */
+  generateTagSlug?: (tag: Tag) => string
+  /**
+   * If you want to customize the operation portion of the hash you can pass in a function that receives the operation
+   * and returns a string ID. This will then be used to generate the url hash. tag/slug(tag.name) will get prepended to
+   * the result of this function as seen far below.
+   *
+   * Note: you must pass this function through js, setting a data attribute will not work!
+   *
+   * @default
+   * (operation) => `${operation.method}${operation.path}`
+   *
+   * which would give the full hash of `#tag/tag-name/post-path`
+   */
+  generateOperationSlug?: (operation: {
+    path: string
+    operationId: string | undefined
+    method: string
+    summary: string | undefined
+  }) => string
+  /**
+   * If you want to customize the webhook portion of the hash you can pass in a function that receives the webhook name
+   * and possibly a HTTP verb and returns a string ID. This will then be used to generate the url hash. webhook/ will get
+   * prepended to the result of this function as seen far below.
+   *
+   * Note: you must pass this function through js, setting a data attribute will not work!
+   *
+   * @default
+   * (webhook) => slug(webhook.name)
+   *
+   * which would give the full hash of `#webhook/webhook-name`
+   */
+  generateWebhookSlug?: (webhook: { name: string; method?: string }) => string
+  /**
    * The baseServerURL is used when the spec servers are relative paths and we are using SSR.
    * On the client we can grab the window.location.origin but on the server we need
    * to use this prop.
@@ -183,14 +258,27 @@ export type ReferenceConfiguration = {
    * @default undefined
    * @example 'http://localhost:3000'
    */
+  /**
+   * Callback that triggers as soon as the references are lazy loaded.
+   *
+   * Note: you must pass this function through js, setting a data attribute will not work!
+   *
+   * @example
+   * ```ts
+   * onLoaded: () => {
+   *   console.log('references loaded')
+   * }
+   * ```
+   */
+  onLoaded?: () => void
   baseServerURL?: string
   /**
-   * List of servers to override the openapi spec servers
+   * List of servers to override the servers in the given OpenAPI document
    *
    * @default undefined
    * @example [{ url: 'https://api.scalar.com', description: 'Production server' }]
    */
-  servers?: Server[]
+  servers?: OpenAPIV3_1.ServerObject[]
   /**
    * We’re using Inter and JetBrains Mono as the default fonts. If you want to use your own fonts, set this to false.
    *
@@ -257,8 +345,6 @@ export type ReferenceConfiguration = {
   hideClientButton?: boolean
 }
 
-export type Server = OpenAPIV3.ServerObject | OpenAPIV3_1.ServerObject
-
 export type BaseParameter = {
   name: string
   description?: string | null
@@ -298,6 +384,12 @@ export type Header = {
   value: string
 }
 
+export enum XScalarStability {
+  Deprecated = 'deprecated',
+  Experimental = 'experimental',
+  Stable = 'stable',
+}
+
 export type Information = {
   'description'?: string
   'operationId'?: string | number
@@ -308,11 +400,12 @@ export type Information = {
   'summary'?: string
   'tags'?: string[]
   'deprecated'?: boolean
-  'servers'?: Server[]
+  'servers'?: OpenAPIV3_1.ServerObject[]
   /**
    * Scalar
    */
   'x-custom-examples'?: CustomRequestExample[]
+  'x-scalar-stability'?: XScalarStability
   /**
    * Redocly, current
    */
@@ -339,7 +432,7 @@ export type Operation = {
   name?: string
   description?: string
   information?: Information
-  servers?: Server[]
+  servers?: OpenAPIV3_1.ServerObject[]
 }
 
 /**
@@ -410,6 +503,12 @@ export type Schema = {
   properties?: Record<string, Schema>
 }
 
+/**
+ * This is a very strange and custom way to represent the operation object.
+ * It’s the outcome of the `parse` helper.
+ *
+ * @deprecated This is evil. Stop using it. We’ll transition to use the new store.
+ */
 export type TransformedOperation = Operation & {
   pathParameters?: Parameter[]
 }
@@ -418,7 +517,8 @@ export type CollapsedSidebarItems = Record<string, boolean>
 
 export type AuthenticationState = {
   customSecurity: boolean
-  preferredSecurityScheme: string | null
+  /** You can pre-select a single security scheme, multiple, or complex security using an array of arrays */
+  preferredSecurityScheme: string | (string | string[])[] | null
   securitySchemes?:
     | OpenAPIV2.SecurityDefinitionsObject
     | OpenAPIV3.ComponentsObject['securitySchemes']
@@ -454,8 +554,6 @@ export type Heading = {
 export type CodeBlockSSRKey = `components-scalar-code-block${number}`
 export type DescriptionSectionSSRKey =
   `components-Content-Introduction-Description-sections${number}`
-export type ExampleRequestSSRKey =
-  `components-Content-Operation-Example-Request${number}`
 
 export type ScalarState = {
   'hash'?: string
@@ -466,7 +564,6 @@ export type ScalarState = {
     heading: Heading
     content: string
   }[]
-  [key: ExampleRequestSSRKey]: string
 }
 
 export type SSRState = {
@@ -490,6 +587,11 @@ export type TagGroup = {
 
 export type Definitions = OpenAPIV2.DefinitionsObject
 
+/**
+ * Webhook (after our super custom transformation process)
+ *
+ * @deprecated Let’s get rid of those super custom transformed entities and use the store instead.
+ */
 export type Webhooks = Record<
   string,
   Record<
@@ -499,6 +601,17 @@ export type Webhooks = Record<
     }
   >
 >
+
+/**
+ * The native OpenAPI Webhook object, but with the x-internal and x-scalar-ignore properties
+ */
+export type Webhook = (
+  | OpenAPIV3.OperationObject
+  | OpenAPIV3_1.OperationObject
+) & {
+  'x-internal'?: boolean
+  'x-scalar-ignore'?: boolean
+}
 
 export type Spec = {
   'tags'?: Tag[]

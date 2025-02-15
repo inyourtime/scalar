@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { Operation } from '@/features/Operation'
-import { getRequest } from '@/helpers/get-request'
-import { useActiveEntities, useWorkspace } from '@scalar/api-client/store'
+import { useActiveEntities } from '@scalar/api-client/store'
 import type { OpenAPIV3 } from '@scalar/openapi-types'
 import type {
   Spec,
@@ -49,7 +48,7 @@ const hideTag = ref(false)
 const tags = ref<(TagType & { lazyOperations: TransformedOperation[] })[]>([])
 const models = ref<string[]>([])
 
-const { requests, requestExamples, securitySchemes } = useWorkspace()
+const { activeCollection, activeServer } = useActiveEntities()
 const { getModelId, getSectionId, getTagId, hash, isIntersectionEnabled } =
   useNavState()
 
@@ -165,12 +164,10 @@ onMounted(() => {
         <Operation
           v-for="operation in tag.lazyOperations"
           :key="`${operation.httpVerb}-${operation.operationId}`"
+          :collection="activeCollection"
           :layout="layout"
-          :operation="operation"
-          :requestExamples="requestExamples"
-          :requests="requests"
-          :securitySchemes="securitySchemes"
-          :tag="tag" />
+          :server="activeServer"
+          :transformedOperation="operation" />
       </Tag>
     </template>
 
@@ -183,7 +180,7 @@ onMounted(() => {
         <template v-if="getModels(parsedSpec)?.[name]">
           <SectionContent>
             <SectionHeader :level="2">
-              <Anchor :id="getModelId(name)">
+              <Anchor :id="getModelId({ name })">
                 {{
                   (getModels(parsedSpec)?.[name] as OpenAPIV3.SchemaObject)
                     .title ?? name
@@ -213,11 +210,12 @@ onMounted(() => {
 .references-loading-top-spacer {
   top: -1px;
 }
-@media (min-width: 1001px) {
+/* This doesn't seem to work but leaving here in case we need it */
+/* @media (min-width: 1001px) {
   .references-loading-top-spacer {
-    top: calc(var(--refs-header-height) - 1px);
+    top: calc(var(--scalar-custom-header-height, --refs-header-height) - 1px);
   }
-}
+} */
 .references-loading-hidden-tag .section-container > .section:first-child {
   display: none;
 }

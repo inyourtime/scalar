@@ -16,16 +16,14 @@
     "specification",
     "yaml"
   ],
-  "version": "0.2.95",
+  "version": "0.2.104",
   "engines": {
     "node": ">=18"
   },
   "scripts": {
     "build": "scalar-build-rollup",
-    "dev": "vite",
     "lint:check": "eslint .",
     "lint:fix": "eslint .  --fix",
-    "preview": "vite preview",
     "test": "vitest",
     "test:unit": "vitest .",
     "typegen:migration": "vite-node ./src/migrations/generate-types.ts",
@@ -49,6 +47,11 @@
       "import": "./dist/migrations/index.js",
       "types": "./dist/migrations/index.d.ts",
       "default": "./dist/migrations/index.js"
+    },
+    "./migrations/v-2.5.0": {
+      "import": "./dist/migrations/v-2.5.0/index.js",
+      "types": "./dist/migrations/v-2.5.0/index.d.ts",
+      "default": "./dist/migrations/v-2.5.0/index.js"
     },
     "./migrations/v-2.4.0": {
       "import": "./dist/migrations/v-2.4.0/index.js",

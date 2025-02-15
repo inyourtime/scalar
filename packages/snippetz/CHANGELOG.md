@@ -1,5 +1,24 @@
 # @scalar/snippetz
 
+## 0.2.12
+
+### Patch Changes
+
+- f9eee3f: feat: new http 1.1 plugin
+
+## 0.2.11
+
+### Patch Changes
+
+- 26abf12: feat: updates playground style
+- 26abf12: fix: updates snippetz function
+
+## 0.2.10
+
+### Patch Changes
+
+- fdd1de7: feat(snippetz): add dart/http
+
 ## 0.2.9
 
 ### Patch Changes

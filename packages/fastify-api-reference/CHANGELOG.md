@@ -1,5 +1,92 @@
 # @scalar/fastify-api-reference
 
+## 1.25.118
+
+### Patch Changes
+
+- 34e6f52: feat: upgrade to stricter tsconfig
+- Updated dependencies [f500435]
+- Updated dependencies [b5727ef]
+- Updated dependencies [34e6f52]
+- Updated dependencies [f2b082a]
+  - @scalar/types@0.0.32
+
+## 1.25.117
+
+## 1.25.116
+
+### Patch Changes
+
+- a30e7cc: fix: package doesn’t work with `moduleResolution: NodeNext`
+- Updated dependencies [a30e7cc]
+  - @scalar/types@0.0.31
+
+## 1.25.115
+
+## 1.25.114
+
+### Patch Changes
+
+- @scalar/types@0.0.30
+
+## 1.25.113
+
+## 1.25.112
+
+### Patch Changes
+
+- Updated dependencies [be34e7d]
+  - @scalar/types@0.0.29
+
+## 1.25.111
+
+## 1.25.110
+
+## 1.25.109
+
+### Patch Changes
+
+- Updated dependencies [702c386]
+- Updated dependencies [f1f39b0]
+  - @scalar/types@0.0.28
+
+## 1.25.108
+
+## 1.25.107
+
+## 1.25.106
+
+### Patch Changes
+
+- Updated dependencies [b552db5]
+  - @scalar/types@0.0.27
+
+## 1.25.105
+
+## 1.25.104
+
+### Patch Changes
+
+- Updated dependencies [60cd6f1]
+- Updated dependencies [60cd6f1]
+  - @scalar/types@0.0.26
+
+## 1.25.103
+
+## 1.25.102
+
+### Patch Changes
+
+- @scalar/types@0.0.25
+
+## 1.25.101
+
+## 1.25.100
+
+### Patch Changes
+
+- 940ce0e: chore(fastify-api-reference): move example to package playground
+
 ## 1.25.99
 
 ## 1.25.98

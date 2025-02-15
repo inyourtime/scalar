@@ -2,6 +2,75 @@ import { describe, expect, it } from 'vitest'
 
 import { REGEX } from './regexHelpers'
 
+describe('protocolRegex', () => {
+  it('allows http://', () => {
+    const text = 'http://example.com'
+    expect(text.match(REGEX.PROTOCOL)).toBeTruthy()
+  })
+
+  it('allows https://', () => {
+    const text = 'https://example.com'
+    expect(text.match(REGEX.PROTOCOL)).toBeTruthy()
+  })
+
+  it('allows file://', () => {
+    const text = 'file://example.com'
+    expect(text.match(REGEX.PROTOCOL)).toBeTruthy()
+  })
+
+  it('allows ftp://', () => {
+    const text = 'ftp://example.com'
+    expect(text.match(REGEX.PROTOCOL)).toBeTruthy()
+  })
+
+  it('allows mailto://', () => {
+    const text = 'mailto://example.com'
+    expect(text.match(REGEX.PROTOCOL)).toBeTruthy()
+  })
+
+  it('does not allow variables before ://', () => {
+    const text = '{protocol}://example.com'
+    expect(text.match(REGEX.PROTOCOL)).toBeNull()
+  })
+
+  it('does not allow no protocol with a variable', () => {
+    const text = '{base}/api'
+    expect(text.match(REGEX.PROTOCOL)).toBeNull()
+  })
+
+  it('does not allow no protocol with no variables', () => {
+    const text = 'example.com'
+    expect(text.match(REGEX.PROTOCOL)).toBeNull()
+  })
+})
+
+describe('multipleSlashesRegex', () => {
+  it('matches multiple slashes', () => {
+    const text = 'http://example.com//api'.replace(REGEX.MULTIPLE_SLASHES, '/')
+    expect(text).toBe('http://example.com/api')
+  })
+
+  it('matches multiple slashes in the path', () => {
+    const text = 'http://example.com/api//users////{id}'.replace(
+      REGEX.MULTIPLE_SLASHES,
+      '/',
+    )
+    expect(text).toBe('http://example.com/api/users/{id}')
+  })
+
+  it('does not match single slash or the scheme', () => {
+    const text = 'http://example.com/api/users/{id}'
+    expect(text.match(REGEX.MULTIPLE_SLASHES)).toBeNull()
+  })
+
+  it('does not do anything to the query params', () => {
+    const text = 'http://example.com/api/users/{id}?query=param'
+    expect(text.replace(REGEX.MULTIPLE_SLASHES, '/')).toBe(
+      'http://example.com/api/users/{id}?query=param',
+    )
+  })
+})
+
 describe('variableRegex', () => {
   it('matches variables with double curly braces', () => {
     const text = '{{example.com}}'

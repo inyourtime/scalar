@@ -73,14 +73,21 @@ const activeExampleContentType = computed(() => {
     return activeExample.value.body.raw.encoding
   }
 
-  return 'none'
+  // Set content type from request if present
+  const contentType = Object.keys(
+    activeRequest.value?.requestBody?.content || {},
+  )[0]
+
+  return contentType || 'none'
 })
 /** Selected ref from options above */
 const selectedContentType = computed({
   get: () =>
     contentTypeOptions.find(
       (opt) => opt.id === activeExampleContentType.value,
-    ) ?? contentTypeOptions[contentTypeOptions.length - 1],
+    ) ??
+    contentTypeOptions[contentTypeOptions.length - 1] ??
+    contentTypeOptions[0],
   set: (opt) => {
     if (opt?.id) updateActiveBody(opt.id)
   },
@@ -106,10 +113,10 @@ const updateRow = (rowIdx: number, field: 'key' | 'value', value: string) => {
     const updatedParams = [...currentParams]
     updatedParams[rowIdx] = {
       ...updatedParams[rowIdx],
-      [field]: value || '',
       value: updatedParams[rowIdx]?.value || '',
       key: updatedParams[rowIdx]?.key || '',
       enabled: updatedParams[rowIdx]?.enabled ?? false,
+      [field]: value || '',
     }
 
     /** enable row key or value is filled */
@@ -296,8 +303,8 @@ const updateActiveBody = (type: Content) => {
       encoding,
       value: activeExample.value.body.formData?.value ?? [],
     })
-  // Remove raw if no encoding
-  else if (!encoding) {
+  // Remove raw if no encoding and not binary
+  else if (!encoding && activeBody !== 'binary') {
     const { raw: deleteMe, ...body } = activeExample.value.body
     requestExampleMutators.edit(activeExample.value.uid, 'body', body)
   }
@@ -318,13 +325,24 @@ const updateActiveBody = (type: Content) => {
       headers.splice(contentTypeIdx, 1)
     }
   }
-  // Add header if doesn't
-  else if (header)
-    headers.unshift({
-      key: 'Content-Type',
-      value: header,
-      enabled: true,
-    })
+  // Add header if doesn't have one
+  else if (header) {
+    const lastHeader = headers[headers.length - 1]
+    // Add header before last if empty to prevent empty row duplication
+    if (lastHeader && lastHeader.key === '' && lastHeader.value === '') {
+      headers.splice(headers.length - 1, 0, {
+        key: 'Content-Type',
+        value: header,
+        enabled: true,
+      })
+    } else {
+      headers.push({
+        key: 'Content-Type',
+        value: header,
+        enabled: true,
+      })
+    }
+  }
 
   requestExampleMutators.edit(
     activeExample.value.uid,
@@ -343,8 +361,8 @@ const handleFileUploadFormData = async (rowIdx: number) => {
         updatedParams[rowIdx] = {
           ...updatedParams[rowIdx],
           file,
-          value: file.name,
-          key: file.name,
+          value: updatedParams[rowIdx]?.value || file.name,
+          key: updatedParams[rowIdx]?.key || file.name,
           enabled: true,
         }
         requestExampleMutators.edit(
@@ -364,6 +382,7 @@ function removeBinaryFile() {
   if (!activeRequest.value || !activeExample.value) return
   requestExampleMutators.edit(activeExample.value.uid, 'body.binary', undefined)
 }
+
 function handleRemoveFileFormData(rowIdx: number) {
   if (!activeRequest.value || !activeExample.value) return
   const currentParams = formParams.value
@@ -479,7 +498,7 @@ const selectedExample = computed({
             :options="contentTypeOptions"
             teleport>
             <ScalarButton
-              class="flex gap-1.5 h-full px-2 text-c-2 font-normal hover:text-c-1 w-fit"
+              class="flex gap-1.5 h-full px-3 text-c-2 font-normal hover:text-c-1 w-fit"
               fullWidth
               variant="ghost">
               <span>{{ selectedContentType?.label }}</span>
@@ -514,10 +533,11 @@ const selectedExample = computed({
           </div>
         </template>
         <template v-else-if="selectedContentType?.id === 'binaryFile'">
-          <div class="flex items-center justify-center p-1.5 overflow-hidden">
+          <div
+            class="border-t flex items-center justify-center p-1.5 overflow-hidden">
             <template v-if="activeExample?.body.binary">
               <span
-                class="text-c-2 text-xs w-full border rounded p-1 max-w-full overflow-hidden whitespace-nowrap">
+                class="text-c-2 text-xs w-full border rounded py-1 px-1.5 max-w-full overflow-hidden whitespace-nowrap">
                 {{ (activeExample?.body.binary as File).name }}
               </span>
               <ScalarButton
@@ -573,7 +593,7 @@ const selectedExample = computed({
         <template v-else>
           <!-- TODO: remove this as type hack when we add syntax highligting -->
           <CodeInput
-            class="border-t-1/2"
+            class="border-t-1/2 px-1"
             content=""
             :language="codeInputLanguage as CodeMirrorLanguage"
             lineNumbers

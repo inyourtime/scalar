@@ -6,7 +6,11 @@ import ViewLayoutSection from '@/components/ViewLayout/ViewLayoutSection.vue'
 
 defineProps<{
   title?: string
-  options: { key: string; label: string; placeholder: string }[]
+  options: {
+    key: string
+    label: string
+    placeholder: string
+  }[]
   data: Record<string, any>
   onUpdate: (key: string, value: any) => void
 }>()
@@ -19,7 +23,7 @@ defineProps<{
         v-else
         name="title" />
     </template>
-    <div class="custom-scroll flex flex-1 flex-col gap-1.5 p-2 md:p-5">
+    <div class="custom-scroll flex flex-1 flex-col gap-1.5">
       <DataTable
         v-if="Object.keys(data).length > 0"
         :columns="['']">
@@ -28,7 +32,7 @@ defineProps<{
           :key="index"
           :class="{ 'border-t': index === 0 }">
           <DataTableInput
-            :modelValue="String(data[option.key] ?? '')"
+            :modelValue="data[option.key] ?? ''"
             :placeholder="option.placeholder"
             @update:modelValue="onUpdate(option.key, $event)">
             {{ option.label }}

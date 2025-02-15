@@ -1,5 +1,70 @@
 # @scalar/themes
 
+## 0.9.66
+
+### Patch Changes
+
+- Updated dependencies [f500435]
+- Updated dependencies [b5727ef]
+- Updated dependencies [34e6f52]
+- Updated dependencies [f2b082a]
+  - @scalar/types@0.0.32
+
+## 0.9.65
+
+### Patch Changes
+
+- Updated dependencies [a30e7cc]
+  - @scalar/types@0.0.31
+
+## 0.9.64
+
+### Patch Changes
+
+- @scalar/types@0.0.30
+
+## 0.9.63
+
+### Patch Changes
+
+- 51f3177: fix: removes inset from box shadow variable
+- Updated dependencies [be34e7d]
+  - @scalar/types@0.0.29
+
+## 0.9.62
+
+### Patch Changes
+
+- 776a4e2: docs(themes): update themes readme
+- 2ed681b: feat: adds reset outline offset for button
+- 4f12fe4: feat(themes): add scalar danger color
+- Updated dependencies [702c386]
+- Updated dependencies [f1f39b0]
+  - @scalar/types@0.0.28
+
+## 0.9.61
+
+### Patch Changes
+
+- Updated dependencies [b552db5]
+  - @scalar/types@0.0.27
+
+## 0.9.60
+
+### Patch Changes
+
+- e866487: feat(components): create dark light toggle components
+- Updated dependencies [60cd6f1]
+- Updated dependencies [60cd6f1]
+  - @scalar/types@0.0.26
+
+## 0.9.59
+
+### Patch Changes
+
+- 7b4ab2c: feat(components): make ScalarMenu into a dropdown
+  - @scalar/types@0.0.25
+
 ## 0.9.58
 
 ### Patch Changes

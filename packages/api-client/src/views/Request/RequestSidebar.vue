@@ -10,6 +10,7 @@ import SidebarButton from '@/components/Sidebar/SidebarButton.vue'
 import SidebarToggle from '@/components/Sidebar/SidebarToggle.vue'
 import { useLayout, useSidebar } from '@/hooks'
 import type { HotKeyEvent } from '@/libs'
+import { PathId } from '@/routes'
 import { useWorkspace } from '@/store'
 import { useActiveEntities } from '@/store/active-entities'
 import { createInitialRequest } from '@/store/requests'
@@ -24,6 +25,7 @@ import {
   ScalarSearchResultList,
 } from '@scalar/components'
 import { LibraryIcon } from '@scalar/icons'
+import type { Collection } from '@scalar/oas-utils/entities/spec'
 import { useToasts } from '@scalar/use-toasts'
 import {
   computed,
@@ -37,6 +39,7 @@ import {
 } from 'vue'
 import { useRouter } from 'vue-router'
 
+import { isGettingStarted } from './RequestSection/helpers/getting-started'
 import RequestSidebarItem from './RequestSidebarItem.vue'
 import { WorkspaceDropdown } from './components'
 
@@ -59,7 +62,7 @@ const {
   activeWorkspaceRequests,
   activeWorkspace,
 } = useActiveEntities()
-const { findRequestParents, isReadOnly, events, requestMutators, requests } =
+const { findRequestParents, events, requestMutators, requests } =
   workspaceContext
 
 const { handleDragEnd, isDroppable } = dragHandlerFactory(
@@ -77,6 +80,7 @@ const searchResultsId = useId()
 const { toast } = useToasts()
 /** The currently selected sidebarMenuItem for the context menu */
 const menuItem = reactive<SidebarMenuItem>({ open: false })
+const isSearchVisible = ref(false)
 
 /** Watch to see if activeRequest changes and ensure we open any folders */
 watch(
@@ -85,7 +89,7 @@ watch(
     if (!request) return
 
     // Ensure the sidebar folders are open
-    findRequestParents(request).forEach((uid) =>
+    findRequestParents(request).forEach((uid: string) =>
       setCollapsedSidebarFolder(uid, true),
     )
   },
@@ -127,7 +131,7 @@ const handleToggleWatchMode = (item?: SidebarItem) => {
   if (item?.documentUrl) {
     item.watchMode = !item.watchMode
     const currentCollection = activeWorkspaceCollections.value.find(
-      (collection) => collection.uid === item.entity.uid,
+      (collection: Collection) => collection.uid === item.entity.uid,
     )
     if (currentCollection) {
       currentCollection.watchMode = item.watchMode
@@ -137,10 +141,17 @@ const handleToggleWatchMode = (item?: SidebarItem) => {
 
 watch(
   () =>
-    activeWorkspaceCollections.value.map((collection) => collection.watchMode),
+    activeWorkspaceCollections.value.map(
+      (collection: Collection) => collection.watchMode,
+    ),
   (newWatchModes, oldWatchModes) => {
-    newWatchModes.forEach((newWatchMode, index) => {
-      if (!isReadOnly && newWatchMode !== oldWatchModes[index]) {
+    newWatchModes.forEach((newWatchMode: boolean, index: number) => {
+      if (
+        layout !== 'modal' &&
+        newWatchMode !== oldWatchModes[index] &&
+        activeWorkspaceCollections.value[index]?.info?.title !== 'Drafts' &&
+        activeWorkspaceCollections.value[index]
+      ) {
         const currentCollection = activeWorkspaceCollections.value[index]
         if (!currentCollection) return
 
@@ -159,11 +170,11 @@ const selectedResultId = computed(() => {
 
 const handleClearDrafts = () => {
   const draftCollection = activeWorkspaceCollections.value.find(
-    (collection) => collection.info?.title === 'Drafts',
+    (collection: Collection) => collection.info?.title === 'Drafts',
   )
 
   if (draftCollection) {
-    draftCollection.requests.forEach((requestUid) => {
+    draftCollection.requests.forEach((requestUid: string) => {
       if (requests[requestUid]) {
         requestMutators.delete(requests[requestUid], draftCollection.uid)
       }
@@ -172,33 +183,38 @@ const handleClearDrafts = () => {
 
   const hasRequests = activeWorkspaceRequests.value.length
 
-  if (!hasRequests) {
-    const { request } = createInitialRequest()
-
-    if (draftCollection) {
-      requestMutators.add(request, draftCollection.uid)
-      // TODO: Use named routes instead
-      replace(`/workspace/${activeWorkspace.value?.uid}/request/${request.uid}`)
-    }
-  } else {
+  // First request in the first collection
+  if (hasRequests) {
     const firstCollection = activeWorkspaceCollections.value[0]
     const firstRequest = firstCollection?.requests[0]
 
     if (firstRequest) {
-      // TODO: Use named routes instead
-      replace(
-        `/workspace/${activeWorkspace.value?.uid}/request/${firstRequest}`,
-      )
+      replace({
+        name: 'request',
+        params: {
+          [PathId.Request]: firstRequest,
+        },
+      })
+    }
+  }
+  // Create a new request and go to it
+  else {
+    const { request } = createInitialRequest()
+
+    if (draftCollection) {
+      requestMutators.add(request, draftCollection.uid)
+
+      replace({
+        name: 'request',
+        params: {
+          [PathId.Request]: request.uid,
+        },
+      })
     }
   }
 }
 
-const isSearchVisible = ref(false)
-
 const toggleSearch = () => {
-  // Simply toggle the visibility
-  isSearchVisible.value = !isSearchVisible.value
-
   // If we're hiding the search, clear the text
   if (!isSearchVisible.value) {
     searchText.value = ''
@@ -210,7 +226,18 @@ const toggleSearch = () => {
       searchInputRef.value?.focus()
     })
   }
+
+  // Simply toggle the visibility
+  isSearchVisible.value = !isSearchVisible.value
 }
+
+const showGettingStarted = computed(() => {
+  return isGettingStarted(
+    activeWorkspaceCollections.value,
+    activeWorkspaceRequests.value,
+    requests,
+  )
+})
 </script>
 <template>
   <Sidebar
@@ -219,23 +246,23 @@ const toggleSearch = () => {
     :isSidebarOpen="isSidebarOpen"
     @update:isSidebarOpen="$emit('update:isSidebarOpen', $event)">
     <template
-      v-if="!isReadOnly"
+      v-if="layout !== 'modal'"
       #header>
     </template>
     <template #content>
-      <div class="flex items-center h-[48px] px-3 top-0 bg-b-1 sticky z-20">
+      <div class="flex items-center h-12 px-3 top-0 bg-b-1 sticky z-20">
         <SidebarToggle
           class="xl:hidden"
           :class="[{ '!flex': layout === 'modal' }]"
           :modelValue="isSidebarOpen"
           @update:modelValue="$emit('update:isSidebarOpen', $event)" />
-        <WorkspaceDropdown v-if="!isReadOnly" />
+        <WorkspaceDropdown v-if="layout !== 'modal'" />
         <span
-          v-if="!isReadOnly"
+          v-if="layout !== 'modal'"
           class="text-c-3">
           /
         </span>
-        <EnvironmentSelector v-if="!isReadOnly" />
+        <EnvironmentSelector v-if="layout !== 'modal'" />
         <button
           class="ml-auto"
           type="button"
@@ -246,8 +273,8 @@ const toggleSearch = () => {
         </button>
       </div>
       <div
-        v-show="isSearchVisible || searchText"
-        class="search-button-fade sticky px-3 py-2.5 z-10 pt-0 top-[48px] focus-within:z-20"
+        v-show="isSearchVisible"
+        class="search-button-fade sticky px-3 py-2.5 z-10 pt-0 top-12 focus-within:z-20"
         role="search">
         <ScalarSearchInput
           ref="searchInputRef"
@@ -255,17 +282,21 @@ const toggleSearch = () => {
           :aria-activedescendant="selectedResultId"
           :aria-controls="searchResultsId"
           sidebar
-          @blur="isSearchVisible = searchText.length > 0"
           @input="fuseSearch"
           @keydown.down.stop="navigateSearchResults('down')"
           @keydown.enter.stop="selectSearchResult()"
           @keydown.up.stop="navigateSearchResults('up')" />
       </div>
       <div
-        class="flex flex-1 flex-col overflow-visible px-3 pb-3 pt-0"
-        :class="{
-          'pb-14': !isReadOnly,
-        }"
+        class="gap-1/2 flex flex-1 flex-col overflow-visible overflow-y-auto px-3 pb-3 pt-0"
+        :class="[
+          {
+            'pb-14': layout !== 'modal',
+          },
+          {
+            'h-[calc(100%-273.5px)]': showGettingStarted,
+          },
+        ]"
         @dragenter.prevent
         @dragover.prevent>
         <template v-if="searchText">
@@ -301,7 +332,9 @@ const toggleSearch = () => {
           <RequestSidebarItem
             v-for="collection in activeWorkspaceCollections"
             :key="collection.uid"
-            :isDraggable="!isReadOnly && collection.info?.title !== 'Drafts'"
+            :isDraggable="
+              layout !== 'modal' && collection.info?.title !== 'Drafts'
+            "
             :isDroppable="isDroppable"
             :menuItem="menuItem"
             :parentUids="[]"
@@ -338,7 +371,7 @@ const toggleSearch = () => {
     <template #button>
       <div
         :class="{
-          'empty-sidebar-item': activeWorkspaceRequests.length <= 1,
+          'empty-sidebar-item': showGettingStarted,
         }">
         <div class="empty-sidebar-item-content px-2.5 py-2.5">
           <div class="w-[60px] h-[68px] m-auto rabbit-ascii mt-2 relative">
@@ -357,16 +390,16 @@ const toggleSearch = () => {
           </div>
         </div>
         <ScalarButton
-          v-if="!isReadOnly"
+          v-if="layout !== 'modal'"
           class="mb-1.5 w-full h-fit hidden opacity-0 p-1.5"
           :class="{
-            'flex opacity-100': activeWorkspaceRequests.length <= 1,
+            'flex opacity-100': showGettingStarted,
           }"
           @click="openCommandPaletteImport">
           Import Collection
         </ScalarButton>
         <SidebarButton
-          v-if="!isReadOnly"
+          v-if="layout !== 'modal'"
           :click="events.commandPalette.emit"
           hotkey="K">
           <template #title>Add Item</template>
@@ -377,7 +410,7 @@ const toggleSearch = () => {
 
   <!-- Menu -->
   <RequestSidebarItemMenu
-    v-if="!isReadOnly && menuItem"
+    v-if="layout !== 'modal' && menuItem"
     :menuItem="menuItem"
     @clearDrafts="handleClearDrafts"
     @closeMenu="menuItem.open = false"

@@ -1,7 +1,10 @@
+import {
+  nanoidSchema,
+  selectedSecuritySchemeUidSchema,
+} from '@/entities/shared/utility'
 import type { OpenAPIV3_1 } from '@scalar/openapi-types'
 import { type ZodSchema, z } from 'zod'
 
-import { nanoidSchema } from '../shared'
 import { oasParameterSchema } from './parameters'
 import { type RequestExample, xScalarExampleSchema } from './request-examples'
 import { oasSecurityRequirementSchema } from './security'
@@ -99,6 +102,9 @@ export const oasRequestSchema = z.object({
   'responses': z.record(z.string(), z.any()).optional(),
   /** xScalar examples */
   'x-scalar-examples': z.record(z.string(), xScalarExampleSchema).optional(),
+  /** Hide operations */
+  'x-internal': z.boolean().optional(),
+  'x-scalar-ignore': z.boolean().optional(),
 }) satisfies ZodSchema<OpenAPIV3_1.OperationObject>
 
 /**
@@ -122,7 +128,7 @@ const extendedRequestSchema = z.object({
   /** List of example UIDs associated with the request */
   examples: nanoidSchema.array().default([]),
   /** List of security scheme UIDs associated with the request */
-  selectedSecuritySchemeUids: nanoidSchema.array().default([]),
+  selectedSecuritySchemeUids: selectedSecuritySchemeUidSchema,
 })
 
 /** Unified request schema for client usage */

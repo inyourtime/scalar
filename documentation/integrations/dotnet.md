@@ -2,16 +2,20 @@
 
 The `Scalar.AspNetCore` package provides a simple way to integrate the Scalar API reference into your .NET 8+ application.
 
+## Migration Guide
+
+If you are upgrading from `1.x.x` to `2.x.x`, please refer to the [migration guide](https://github.com/scalar/scalar/issues/4362).
+
 ## Basic Setup
 
 1. **Install the package**
 
 ```shell
-dotnet add package Scalar.AspNetCore --version 1.2.*
+dotnet add package Scalar.AspNetCore --version 2.0.*
 ```
 
 > [!NOTE]
-> We release new versions frequently to bring you the latest features and bug fixes. To reduce the noise in your project file, we recommend using a wildcard for the patch version, e.g., `1.2.*`.
+> We release new versions frequently to bring you the latest features and bug fixes. To reduce the noise in your project file, we recommend using a wildcard for the patch version, e.g., `2.0.*`.
 
 2. **Add the using directive**
 
@@ -67,14 +71,27 @@ if (app.Environment.IsDevelopment())
 }
 ```
 
-That’s it! 🎉 With the default settings, you can now access the Scalar API reference at `/scalar/v1` in your browser, where `v1` is the default document name.
+That’s it! 🎉 With the default settings, you can now access the Scalar API reference at `/scalar` to see the API reference for the `v1` document. Alternatively, you can navigate to `/scalar/{documentName}` (e.g., `/scalar/v2`) to view the API reference for a specific document.
 
 ## Configuration Options
 
-The `MapScalarApiReference` method accepts an optional `options` parameter, which you can use to customize Scalar using the fluent API or object initializer syntax:
+The `MapScalarApiReference` method accepts an optional `options` parameter, which you can use to customize Scalar using the fluent API or object initializer syntax. This parameter can be of type `Action<ScalarOptions>` or `Action<ScalarOptions, HttpContext>`.
 
 ```csharp
 app.MapScalarApiReference(options =>
+{
+    // Fluent API
+    options
+        .WithTitle("Custom API")
+        .WithSidebar(false);
+
+    // Object initializer
+    options.Title = "Custom API";
+    options.ShowSidebar = false;
+});
+
+// Or with HttpContext
+app.MapScalarApiReference((options, httpContext) =>
 {
     // Fluent API
     options
@@ -168,7 +185,7 @@ app.MapScalarApiReference(options =>
 
 ### OpenAPI Document
 
-Scalar expects the OpenAPI document to be located at `/openapi/{documentName}.json`, matching the route of the built-in .NET OpenAPI generator in the `Microsoft.AspNetCore.OpenApi` package. If the document is located elsewhere (e.g., when using `Swashbuckle` or `NSwag`), specify the path using the `OpenApiRoutePattern` property:
+Scalar expects the OpenAPI document to be located at `/openapi/{documentName}.json`, matching the route of the built-in .NET OpenAPI generator in the `Microsoft.AspNetCore.OpenApi` package. If the document is located elsewhere (e.g., when using `Swashbuckle` or `NSwag`), specify the path or URL using the `OpenApiRoutePattern` property:
 
 ```csharp
 app.MapScalarApiReference(options =>
@@ -176,25 +193,22 @@ app.MapScalarApiReference(options =>
     options.WithOpenApiRoutePattern("/swagger/{documentName}.json");
     // or
     options.OpenApiRoutePattern = "/swagger/{documentName}.json";
+    // Can also point to an external URL:
+    options.OpenApiRoutePattern = "https://example.com/swagger/{documentName}.json";
 });
 ```
 
 ### API Reference Route
 
-The Scalar API reference is initially accessible at `/scalar/{documentName}`. Customize this route using the `EndpointPathPrefix` property:
+The Scalar API reference is initially accessible at `/scalar`. Customize this route using the `endpointPrefix` parameter:
 
 ```csharp
-app.MapScalarApiReference(options =>
-{
-    options.WithEndpointPrefix("/api-reference/{documentName}");
-    // or
-    options.EndpointPathPrefix = "/api-reference/{documentName}";
-});
+app.MapScalarApiReference("/api-reference");
 ```
 
 ### Custom HTTP Client
 
-Scalar allows you to set a default HTTP client for code samples. The [`ScalarTarget`](https://github.com/scalar/scalar/blob/main/packages/scalar.aspnetcore/src/Scalar.AspNetCore/Enums/ScalarTarget.cs) enum specifies the language, and the [`ScalarClient`](https://github.com/scalar/scalar/blob/main/packages/scalar.aspnetcore/src/Scalar.AspNetCore/Enums/ScalarClient.cs) enum specifies the client type.
+Scalar allows you to set a default HTTP client for code samples. The [`ScalarTarget`](https://github.com/scalar/scalar/blob/main/integrations/aspnetcore/src/Scalar.AspNetCore/Enums/ScalarTarget.cs) enum specifies the language, and the [`ScalarClient`](https://github.com/scalar/scalar/blob/main/integrations/aspnetcore/src/Scalar.AspNetCore/Enums/ScalarClient.cs) enum specifies the client type.
 
 ```csharp
 app.MapScalarApiReference(options =>
@@ -244,4 +258,4 @@ app
   .RequireAuthorization();
 ```
 
-For all available configuration properties and their default values, check out the [`ScalarOptions`](https://github.com/scalar/scalar/blob/main/packages/scalar.aspnetcore/src/Scalar.AspNetCore/Options/ScalarOptions.cs) and the [`ScalarOptionsExtensions`](https://github.com/scalar/scalar/blob/main/packages/scalar.aspnetcore/src/Scalar.AspNetCore/Extensions/ScalarOptionsExtensions.cs).
+For all available configuration properties and their default values, check out the [`ScalarOptions`](https://github.com/scalar/scalar/blob/main/integrations/aspnetcore/src/Scalar.AspNetCore/Options/ScalarOptions.cs) and the [`ScalarOptionsExtensions`](https://github.com/scalar/scalar/blob/main/integrations/aspnetcore/src/Scalar.AspNetCore/Extensions/ScalarOptionsExtensions.cs).

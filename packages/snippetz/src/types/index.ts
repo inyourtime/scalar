@@ -5,7 +5,7 @@ export type { Request as HarRequest } from 'har-format'
 /**
  * List of available clients
  */
-export type AvailableClients = [
+export const AVAILABLE_CLIENTS = [
   'c/libcurl',
   'clojure/clj_http',
   'csharp/httpclient',
@@ -40,7 +40,10 @@ export type AvailableClients = [
   'shell/httpie',
   'shell/wget',
   'swift/nsurlsession',
-]
+  'dart/http',
+] as const
+
+export type AvailableClients = typeof AVAILABLE_CLIENTS
 
 /** Programming language */
 export type TargetId = AvailableClients[number] extends `${infer T}/${string}`

@@ -12,29 +12,49 @@ import {
 import { ExampleRequest } from '@/features/ExampleRequest'
 import { ExampleResponses } from '@/features/ExampleResponses'
 import { TestRequestButton } from '@/features/TestRequestButton'
+import {
+  getOperationStability,
+  getOperationStabilityColor,
+  isOperationDeprecated,
+} from '@/helpers/operation'
 import { ScalarErrorBoundary, ScalarMarkdown } from '@scalar/components'
+import type {
+  Collection,
+  Operation,
+  Server,
+} from '@scalar/oas-utils/entities/spec'
 import type { TransformedOperation } from '@scalar/types/legacy'
+import { defineProps } from 'vue'
 
 import OperationParameters from '../components/OperationParameters.vue'
 import OperationResponses from '../components/OperationResponses.vue'
 
-const { id, operation, request, secretCredentials } = defineProps<{
+defineProps<{
   id?: string
-  operation: TransformedOperation
-  request: Request | null
-  secretCredentials: string[]
+  collection: Collection
+  server: Server | undefined
+  operation: Operation
+  /** @deprecated Use `operation` instead */
+  transformedOperation: TransformedOperation
 }>()
 </script>
 <template>
   <Section
     :id="id"
-    :label="operation.name">
+    :label="transformedOperation.name">
     <SectionContent>
-      <Badge v-if="operation.information?.deprecated"> Deprecated </Badge>
-      <div :class="operation.information?.deprecated ? 'deprecated' : ''">
+      <Badge
+        v-if="getOperationStability(transformedOperation)"
+        :class="getOperationStabilityColor(transformedOperation)">
+        {{ getOperationStability(transformedOperation) }}
+      </Badge>
+      <div
+        :class="
+          isOperationDeprecated(transformedOperation) ? 'deprecated' : ''
+        ">
         <SectionHeader :level="3">
           <Anchor :id="id ?? ''">
-            {{ operation.name }}
+            {{ transformedOperation.name }}
           </Anchor>
         </SectionHeader>
       </div>
@@ -45,22 +65,23 @@ const { id, operation, request, secretCredentials } = defineProps<{
               :value="operation.description"
               withImages />
             <OperationParameters :operation="operation" />
-            <OperationResponses :operation="operation" />
+            <OperationResponses :operation="transformedOperation" />
           </div>
         </SectionColumn>
         <SectionColumn>
           <div class="examples">
             <ScalarErrorBoundary>
               <ExampleRequest
+                :collection="collection"
                 fallback
                 :operation="operation"
-                :request="request"
-                :secretCredentials="secretCredentials">
+                :server="server"
+                :transformedOperation="transformedOperation">
                 <template #header>
                   <OperationPath
                     class="example-path"
-                    :deprecated="operation.information?.deprecated"
-                    :path="operation.path" />
+                    :deprecated="transformedOperation.information?.deprecated"
+                    :path="transformedOperation.path" />
                 </template>
                 <template #footer>
                   <TestRequestButton :operation="operation" />
@@ -69,7 +90,7 @@ const { id, operation, request, secretCredentials } = defineProps<{
             </ScalarErrorBoundary>
             <ScalarErrorBoundary>
               <ExampleResponses
-                :operation="operation"
+                :responses="operation.responses"
                 style="margin-top: 12px" />
             </ScalarErrorBoundary>
           </div>

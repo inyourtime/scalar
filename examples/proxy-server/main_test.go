@@ -138,8 +138,8 @@ func TestCORSHandling(t *testing.T) {
 
 		// Check CORS headers
 		headers := w.Header()
-		if headers.Get("Access-Control-Allow-Origin") != "http://example.com" {
-			t.Errorf("Expected Allow-Origin header to be 'http://example.com'")
+		if headers.Get("Access-Control-Allow-Origin") != "*" {
+			t.Errorf("Expected Allow-Origin header to be '*'")
 		}
 		if headers.Get("Access-Control-Allow-Credentials") != "true" {
 			t.Errorf("Expected Allow-Credentials header to be 'true'")
@@ -171,7 +171,7 @@ func TestCORSHandling(t *testing.T) {
 	t.Run("Preserves CORS headers from origin", func(t *testing.T) {
 		// Create a test server that sends CORS headers
 		targetServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Access-Control-Allow-Origin", "https://original-allowed-origin.com")
+			w.Header().Set("Access-Control-Allow-Origin", "*")
 			w.Header().Set("Access-Control-Allow-Methods", "GET, POST")
 			w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 			w.Write([]byte("response with CORS"))
@@ -194,8 +194,8 @@ func TestCORSHandling(t *testing.T) {
 		// Verify that our proxy's CORS headers override the target's headers
 		headers := w.Header()
 
-		if headers.Get("Access-Control-Allow-Origin") != "http://example.com" {
-			t.Errorf("Expected Access-Control-Allow-Origin header to be 'http://example.com', got '%s'",
+		if headers.Get("Access-Control-Allow-Origin") != "*" {
+			t.Errorf("Expected Access-Control-Allow-Origin header to be '*', got '%s'",
 				headers.Get("Access-Control-Allow-Origin"))
 		}
 
@@ -275,14 +275,14 @@ func TestProxyBehavior(t *testing.T) {
 	t.Run("Overwrites CORS headers after redirects", func(t *testing.T) {
 		server := setupTestServer(func(w http.ResponseWriter, r *http.Request) {
 			if r.URL.Path == "/initial" {
-				w.Header().Set("Access-Control-Allow-Origin", "https://original-allowed-origin.com")
+				w.Header().Set("Access-Control-Allow-Origin", "*")
 				w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 				http.Redirect(w, r, "/final", http.StatusTemporaryRedirect)
 				return
 			}
 
 			if r.URL.Path == "/final" {
-				w.Header().Set("Access-Control-Allow-Origin", "https://original-allowed-origin.com")
+				w.Header().Set("Access-Control-Allow-Origin", "*")
 				w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 				w.Write([]byte("final destination"))
 			}
@@ -424,6 +424,36 @@ func TestProxyBehavior(t *testing.T) {
 		// Create a request with Origin header
 		req := httptest.NewRequest(http.MethodGet, "/?scalar_url="+targetServer.url, nil)
 		req.Header.Set("Origin", "http://example.com")
+		w := httptest.NewRecorder()
+
+		// Call the handler
+		proxyServer.handleRequest(w, req)
+
+		// Check response
+		if w.Code != http.StatusOK {
+			t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Code)
+		}
+	})
+
+	t.Run("Forwards X-Scalar-Cookie as Cookie header", func(t *testing.T) {
+		// Create a test server that checks for the Cookie header
+		targetServer := setupTestServer(func(w http.ResponseWriter, r *http.Request) {
+			// Check that Cookie header is set
+			expectedCookie := "session_id=abc123"
+			if cookie := r.Header.Get("Cookie"); cookie != expectedCookie {
+				t.Errorf("Expected Cookie header to be '%s', got '%s'", expectedCookie, cookie)
+			}
+			// Check that X-Scalar-Cookie header is removed
+			if xScalarCookie := r.Header.Get("X-Scalar-Cookie"); xScalarCookie != "" {
+				t.Errorf("X-Scalar-Cookie header should have been removed, but got: %s", xScalarCookie)
+			}
+			w.Write([]byte("success"))
+		})
+		defer targetServer.server.Close()
+
+		// Create a request with X-Scalar-Cookie header
+		req := httptest.NewRequest(http.MethodGet, "/?scalar_url="+targetServer.url, nil)
+		req.Header.Set("X-Scalar-Cookie", "session_id=abc123")
 		w := httptest.NewRecorder()
 
 		// Call the handler

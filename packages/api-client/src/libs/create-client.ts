@@ -9,10 +9,7 @@ import {
   type WorkspaceStore,
   createWorkspaceStore,
 } from '@/store/store'
-import type {
-  RequestMethod,
-  SecurityScheme,
-} from '@scalar/oas-utils/entities/spec'
+import type { SecurityScheme } from '@scalar/oas-utils/entities/spec'
 import { workspaceSchema } from '@scalar/oas-utils/entities/workspace'
 import {
   LS_KEYS,
@@ -22,10 +19,10 @@ import {
 import { DATA_VERSION, DATA_VERSION_LS_LEY } from '@scalar/oas-utils/migrations'
 import type { Path, PathValue } from '@scalar/object-utils/nested'
 import type {
+  OpenAPI,
   ReferenceConfiguration,
   SpecConfiguration,
 } from '@scalar/types/legacy'
-import type { LiteralUnion } from 'type-fest'
 import { type Component, createApp, watch } from 'vue'
 import type { Router } from 'vue-router'
 
@@ -42,11 +39,21 @@ export type ClientConfiguration = {
   | 'authentication'
   | 'baseServerURL'
   | 'hideClientButton'
+  | '_integration'
 >
 
-export type OpenClientPayload = {
-  path: string
-  method: LiteralUnion<RequestMethod | Lowercase<RequestMethod>, string>
+export type OpenClientPayload = (
+  | {
+      path: string
+      method: OpenAPI.HttpMethod | Lowercase<OpenAPI.HttpMethod>
+      requestUid?: never
+    }
+  | {
+      path?: never
+      method?: never
+      requestUid: string
+    }
+) & {
   _source?: 'api-reference' | 'gitbook'
 }
 
@@ -69,7 +76,7 @@ export type CreateApiClientParams = {
   /** Instance of a vue router */
   router: Router
   /** In case the store has been instantiated beforehand */
-  store?: WorkspaceStore
+  store?: WorkspaceStore | undefined
   /**
    * The layout of the client
    * @see {@link ClientLayout}
@@ -95,12 +102,7 @@ export type ApiClient = Omit<
    */
   store: Omit<
     WorkspaceStore,
-    | 'isReadOnly'
-    | 'router'
-    | 'events'
-    | 'sidebarWidth'
-    | 'proxyUrl'
-    | 'requestHistory'
+    'router' | 'events' | 'sidebarWidth' | 'proxyUrl' | 'requestHistory'
   >
 }
 
@@ -124,11 +126,11 @@ export const createApiClient = ({
   const store =
     _store ||
     createWorkspaceStore({
-      isReadOnly,
       proxyUrl: configuration.proxyUrl,
       themeId: configuration.themeId,
-      showSidebar: configuration.showSidebar,
-      hideClientButton: configuration.hideClientButton,
+      showSidebar: configuration.showSidebar ?? true,
+      hideClientButton: configuration.hideClientButton ?? false,
+      integration: configuration._integration,
       useLocalStorage: persistData,
     })
 
@@ -224,14 +226,13 @@ export const createApiClient = ({
   const updateSpec = async (spec: SpecConfiguration) => {
     if (spec?.url) {
       await importSpecFromUrl(spec.url, activeWorkspace.value?.uid ?? '', {
-        proxyUrl: configuration?.proxyUrl,
-        setCollectionSecurity: true,
         ...configuration,
+        setCollectionSecurity: true,
       })
     } else if (spec?.content) {
       await importSpecFile(spec?.content, activeWorkspace.value?.uid ?? '', {
-        setCollectionSecurity: true,
         ...configuration,
+        setCollectionSecurity: true,
       })
     } else {
       console.error(
@@ -316,47 +317,62 @@ export const createApiClient = ({
     /** Route to a method + path */
     route: (
       /** The first request you would like to display */
-      params: OpenClientPayload,
+      payload?: OpenClientPayload,
     ) => {
-      // Initial route
-      const request = Object.values(requests).find(
-        ({ path, method }) =>
-          path === params.path &&
-          method.toUpperCase() === params.method.toUpperCase(),
-      )
-      if (request)
+      const { requestUid, method, path, _source } = payload ?? {}
+
+      // Find the request from path + method
+      const resolvedRequestUid =
+        requestUid ||
+        Object.values(requests).find((item) =>
+          path && method && item.path && item.method
+            ? // The given operation
+              item.path === path &&
+              item.method.toUpperCase() === method.toUpperCase()
+            : // Or the first request
+              true,
+        )?.uid
+
+      // Redirect to the request
+      if (resolvedRequestUid)
         router.push({
           name: 'request',
+          query: _source ? { source: _source } : {},
           params: {
             workspace: 'default',
-            request: request.uid,
+            request: resolvedRequestUid,
           },
         })
     },
 
     /** Open the API client modal and optionally route to a request */
     open: (payload?: OpenClientPayload) => {
+      const { path, method, requestUid, _source } = payload ?? {}
+
       // Find the request from path + method
-      if (payload) {
-        const _request = Object.values(requests).find(({ path, method }) =>
-          payload
+      const resolvedRequestUid =
+        requestUid ||
+        Object.values(requests).find((item) =>
+          path && method && item.path && item.method
             ? // The given operation
-              path === payload.path &&
-              method.toUpperCase() === payload.method.toUpperCase()
+              item.path === path &&
+              item.method.toUpperCase() === method.toUpperCase()
             : // Or the first request
               true,
-        )
-        if (_request)
-          router.push({
-            name: 'request',
-            query: payload._source ? { source: payload._source } : undefined,
-            params: {
-              workspace: 'default',
-              request: _request.uid,
-            },
-          })
-      }
+        )?.uid
 
+      // Redirect to the request
+      if (resolvedRequestUid)
+        router.push({
+          name: 'request',
+          query: _source ? { source: _source } : {},
+          params: {
+            workspace: 'default',
+            request: resolvedRequestUid,
+          },
+        })
+
+      // Open the modal
       modalState.open = true
     },
     /** Mount the references to a given element */
@@ -376,7 +392,7 @@ export const createApiClient = ({
       if (!request) return
 
       const contentType =
-        Object.keys(request.requestBody?.content || {})[0] || 'application/json'
+        Object.keys(request.requestBody?.content || {})[0] || ''
       const example =
         request.requestBody?.content?.[contentType]?.examples[exampleKey]
       if (!example) return

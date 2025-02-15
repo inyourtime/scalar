@@ -10,9 +10,9 @@ import DataTableInputSelect from './DataTableInputSelect.vue'
 const props = withDefaults(
   defineProps<{
     id?: string
-    type?: string
+    type?: string | undefined
     /** Class for the wrapping cell because attrs is bound to the input */
-    containerClass?: VueClassProp
+    containerClass?: VueClassProp | undefined
     required?: boolean
     modelValue: string | number
     /** Allows adding a custom value to the enum dropdown, defaults to true */
@@ -35,7 +35,6 @@ const emit = defineEmits<{
 defineOptions({ inheritAttrs: false })
 
 const mask = ref(true)
-const query = ref('')
 const interactingWithDropdown = ref(false)
 
 const handleBlur = () => {
@@ -51,18 +50,6 @@ const inputType = computed(() =>
       : 'text'
     : (props.type ?? 'text'),
 )
-
-const handleSelect = (value: string) => {
-  emit('update:modelValue', value)
-}
-
-const handleDropdownMouseDown = () => {
-  interactingWithDropdown.value = true
-}
-
-const handleDropdownMouseUp = () => {
-  interactingWithDropdown.value = false
-}
 </script>
 <template>
   <DataTableCell
@@ -70,13 +57,13 @@ const handleDropdownMouseUp = () => {
     :class="containerClass">
     <div
       v-if="$slots.default"
-      class="text-c-1 flex min-w-[94px] items-center pl-2 pr-0">
-      <slot />
+      class="text-c-1 flex items-center pl-3 pr-0">
+      <slot />:
     </div>
     <div class="row-1 overflow-x-auto">
       <template v-if="props.enum && props.enum.length">
         <DataTableInputSelect
-          :canAddCustomValue="canAddCustomEnumValue"
+          :canAddCustomValue="props.canAddCustomEnumValue"
           :modelValue="props.modelValue"
           :value="props.enum"
           @update:modelValue="emit('update:modelValue', $event)" />
@@ -84,8 +71,7 @@ const handleDropdownMouseUp = () => {
       <template v-else>
         <input
           v-if="mask && type === 'password'"
-          v-bind="$attrs"
-          :id="id"
+          v-bind="id ? { ...$attrs, id: id } : $attrs"
           autocomplete="off"
           class="border-none text-c-1 disabled:text-c-2 min-w-0 w-full peer px-2 py-1.25 -outline-offset-2"
           data-1p-ignore
@@ -110,7 +96,7 @@ const handleDropdownMouseUp = () => {
           :min="min"
           :modelValue="modelValue ?? ''"
           :readOnly="readOnly"
-          :required="required"
+          :required="Boolean(required)"
           spellcheck="false"
           :type="inputType"
           @blur="handleBlur"
@@ -131,7 +117,7 @@ const handleDropdownMouseUp = () => {
     <slot name="icon" />
     <ScalarIconButton
       v-if="type === 'password'"
-      class="-ml-.5 mr-1 h-6 w-6 self-center p-1.5"
+      class="-ml-.5 mr-0.75 h-6 w-6 self-center p-1.5"
       :icon="mask ? 'Show' : 'Hide'"
       :label="mask ? 'Show Password' : 'Hide Password'"
       @click="mask = !mask" />

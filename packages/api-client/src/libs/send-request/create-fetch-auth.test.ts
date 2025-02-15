@@ -1,6 +1,10 @@
-import { createRequestOperation } from '@/libs/send-request/send-request'
+import {
+  requestExampleSchema,
+  securitySchemeSchema,
+} from '@scalar/oas-utils/entities/spec'
 import { describe, expect, it } from 'vitest'
 
+import { createRequestOperation } from './create-request-operation'
 import { VOID_URL, createRequestPayload } from './create-request-operation.test'
 
 describe('authentication', () => {
@@ -58,7 +62,7 @@ describe('authentication', () => {
     })
   })
 
-  it('adds the placeholder to query param if apiKey value is empty', async () => {
+  it('adds an apiKey query param', async () => {
     const [error, requestOperation] = createRequestOperation({
       ...createRequestPayload({
         serverPayload: { url: VOID_URL },
@@ -68,7 +72,7 @@ describe('authentication', () => {
           type: 'apiKey',
           name: 'api_key',
           in: 'query',
-          value: '',
+          value: 'test-key',
           uid: 'api-key',
           nameKey: 'api_key',
         },
@@ -81,7 +85,7 @@ describe('authentication', () => {
 
     expect(requestError).toBe(null)
     expect(JSON.parse(result?.response.data as string).query.api_key).toEqual(
-      'YOUR_SECRET_TOKEN',
+      'test-key',
     )
   })
 
@@ -143,12 +147,20 @@ describe('authentication', () => {
     })
   })
 
-  it('adds the placeholder to the the header if bearer token is empty', async () => {
+  it('handles complex auth', async () => {
     const [error, requestOperation] = createRequestOperation({
       ...createRequestPayload({
         serverPayload: { url: VOID_URL },
       }),
       securitySchemes: {
+        'api-key': {
+          type: 'apiKey',
+          name: 'api_key',
+          in: 'query',
+          value: 'xxxx',
+          uid: 'api-key',
+          nameKey: 'api_key',
+        },
         'bearer-auth': {
           type: 'http',
           scheme: 'bearer',
@@ -157,19 +169,19 @@ describe('authentication', () => {
           password: '',
           uid: 'bearer-auth',
           nameKey: 'Authorization',
-          token: '',
+          token: 'xxxx',
         },
       },
-      selectedSecuritySchemeUids: ['bearer-auth'],
+      selectedSecuritySchemeUids: [['bearer-auth', 'api-key']],
     })
     if (error) throw error
 
     const [requestError, result] = await requestOperation.sendRequest()
 
     expect(requestError).toBe(null)
-    expect(
-      JSON.parse(result?.response.data as string).headers.authorization,
-    ).toEqual('Bearer YOUR_SECRET_TOKEN')
+    const parsed = JSON.parse(result?.response.data as string)
+    expect(parsed.headers.authorization).toEqual('Bearer xxxx')
+    expect(parsed.query.api_key).toEqual('xxxx')
   })
 
   it('adds oauth2 token header', async () => {
@@ -206,5 +218,41 @@ describe('authentication', () => {
     expect(JSON.parse(result?.response.data as string).headers).toMatchObject({
       authorization: 'Bearer oauth-token',
     })
+  })
+
+  it('ensures we only have one auth header', async () => {
+    const [error, requestOperation] = createRequestOperation({
+      ...createRequestPayload({
+        serverPayload: { url: VOID_URL },
+      }),
+      example: requestExampleSchema.parse({
+        parameters: {
+          headers: [
+            {
+              key: 'Authorization',
+              value: 'Bearer header-token',
+              enabled: true,
+            },
+          ],
+        },
+      }),
+      securitySchemes: {
+        'oauth2-auth': securitySchemeSchema.parse({
+          type: 'oauth2',
+          flows: {
+            implicit: {
+              type: 'implicit',
+              token: 'implicit-token',
+            },
+          },
+        }),
+      },
+      selectedSecuritySchemeUids: ['oauth2-auth'],
+    })
+    if (error) throw error
+
+    expect(requestOperation.request.headers.get('Authorization')).toEqual(
+      'Bearer header-token',
+    )
   })
 })

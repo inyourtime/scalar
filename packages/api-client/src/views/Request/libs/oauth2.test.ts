@@ -41,7 +41,7 @@ const windowTarget = 'openAuth2Window'
 const windowFeatures = 'left=100,top=100,width=800,height=600'
 
 /** This state corresponds to Math.random() === 0.123456 */
-const state = '82mvz'
+const state = '4fzyo82m'
 const randomVal = 0.123456
 
 describe('oauth2', () => {
@@ -132,7 +132,6 @@ describe('oauth2', () => {
         method: 'POST',
         body: new URLSearchParams({
           client_id: flow['x-scalar-client-id'],
-          scope: scope.join(' '),
           client_secret: flow.clientSecret,
           redirect_uri: flow['x-scalar-redirect-uri'],
           code: 'auth_code_123',
@@ -216,7 +215,6 @@ describe('oauth2', () => {
           },
           body: new URLSearchParams({
             client_id: _flow['x-scalar-client-id'],
-            scope: scope.join(' '),
             client_secret: _flow.clientSecret,
             redirect_uri: _flow['x-scalar-redirect-uri'],
             code,
@@ -327,7 +325,6 @@ describe('oauth2', () => {
           method: 'POST',
           body: new URLSearchParams({
             client_id: flow['x-scalar-client-id'],
-            scope: scope.join(' '),
             client_secret: flow.clientSecret,
             redirect_uri: flow['x-scalar-redirect-uri'],
             code: 'auth_code_123',

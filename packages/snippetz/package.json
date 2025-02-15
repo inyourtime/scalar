@@ -9,7 +9,7 @@
     "url": "git+https://github.com/scalar/scalar.git",
     "directory": "packages/snippetz"
   },
-  "version": "0.2.9",
+  "version": "0.2.12",
   "engines": {
     "node": ">=18"
   },
@@ -190,6 +190,11 @@
       "import": "./dist/plugins/go/native/index.js",
       "types": "./dist/plugins/go/native/index.d.ts",
       "default": "./dist/plugins/go/native/index.js"
+    },
+    "./plugins/dart/http": {
+      "import": "./dist/plugins/dart/http/index.js",
+      "types": "./dist/plugins/dart/http/index.d.ts",
+      "default": "./dist/plugins/dart/http/index.js"
     },
     "./plugins/csharp/restsharp": {
       "import": "./dist/plugins/csharp/restsharp/index.js",

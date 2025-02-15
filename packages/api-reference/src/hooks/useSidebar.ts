@@ -1,3 +1,4 @@
+import { isOperationDeprecated } from '@/helpers/operation'
 import { ssrState } from '@scalar/oas-utils/helpers'
 import type { OpenAPIV3_1 } from '@scalar/openapi-types'
 import type { Spec, Tag, TransformedOperation } from '@scalar/types/legacy'
@@ -26,15 +27,11 @@ export type SidebarEntry = {
   isGroup?: boolean
 }
 
-const {
-  getHeadingId,
-  getModelId,
-  getOperationId,
-  getSectionId,
-  getTagId,
-  getWebhookId,
-  hash,
-} = useNavState()
+/**
+ * This is a temp hack to get the navState outside of a setup function.
+ * Sidebar will eventually be replaced by the client one so we can remove this whole hook then.
+ */
+const navState = ref<ReturnType<typeof useNavState> | null>(null)
 
 // Track the parsed spec
 const parsedSpec = ref<Spec | undefined>(undefined)
@@ -127,6 +124,11 @@ function updateHeadings(description: string) {
 
 // Create the list of sidebar items from the given spec
 const items = computed(() => {
+  if (!navState.value) return { entries: [], titles: {} }
+
+  const { getHeadingId, getModelId, getOperationId, getTagId, getWebhookId } =
+    navState.value
+
   // Check whether the API client is visible
   const titlesById: Record<string, string> = {}
 
@@ -186,7 +188,7 @@ const items = computed(() => {
                     id,
                     title,
                     httpVerb: operation.httpVerb,
-                    deprecated: operation.information?.deprecated ?? false,
+                    deprecated: isOperationDeprecated(operation),
                     show: true,
                     select: () => {},
                   }
@@ -203,7 +205,7 @@ const items = computed(() => {
             id,
             title,
             httpVerb: operation.httpVerb,
-            deprecated: operation.information?.deprecated ?? false,
+            deprecated: isOperationDeprecated(operation),
             show: true,
             select: () => {},
           }
@@ -219,7 +221,7 @@ const items = computed(() => {
             show: true,
             children: Object.keys(getModels(parsedSpec.value) ?? {}).map(
               (name) => {
-                const id = getModelId(name)
+                const id = getModelId({ name })
                 titlesById[id] = name
 
                 return {
@@ -243,7 +245,7 @@ const items = computed(() => {
           show: true,
           children: Object.keys(parsedSpec.value?.webhooks ?? {})
             .map((name) => {
-              const id = getWebhookId(name)
+              const id = getWebhookId({ name })
               titlesById[id] = name
 
               return (
@@ -252,7 +254,7 @@ const items = computed(() => {
                 ) as OpenAPIV3_1.HttpMethods[]
               ).map((httpVerb) => {
                 return {
-                  id: getWebhookId(name, httpVerb),
+                  id: getWebhookId({ name, method: httpVerb }),
                   title: parsedSpec.value?.webhooks?.[name][httpVerb]?.name,
                   httpVerb: httpVerb as string,
                   show: true,
@@ -327,7 +329,9 @@ const items = computed(() => {
  */
 const isSidebarOpen = ref(false)
 
-const breadcrumb = computed(() => items.value?.titles?.[hash.value] ?? '')
+const breadcrumb = computed(
+  () => items.value?.titles?.[navState.value?.hash ?? ''] ?? '',
+)
 
 export type ParsedSpecOption = {
   parsedSpec: Spec
@@ -349,9 +353,9 @@ export type SorterOption = {
  *
  */
 export const scrollToOperation = (operationId: string) => {
-  const sectionId = getSectionId(operationId)
+  const sectionId = navState.value?.getSectionId(operationId)
 
-  if (sectionId !== operationId) {
+  if (sectionId && sectionId !== operationId) {
     // We use the lazyBus to check when the target has loaded then scroll to it
     if (!collapsedSidebarItems[sectionId]) {
       const unsubscribe = lazyBus.on((ev) => {
@@ -370,6 +374,11 @@ export const scrollToOperation = (operationId: string) => {
  */
 export function useSidebar(options?: ParsedSpecOption & SorterOption) {
   Object.assign(optionsRef, options)
+
+  // Hack navState
+  const _navState = useNavState()
+  navState.value = _navState
+  const { hash, getSectionId, getTagId } = _navState
 
   if (options?.parsedSpec) {
     setParsedSpec(options.parsedSpec)

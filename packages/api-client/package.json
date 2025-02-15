@@ -18,12 +18,12 @@
     "rest",
     "testing"
   ],
-  "version": "2.2.28",
+  "version": "2.2.47",
   "engines": {
     "node": ">=18"
   },
   "scripts": {
-    "build": "vite build && pnpm types:build && tsc-alias -p tsconfig.build.json",
+    "build": "scalar-build-vite",
     "dev": "pnpm playground:app",
     "lint:check": "eslint .",
     "lint:fix": "eslint .  --fix",
@@ -32,8 +32,8 @@
     "playground:web": "vite ./playground/web -c ./vite.config.ts",
     "preview": "vite preview",
     "test": "vitest",
-    "types:build": "vue-tsc -p tsconfig.build.json",
-    "types:check": "vue-tsc --noEmit --skipLibCheck --composite false"
+    "types:build": "scalar-types-build-vue",
+    "types:check": "scalar-types-check-vue"
   },
   "type": "module",
   "main": "dist/index.js",
@@ -42,6 +42,11 @@
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./views/Servers": {
+      "import": "./dist/views/Servers/index.js",
+      "types": "./dist/views/Servers/index.d.ts",
+      "default": "./dist/views/Servers/index.js"
     },
     "./views/Request/types": {
       "import": "./dist/views/Request/types/index.js",
@@ -63,10 +68,25 @@
       "types": "./dist/views/Request/components/index.d.ts",
       "default": "./dist/views/Request/components/index.js"
     },
+    "./views/Request/ResponseSection": {
+      "import": "./dist/views/Request/ResponseSection/index.js",
+      "types": "./dist/views/Request/ResponseSection/index.d.ts",
+      "default": "./dist/views/Request/ResponseSection/index.js"
+    },
+    "./views/Request/RequestSection": {
+      "import": "./dist/views/Request/RequestSection/index.js",
+      "types": "./dist/views/Request/RequestSection/index.d.ts",
+      "default": "./dist/views/Request/RequestSection/index.js"
+    },
     "./views/Request/RequestSection/RequestAuth": {
       "import": "./dist/views/Request/RequestSection/RequestAuth/index.js",
       "types": "./dist/views/Request/RequestSection/RequestAuth/index.d.ts",
       "default": "./dist/views/Request/RequestSection/RequestAuth/index.js"
+    },
+    "./views/Components/CodeSnippet": {
+      "import": "./dist/views/Components/CodeSnippet/index.js",
+      "types": "./dist/views/Components/CodeSnippet/index.d.ts",
+      "default": "./dist/views/Components/CodeSnippet/index.js"
     },
     "./types": {
       "import": "./dist/types/index.js",
@@ -123,6 +143,11 @@
       "types": "./dist/components/Sidebar/index.d.ts",
       "default": "./dist/components/Sidebar/index.js"
     },
+    "./components/Server": {
+      "import": "./dist/components/Server/index.js",
+      "types": "./dist/components/Server/index.d.ts",
+      "default": "./dist/components/Server/index.js"
+    },
     "./components/ImportCollection": {
       "import": "./dist/components/ImportCollection/index.js",
       "types": "./dist/components/ImportCollection/index.d.ts",
@@ -176,6 +201,7 @@
     "@scalar/openapi-parser": "workspace:*",
     "@scalar/openapi-types": "workspace:*",
     "@scalar/postman-to-openapi": "workspace:*",
+    "@scalar/snippetz": "workspace:*",
     "@scalar/themes": "workspace:*",
     "@scalar/types": "workspace:*",
     "@scalar/use-codemirror": "workspace:*",
@@ -186,7 +212,6 @@
     "@vueuse/integrations": "^11.2.0",
     "focus-trap": "^7",
     "fuse.js": "^7.0.0",
-    "js-cookie": "^3.0.5",
     "microdiff": "^1.4.0",
     "nanoid": "^5.0.7",
     "pretty-bytes": "^6.1.1",
@@ -201,7 +226,6 @@
   "devDependencies": {
     "@scalar/build-tooling": "workspace:*",
     "@scalar/galaxy": "workspace:*",
-    "@types/js-cookie": "^3.0.6",
     "@types/shell-quote": "^1.7.5",
     "@types/whatwg-mimetype": "^3.0.2",
     "@vitejs/plugin-vue": "^5.0.4",

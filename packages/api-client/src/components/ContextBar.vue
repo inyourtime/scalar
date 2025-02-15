@@ -38,7 +38,7 @@ const model = computed<string>({
           :value="section" />
       </label>
       <div
-        class="flex items-center context-bar-group-hover:text-c-1 absolute -right-6 top-1/2 -translate-y-1/2">
+        class="flex items-center context-bar-group-hover:text-c-1 absolute -right-[30px] top-1/2 -translate-y-1/2">
         <span class="mr-1.5 context-bar-group-hover:hidden">{{ model }}</span>
         <ScalarIcon
           icon="FilterList"
@@ -113,9 +113,6 @@ const model = computed<string>({
 }
 .filter-hover:hover .filter-hover-item:nth-last-of-type(7) {
   transition-delay: 0.35s;
-}
-.filter-hover:hover .filter-hover-item:nth-last-of-type(7) {
-  transition-delay: 0.4s;
 }
 .filter-hover:hover .filter-hover-item,
 .filter-hover:has(:focus-visible) .filter-hover-item {

@@ -17,12 +17,12 @@ export const styles: Record<string, Record<string, any>> = {
   ],
   danger: [
     'scalar-button-danger',
-    'bg-red text-white active:brightness-90 hocus:brightness-90',
+    'bg-c-danger text-white active:brightness-90 hocus:brightness-90',
   ],
 }
 
 export const variants = cva({
-  base: 'scalar-button scalar-row cursor-pointer items-center justify-center rounded font-medium',
+  base: 'scalar-button scalar-row cursor-pointer items-center justify-center rounded font-medium -outline-offset-1',
   variants: {
     disabled: {
       true: 'bg-background-2 text-color-3 shadow-none',

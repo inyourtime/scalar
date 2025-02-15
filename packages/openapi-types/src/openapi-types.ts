@@ -72,6 +72,11 @@ export namespace OpenAPI {
     | OpenAPIV2.SchemaObject
     | OpenAPIV3.SchemaObject
     | OpenAPIV3_1.SchemaObject
+
+  export type HttpMethod =
+    | keyof typeof OpenAPIV2.HttpMethods
+    | keyof typeof OpenAPIV3.HttpMethods
+    | OpenAPIV3_1.HttpMethods
 }
 
 export namespace OpenAPIV3_1 {
@@ -221,6 +226,9 @@ export namespace OpenAPIV3_1 {
       $schema?: string
       additionalProperties?: boolean | ReferenceObject | SchemaObject
       properties?: {
+        [name: string]: ReferenceObject | SchemaObject
+      }
+      patternProperties?: {
         [name: string]: ReferenceObject | SchemaObject
       }
       allOf?: (ReferenceObject | SchemaObject)[]
@@ -479,6 +487,9 @@ export namespace OpenAPIV3 {
     required?: string[]
     enum?: any[]
     properties?: {
+      [name: string]: ReferenceObject | SchemaObject
+    }
+    patternProperties?: {
       [name: string]: ReferenceObject | SchemaObject
     }
     allOf?: (ReferenceObject | SchemaObject)[]

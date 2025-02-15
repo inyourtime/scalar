@@ -1,5 +1,350 @@
 # @scalar/api-reference
 
+## 1.25.118
+
+### Patch Changes
+
+- 600ce16: fix: updates example request footer display logic
+- 6e077ba: fix: enums in discriminators aren’t shown
+- 305d084: refactor: use store to render example responses
+- 4de3124: fix: can’t import type array e.g. `['string', 'null']`
+- f2b082a: feat: add onLoaded event
+- Updated dependencies [d028579]
+- Updated dependencies [c5e9597]
+- Updated dependencies [4de3124]
+- Updated dependencies [bdddb12]
+- Updated dependencies [69da9e0]
+- Updated dependencies [f500435]
+- Updated dependencies [da5cf08]
+- Updated dependencies [b5727ef]
+- Updated dependencies [c5e9597]
+- Updated dependencies [4de3124]
+- Updated dependencies [f9a75af]
+- Updated dependencies [a515167]
+- Updated dependencies [82c8f39]
+- Updated dependencies [f9eee3f]
+- Updated dependencies [b2a19ba]
+- Updated dependencies [fa59538]
+- Updated dependencies [34e6f52]
+- Updated dependencies [bdddb12]
+- Updated dependencies [d2165a8]
+- Updated dependencies [4de3124]
+- Updated dependencies [f2b082a]
+  - @scalar/api-client@2.2.47
+  - @scalar/openapi-parser@0.10.6
+  - @scalar/components@0.13.23
+  - @scalar/oas-utils@0.2.104
+  - @scalar/types@0.0.32
+  - @scalar/snippetz@0.2.12
+  - @scalar/themes@0.9.66
+  - @scalar/code-highlight@0.0.20
+  - @scalar/use-hooks@0.1.20
+
+## 1.25.117
+
+### Patch Changes
+
+- Updated dependencies [abc40ce]
+- Updated dependencies [0b18abe]
+- Updated dependencies [abc40ce]
+- Updated dependencies [e4f11d8]
+- Updated dependencies [2969dd0]
+  - @scalar/api-client@2.2.46
+  - @scalar/components@0.13.22
+
+## 1.25.116
+
+### Patch Changes
+
+- 28f23d9: feat(components): create sidebar item components
+- Updated dependencies [0f5df68]
+- Updated dependencies [a30e7cc]
+- Updated dependencies [ebde2b6]
+- Updated dependencies [9f2ec32]
+- Updated dependencies [937f791]
+- Updated dependencies [227e8e3]
+- Updated dependencies [9f2ec32]
+- Updated dependencies [0babd51]
+- Updated dependencies [28f23d9]
+- Updated dependencies [4df540f]
+  - @scalar/api-client@2.2.45
+  - @scalar/oas-utils@0.2.103
+  - @scalar/openapi-parser@0.10.5
+  - @scalar/types@0.0.31
+  - @scalar/components@0.13.21
+  - @scalar/themes@0.9.65
+  - @scalar/code-highlight@0.0.20
+  - @scalar/use-hooks@0.1.19
+
+## 1.25.115
+
+### Patch Changes
+
+- Updated dependencies [0d8b4ea]
+  - @scalar/components@0.13.20
+  - @scalar/api-client@2.2.44
+
+## 1.25.114
+
+### Patch Changes
+
+- 2497761: fix: updates format example helper
+- d1325d0: fix: hide auth in references when there's no schemes in the spec
+- db3cf68: fix: include has prefix in heading ids
+- f9bf5f1: feat(api-reference): implement rendering of `patternProperties`
+- Updated dependencies [a34f834]
+- Updated dependencies [26abf12]
+- Updated dependencies [ef98b9c]
+- Updated dependencies [a34f834]
+- Updated dependencies [9c43ed7]
+- Updated dependencies [26abf12]
+- Updated dependencies [ebdf762]
+- Updated dependencies [f9bf5f1]
+  - @scalar/api-client@2.2.43
+  - @scalar/oas-utils@0.2.102
+  - @scalar/snippetz@0.2.11
+  - @scalar/openapi-types@0.1.7
+  - @scalar/types@0.0.30
+  - @scalar/openapi-parser@0.10.4
+  - @scalar/themes@0.9.64
+  - @scalar/code-highlight@0.0.20
+  - @scalar/components@0.13.19
+  - @scalar/use-hooks@0.1.18
+
+## 1.25.113
+
+### Patch Changes
+
+- Updated dependencies [aa6ff86]
+  - @scalar/api-client@2.2.42
+
+## 1.25.112
+
+### Patch Changes
+
+- be34e7d: feat: adds client server state usage in reference
+- 2edbab2: fix: ensure add server button does not show on the references client server dropdown
+- Updated dependencies [be34e7d]
+- Updated dependencies [be34e7d]
+- Updated dependencies [4e6f0eb]
+- Updated dependencies [51f3177]
+- Updated dependencies [42d08d7]
+- Updated dependencies [42d08d7]
+- Updated dependencies [2edbab2]
+  - @scalar/oas-utils@0.2.101
+  - @scalar/types@0.0.29
+  - @scalar/api-client@2.2.41
+  - @scalar/themes@0.9.63
+  - @scalar/components@0.13.18
+  - @scalar/openapi-parser@0.10.4
+  - @scalar/code-highlight@0.0.20
+  - @scalar/use-hooks@0.1.17
+
+## 1.25.111
+
+### Patch Changes
+
+- Updated dependencies [6636051]
+  - @scalar/api-client@2.2.40
+
+## 1.25.110
+
+### Patch Changes
+
+- Updated dependencies [8d4ab54]
+  - @scalar/api-client@2.2.39
+
+## 1.25.109
+
+### Patch Changes
+
+- 09dee7e: fix: jumping on initial load for big specs
+- 702c386: feat: add support for stability
+- a4ec7fa: refactor: use request entity for TestRequestButton
+- Updated dependencies [7a18a2d]
+- Updated dependencies [12e7232]
+- Updated dependencies [8b5d905]
+- Updated dependencies [b0d5511]
+- Updated dependencies [974234f]
+- Updated dependencies [776a4e2]
+- Updated dependencies [2ed681b]
+- Updated dependencies [6400bfc]
+- Updated dependencies [8665004]
+- Updated dependencies [4f12fe4]
+- Updated dependencies [702c386]
+- Updated dependencies [901970f]
+- Updated dependencies [6400bfc]
+- Updated dependencies [a4ec7fa]
+- Updated dependencies [5ab0663]
+- Updated dependencies [f1f39b0]
+- Updated dependencies [5ab0663]
+- Updated dependencies [917214a]
+- Updated dependencies [f1f39b0]
+- Updated dependencies [776a4e2]
+- Updated dependencies [42b58bf]
+- Updated dependencies [2ed681b]
+  - @scalar/api-client@2.2.38
+  - @scalar/oas-utils@0.2.100
+  - @scalar/components@0.13.17
+  - @scalar/themes@0.9.62
+  - @scalar/types@0.0.28
+  - @scalar/code-highlight@0.0.20
+  - @scalar/use-hooks@0.1.16
+  - @scalar/openapi-parser@0.10.4
+
+## 1.25.108
+
+### Patch Changes
+
+- Updated dependencies [9276103]
+- Updated dependencies [de6cd98]
+  - @scalar/api-client@2.2.37
+
+## 1.25.107
+
+### Patch Changes
+
+- a871c83: fix(api-reference): add .introduction-section class to Introduction
+- Updated dependencies [ca381b6]
+- Updated dependencies [c803e2d]
+- Updated dependencies [aac6c86]
+- Updated dependencies [ca381b6]
+  - @scalar/api-client@2.2.36
+  - @scalar/oas-utils@0.2.99
+  - @scalar/components@0.13.16
+
+## 1.25.106
+
+### Patch Changes
+
+- 5501ee3: feat: render operation parameters from the store
+- 6062a69: fix: only first entry in hidden tag is hidden from the reference
+- 1bee104: fix: SSG/SSR builds break
+- b552db5: feat: add url customization functions for references
+- Updated dependencies [97d8981]
+- Updated dependencies [1bee104]
+- Updated dependencies [f9668c5]
+- Updated dependencies [109e320]
+- Updated dependencies [b552db5]
+- Updated dependencies [f9668c5]
+- Updated dependencies [b968e0f]
+- Updated dependencies [b968e0f]
+- Updated dependencies [406eb48]
+- Updated dependencies [f1f8de9]
+  - @scalar/components@0.13.15
+  - @scalar/api-client@2.2.35
+  - @scalar/code-highlight@0.0.20
+  - @scalar/types@0.0.27
+  - @scalar/oas-utils@0.2.98
+  - @scalar/openapi-parser@0.10.4
+  - @scalar/themes@0.9.61
+  - @scalar/use-hooks@0.1.15
+
+## 1.25.105
+
+### Patch Changes
+
+- Updated dependencies [ac86150]
+  - @scalar/api-client@2.2.34
+
+## 1.25.104
+
+### Patch Changes
+
+- ace02fe: fix: favors configuration integration in open client modal button
+- 60cd6f1: feat: render the operation description from the new store
+- 39df543: feat: flatten discriminators containing null
+- e866487: feat(components): create dark light toggle components
+- d2b1525: feat: version prefix
+- Updated dependencies [2ad0407]
+- Updated dependencies [ace02fe]
+- Updated dependencies [60cd6f1]
+- Updated dependencies [60cd6f1]
+- Updated dependencies [e866487]
+- Updated dependencies [6d03777]
+- Updated dependencies [6d03777]
+- Updated dependencies [7df4472]
+- Updated dependencies [13333e6]
+- Updated dependencies [64df4fc]
+- Updated dependencies [08ac264]
+- Updated dependencies [aff72f7]
+- Updated dependencies [cb09e76]
+- Updated dependencies [2ad0407]
+  - @scalar/api-client@2.2.33
+  - @scalar/components@0.13.14
+  - @scalar/types@0.0.26
+  - @scalar/use-hooks@0.1.14
+  - @scalar/themes@0.9.60
+  - @scalar/oas-utils@0.2.97
+  - @scalar/openapi-types@0.1.6
+  - @scalar/openapi-parser@0.10.4
+  - @scalar/code-highlight@0.0.19
+
+## 1.25.103
+
+### Patch Changes
+
+- f9f5bdb: feat: remove examples from responses
+- Updated dependencies [d3199be]
+  - @scalar/api-client@2.2.32
+
+## 1.25.102
+
+### Patch Changes
+
+- 9e2e8be: fix: cookie parameters don’t show up
+- 273e927: fix: removes schema example duplication
+- 0642732: fix: adds collabsibility to one endpoint non default tag
+- 58d5f6c: fix: shows enum value when there is only one
+- Updated dependencies [731b037]
+- Updated dependencies [5b26c75]
+- Updated dependencies [eb50f99]
+- Updated dependencies [b92b160]
+- Updated dependencies [e77e959]
+- Updated dependencies [30ae0df]
+- Updated dependencies [e17ac68]
+- Updated dependencies [ff3bdca]
+- Updated dependencies [cf0e7b1]
+- Updated dependencies [fdd1de7]
+- Updated dependencies [8dce84f]
+- Updated dependencies [197b7e1]
+- Updated dependencies [ee22e40]
+- Updated dependencies [7b4ab2c]
+  - @scalar/api-client@2.2.31
+  - @scalar/components@0.13.13
+  - @scalar/oas-utils@0.2.96
+  - @scalar/snippetz@0.2.10
+  - @scalar/openapi-parser@0.10.3
+  - @scalar/themes@0.9.59
+  - @scalar/types@0.0.25
+  - @scalar/code-highlight@0.0.19
+  - @scalar/use-hooks@0.1.13
+
+## 1.25.101
+
+### Patch Changes
+
+- Updated dependencies [1785304]
+  - @scalar/api-client@2.2.30
+
+## 1.25.100
+
+### Patch Changes
+
+- b291406: fix(api-client): redesign auth
+- b291406: style: adds data table and server auth component fixtures
+- c37fb70: style: displays property example in schemadisplays property example in schema
+- Updated dependencies [4a2b0a4]
+- Updated dependencies [b291406]
+- Updated dependencies [66bc910]
+- Updated dependencies [b291406]
+- Updated dependencies [46dce72]
+- Updated dependencies [58a2049]
+  - @scalar/api-client@2.2.29
+  - @scalar/use-toasts@0.7.8
+  - @scalar/components@0.13.12
+  - @scalar/use-hooks@0.1.12
+
 ## 1.25.99
 
 ### Patch Changes

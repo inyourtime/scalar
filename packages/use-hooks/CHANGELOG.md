@@ -1,5 +1,67 @@
 # @scalar/use-hooks
 
+## 0.1.20
+
+### Patch Changes
+
+- @scalar/themes@0.9.66
+
+## 0.1.19
+
+### Patch Changes
+
+- @scalar/themes@0.9.65
+
+## 0.1.18
+
+### Patch Changes
+
+- @scalar/themes@0.9.64
+
+## 0.1.17
+
+### Patch Changes
+
+- Updated dependencies [51f3177]
+  - @scalar/themes@0.9.63
+
+## 0.1.16
+
+### Patch Changes
+
+- Updated dependencies [776a4e2]
+- Updated dependencies [2ed681b]
+- Updated dependencies [4f12fe4]
+  - @scalar/themes@0.9.62
+
+## 0.1.15
+
+### Patch Changes
+
+- @scalar/themes@0.9.61
+
+## 0.1.14
+
+### Patch Changes
+
+- e866487: feat(components): create dark light toggle components
+- Updated dependencies [e866487]
+  - @scalar/themes@0.9.60
+
+## 0.1.13
+
+### Patch Changes
+
+- Updated dependencies [7b4ab2c]
+  - @scalar/themes@0.9.59
+
+## 0.1.12
+
+### Patch Changes
+
+- Updated dependencies [66bc910]
+  - @scalar/use-toasts@0.7.8
+
 ## 0.1.11
 
 ### Patch Changes

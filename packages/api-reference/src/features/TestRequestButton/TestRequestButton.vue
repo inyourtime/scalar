@@ -1,36 +1,45 @@
 <script setup lang="ts">
 import ScreenReader from '@/components/ScreenReader.vue'
 import { useApiClient } from '@/features/ApiClientModal'
-import { HIDE_TEST_REQUEST_BUTTON_SYMBOL } from '@/helpers'
+import { useConfig } from '@/hooks/useConfig'
 import { ScalarIcon } from '@scalar/components'
-import type { TransformedOperation } from '@scalar/types/legacy'
-import { inject } from 'vue'
+import type { Request as RequestEntity } from '@scalar/oas-utils/entities/spec'
+import { computed } from 'vue'
 
-defineProps<{
-  operation: TransformedOperation
+const { operation } = defineProps<{
+  operation?: Pick<RequestEntity, 'method' | 'path' | 'uid'>
 }>()
 
-const getHideTestRequestButton = inject(HIDE_TEST_REQUEST_BUTTON_SYMBOL)
 const { client } = useApiClient()
+const config = useConfig()
+
+const isButtonVisible = computed(() => {
+  return config?.hideTestRequestButton !== true
+})
+
+const handleClick = () => {
+  if (operation && client?.value?.open) {
+    client.value.open({
+      requestUid: operation.uid,
+    })
+  }
+}
 </script>
 <template>
+  <!-- Render the Test Request Button -->
   <button
-    v-if="getHideTestRequestButton?.() !== true"
+    v-if="operation && isButtonVisible"
     class="show-api-client-button"
-    :method="operation.httpVerb"
+    :method="operation.method"
     type="button"
-    @click.stop="
-      client?.open({
-        path: operation.path,
-        method: operation.httpVerb,
-      })
-    ">
+    @click.stop="handleClick">
     <ScalarIcon
       icon="Play"
       size="sm" />
     <span>Test Request</span>
-    <ScreenReader>({{ operation.httpVerb }} {{ operation.path }})</ScreenReader>
+    <ScreenReader>({{ operation.method }} {{ operation.path }})</ScreenReader>
   </button>
+  <!-- Render whitespace, so the container doesn’t collapse -->
   <template v-else>&nbsp;</template>
 </template>
 <style scoped>

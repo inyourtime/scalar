@@ -1,0 +1,23 @@
+{
+  "name": "@scalar/aspnetcore",
+  "license": "MIT",
+  "author": "Scalar (https://github.com/scalar)",
+  "homepage": "https://github.com/scalar/scalar",
+  "bugs": "https://github.com/scalar/scalar/issues/new/choose",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/scalar/scalar.git",
+    "directory": "integrations/aspnetcore"
+  },
+  "version": "2.0.14",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "prepare:build": "cp ../../packages/api-reference/dist/browser/standalone.js ./src/Scalar.AspNetCore/StaticAssets/scalar.js"
+  },
+  "dependencies": {
+    "@scalar/api-reference": "workspace:*"
+  }
+}

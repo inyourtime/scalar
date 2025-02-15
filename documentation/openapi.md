@@ -46,7 +46,7 @@ We provide examples for a lot of popular HTTP clients and frameworks. For someth
 openapi: 3.1.0
 info:
   title: Val Town API
-  version: '1.0'
+  version: 1.0
 paths:
   '/v1/eval':
     post:
@@ -75,7 +75,7 @@ You can overwrite tag names with `x-displayName`.
 openapi: 3.1.0
 info:
   title: Example
-  version: '1.0'
+  version: 1.0
 tags:
   - name: pl4n3t5
 +    x-displayName: planets
@@ -87,15 +87,15 @@ paths:
         - pl4n3t5
 ```
 
-## x-tagGroup
+## x-tagGroups
 
-You can group your tags with `x-tagGroup`.
+You can group your tags with `x-tagGroups`.
 
 ```diff
 openapi: 3.1.0
 info:
   title: Example
-  version: '1.0'
+  version: 1.0
 tags:
   - name: planets
 +x-tagGroups:
@@ -110,23 +110,47 @@ paths:
         - planets
 ```
 
-## x-internal
+## x-scalar-ignore
 
-You can hide operations from the reference with `x-internal`.
+You can hide operations and webhooks from the reference with `x-scalar-ignore`.
 
 ```diff
 openapi: 3.1.0
 info:
   title: Example
-  version: '1.0'
+  version: 1.0
 paths:
   '/planets':
     get:
       summary: Get all planets
     post:
       summary: Create a new planet
-+      x-internal: true
++      x-scalar-ignore: true
 ```
+
+Or to hide a tag and the operations under it:
+
+```diff
+openapi: 3.1.0
+info:
+  title: Example
+  version: 1.0
+tags:
+  - name: planets
++    x-scalar-ignore: true
+paths:
+  '/planets':
+    get:
+      summary: Get all planets
+      tags:
+        - planets
+    post:
+      summary: Create a new planet
+      tags:
+        - planets
+```
+
+Aliases: `x-internal`
 
 ## x-additionalPropertiesName
 
@@ -136,7 +160,7 @@ You can add a custom attribute name to `additionalProperties` with `x-additional
 openapi: 3.1.0
 info:
   title: Example
-  version: '1.0'
+  version: 1.0
 components:
   schemas:
     Planet:
@@ -148,4 +172,47 @@ components:
       additionalProperties:
 +        x-additionalPropertiesName: anyCustomAttribute
         type: string
+```
+
+## x-scalar-stability
+
+You can show the stability of an endpoint by settings the `x-scalar-stability` to either `stable`, `experimental` or `deprecated`. The native `deprecated` property will take precedence.
+
+```diff
+openapi: 3.1.0
+info:
+  title: Example
+  version: 1.0
+paths:
+  '/planets':
+    get:
+      summary: Get all planets
+    post:
+      summary: Create a new planet
++      x-scalar-stability: 'experimental'
+```
+
+## x-enumDescriptions
+
+You can add a descriptions to `enum` values with `x-enumDescriptions`:
+
+```diff
+openapi: 3.1.0
+info:
+  title: Example
+  version: 1.0
+components:
+  schemas:
+    CustomerCancellationReason:
+      type: string
+      enum:
+      - missing_features
+      - too_expensive
+      - unused
+      - other
++      x-enumDescriptions:
++        missing_features: Missing features
++        too_expensive: Too expensive
++        unused: Unused
++        other: Other
 ```

@@ -26,14 +26,14 @@ const findHeaderInfo = (name: string) => {
     <template #title>Headers</template>
     <div
       v-if="headers.length"
-      class="border-t-1/2 border-b-1/20 max-h-[calc(100%-32px)] overflow-y-auto">
+      class="border-t-1/2 border-b-1/2 max-h-[calc(100%-32px)] overflow-y-auto">
       <DataTable
         class="!border-0 !mx-0"
         :columns="['minmax(auto, min-content)', 'minmax(50%, 1fr)']"
         scroll>
         <DataTableRow
-          v-for="(item, idx) in headers"
-          :key="idx"
+          v-for="item in headers"
+          :key="item.name"
           class="text-c-1">
           <DataTableText class="sticky left-0 z-1 bg-b-1 max-w-48">
             <template v-if="typeof findHeaderInfo(item.name)?.url === 'string'">

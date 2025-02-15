@@ -1,21 +1,22 @@
 <script setup lang="ts">
-import { useWorkspace } from '@/store'
+import { useWorkspace } from '@/store/store'
 import { ScalarButton, ScalarModal } from '@scalar/components'
 
 const props = defineProps<{
   state: { open: boolean; show: () => void; hide: () => void }
-  scheme: { id: string; label: string } | undefined
+  scheme: { id: string; label: string } | null
 }>()
 
 const emit = defineEmits<{
   (e: 'close'): void
+  (e: 'delete'): void
 }>()
 
 const { securitySchemeMutators } = useWorkspace()
 
 const deleteScheme = () => {
   if (props.scheme?.id) securitySchemeMutators.delete(props.scheme.id)
-  emit('close')
+  emit('delete')
 }
 </script>
 <template>

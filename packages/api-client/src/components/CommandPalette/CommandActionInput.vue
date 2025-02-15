@@ -4,6 +4,7 @@ import { computed, nextTick, onMounted, ref } from 'vue'
 const props = defineProps<{
   modelValue?: string
   placeholder?: string
+  autofocus?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -14,7 +15,13 @@ const emit = defineEmits<{
 defineOptions({ inheritAttrs: false })
 
 const input = ref<HTMLInputElement | null>(null)
-onMounted(() => nextTick(() => input.value?.focus()))
+onMounted(() =>
+  nextTick(() => {
+    if (!props.autofocus) {
+      input.value?.focus()
+    }
+  }),
+)
 
 const model = computed<string>({
   get: () => props.modelValue ?? '',
@@ -43,7 +50,7 @@ function handleBack(event: KeyboardEvent) {
     ref="input"
     v-model="model"
     class="border-none outline-none flex-1 w-full pl-8 text-sm min-h-8 py-1.5 resize-none"
-    :placeholder="props.placeholder"
+    :placeholder="props.placeholder ?? ''"
     wrap="hard"
     v-bind="$attrs"
     @keydown.delete="handleBack($event)"

@@ -1,7 +1,7 @@
 import type { RequestExample } from '@scalar/oas-utils/entities/spec'
 import { describe, expect, it } from 'vitest'
 
-import { createFetchQueryParams } from './send-request'
+import { createFetchQueryParams } from './create-fetch-query-params'
 
 describe('createFetchQueryParams', () => {
   it('creates query paramer from an example', () => {
@@ -57,5 +57,22 @@ describe('createFetchQueryParams', () => {
     expect(result.toString()).toEqual('')
     expect(result).toBeInstanceOf(URLSearchParams)
     expect([...result.entries()]).toHaveLength(0)
+  })
+
+  it('handles query parameters for array type value', () => {
+    const requestExample: Pick<RequestExample, 'parameters'> = {
+      parameters: {
+        headers: [],
+        path: [],
+        cookies: [],
+        query: [
+          { key: 'key', value: 'one, two', enabled: true, type: 'array' },
+        ],
+      },
+    }
+
+    const result = createFetchQueryParams(requestExample, {})
+
+    expect(result.toString()).toEqual('key=one&key=two')
   })
 })

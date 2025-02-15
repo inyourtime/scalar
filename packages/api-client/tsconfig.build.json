@@ -1,12 +1,12 @@
 {
   "extends": "./tsconfig.json",
-  "include": ["src"],
-  "exclude": ["dist", "test", "vite.config.ts", "**/*.test.ts"],
+  "exclude": ["playground"],
   "compilerOptions": {
-    "skipLibCheck": true,
+    "rootDir": "src",
+    "outDir": "dist",
     "declaration": true,
     "declarationMap": true,
-    "emitDeclarationOnly": true,
-    "outDir": "dist/"
+    "noEmit": false,
+    "emitDeclarationOnly": true
   }
 }

@@ -85,12 +85,12 @@ const handleCreateWorkspace = () => {
             :class="
               activeWorkspace?.uid === uid
                 ? 'bg-c-accent text-b-1'
-                : 'group-hover/item:shadow-border text-transparent'
+                : 'shadow-border text-transparent'
             ">
             <ScalarIcon
               class="size-2.5"
               icon="Checkmark"
-              thickness="3.5" />
+              thickness="3" />
           </div>
           <span class="text-ellipsis overflow-hidden">{{
             workspace.name
@@ -113,12 +113,13 @@ const handleCreateWorkspace = () => {
     </ScalarDropdown>
   </div>
   <ScalarModal
-    bodyClass="!m-0 !p-1"
+    bodyClass="m-0 p-1 rounded-lg border-t-0"
+    class="absolute z-overlay"
     :size="'xxs'"
     :state="modal"
     variant="form">
     <form
-      class="flex gap-1 rounded"
+      class="flex gap-1"
       @submit.prevent="handleCreateWorkspace">
       <input
         v-model="workspaceName"

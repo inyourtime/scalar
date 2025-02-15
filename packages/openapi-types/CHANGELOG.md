@@ -1,5 +1,17 @@
 # @scalar/openapi-types
 
+## 0.1.7
+
+### Patch Changes
+
+- f9bf5f1: feat(api-reference): implement rendering of `patternProperties`
+
+## 0.1.6
+
+### Patch Changes
+
+- 13333e6: feat: add http methods
+
 ## 0.1.5
 
 ### Patch Changes

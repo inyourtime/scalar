@@ -1,4 +1,4 @@
-import type { LoadPlugin } from '../../utils/load'
+import type { LoadPlugin } from '../../utils/load/load.ts'
 
 export const fetchUrlsDefaultConfiguration = {
   limit: 20,
@@ -59,6 +59,7 @@ export const fetchUrls: (customConfiguration?: {
         return await response.text()
       } catch (error) {
         console.error('[fetchUrls]', error.message, `(${value})`)
+        return undefined
       }
     },
   }

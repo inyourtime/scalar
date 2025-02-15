@@ -1,13 +1,10 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig.strict.json",
   "compilerOptions": {
-    "target": "ES2023",
-    "paths": {
-      "@/*": ["./src/*"],
-      "@test/*": ["./test/*"]
-    },
     "types": ["vite/client"],
-    "noUncheckedIndexedAccess": true
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
-  "include": ["src", "global.d.ts", "playground"]
+  "include": ["src", "playground"]
 }

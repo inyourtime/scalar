@@ -1,33 +1,45 @@
 <script setup lang="ts">
 import { Anchor } from '@/components/Anchor'
+import { Badge } from '@/components/Badge'
 import { HttpMethod } from '@/components/HttpMethod'
 import OperationPath from '@/components/OperationPath.vue'
 import { SectionAccordion } from '@/components/Section'
 import { ExampleRequest } from '@/features/ExampleRequest'
 import { ExampleResponses } from '@/features/ExampleResponses'
 import { TestRequestButton } from '@/features/TestRequestButton'
-import { HIDE_TEST_REQUEST_BUTTON_SYMBOL } from '@/helpers'
+import {
+  getOperationStability,
+  getOperationStabilityColor,
+  isOperationDeprecated,
+} from '@/helpers'
+import { useConfig } from '@/hooks/useConfig'
 import {
   ScalarIcon,
   ScalarIconButton,
   ScalarMarkdown,
 } from '@scalar/components'
+import type {
+  Collection,
+  Operation,
+  Server,
+} from '@scalar/oas-utils/entities/spec'
 import type { TransformedOperation } from '@scalar/types/legacy'
 import { useClipboard } from '@scalar/use-hooks/useClipboard'
-import { inject } from 'vue'
 
 import OperationParameters from '../components/OperationParameters.vue'
 import OperationResponses from '../components/OperationResponses.vue'
 
-const { id, operation, request, secretCredentials } = defineProps<{
+defineProps<{
   id?: string
-  operation: TransformedOperation
-  request: Request | null
-  secretCredentials: string[]
+  collection: Collection
+  server: Server | undefined
+  operation: Operation
+  /** @deprecated Use `operation` instead */
+  transformedOperation: TransformedOperation
 }>()
 
 const { copyToClipboard } = useClipboard()
-const getHideTestRequestButton = inject(HIDE_TEST_REQUEST_BUTTON_SYMBOL)
+const config = useConfig()
 </script>
 <template>
   <SectionAccordion
@@ -39,7 +51,7 @@ const getHideTestRequestButton = inject(HIDE_TEST_REQUEST_BUTTON_SYMBOL)
         <div class="operation-details">
           <HttpMethod
             class="endpoint-type"
-            :method="operation.httpVerb"
+            :method="operation.method"
             short />
           <Anchor
             :id="id ?? ''"
@@ -47,10 +59,17 @@ const getHideTestRequestButton = inject(HIDE_TEST_REQUEST_BUTTON_SYMBOL)
             <div class="endpoint-label">
               <div class="endpoint-label-path">
                 <OperationPath
-                  :deprecated="operation.information?.deprecated"
+                  :deprecated="isOperationDeprecated(transformedOperation)"
                   :path="operation.path" />
               </div>
-              <div class="endpoint-label-name">{{ operation.name }}</div>
+              <div class="endpoint-label-name">
+                {{ transformedOperation.name }}
+              </div>
+              <Badge
+                v-if="getOperationStability(transformedOperation)"
+                :class="getOperationStabilityColor(transformedOperation)">
+                {{ getOperationStability(transformedOperation) }}
+              </Badge>
             </div>
           </Anchor>
         </div>
@@ -61,7 +80,7 @@ const getHideTestRequestButton = inject(HIDE_TEST_REQUEST_BUTTON_SYMBOL)
         v-if="active"
         :operation="operation" />
       <ScalarIcon
-        v-else-if="!getHideTestRequestButton?.()"
+        v-else-if="!config?.hideTestRequestButton"
         class="endpoint-try-hint"
         icon="Play"
         thickness="1.75px" />
@@ -74,10 +93,10 @@ const getHideTestRequestButton = inject(HIDE_TEST_REQUEST_BUTTON_SYMBOL)
         @click.stop="copyToClipboard(operation.path)" />
     </template>
     <template
-      v-if="operation.description"
+      v-if="operation?.description"
       #description>
       <ScalarMarkdown
-        :value="operation.description"
+        :value="operation?.description"
         withImages />
     </template>
     <div class="endpoint-content">
@@ -88,14 +107,15 @@ const getHideTestRequestButton = inject(HIDE_TEST_REQUEST_BUTTON_SYMBOL)
         <div class="operation-details-card-item">
           <OperationResponses
             :collapsableItems="false"
-            :operation="operation" />
+            :operation="transformedOperation" />
         </div>
       </div>
-      <ExampleResponses :operation="operation" />
+      <ExampleResponses :responses="operation.responses" />
       <ExampleRequest
+        :collection="collection"
         :operation="operation"
-        :request="request"
-        :secretCredentials="secretCredentials" />
+        :server="server"
+        :transformedOperation="transformedOperation" />
     </div>
   </SectionAccordion>
 </template>

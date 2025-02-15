@@ -1,17 +1,19 @@
 <script setup lang="ts">
-import type { Parameter } from '@scalar/types/legacy'
+import type { Request as RequestEntity } from '@scalar/oas-utils/entities/spec'
 
 import ParameterListItem from './ParameterListItem.vue'
 
 withDefaults(
   defineProps<{
-    parameters?: Parameter[]
+    parameters?: RequestEntity['parameters'] | RequestEntity['responses']
     showChildren?: boolean
     collapsableItems?: boolean
+    withExamples?: boolean
   }>(),
   {
     showChildren: false,
     collapsableItems: false,
+    withExamples: true,
   },
 )
 </script>
@@ -28,7 +30,8 @@ withDefaults(
         :key="item.name"
         :collapsableItems="collapsableItems"
         :parameter="item"
-        :showChildren="showChildren" />
+        :showChildren="showChildren"
+        :withExamples="withExamples" />
     </ul>
   </div>
 </template>

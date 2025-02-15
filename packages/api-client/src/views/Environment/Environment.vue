@@ -10,6 +10,7 @@ import ViewLayoutContent from '@/components/ViewLayout/ViewLayoutContent.vue'
 import ViewLayoutSection from '@/components/ViewLayout/ViewLayoutSection.vue'
 import { useSidebar } from '@/hooks'
 import type { HotKeyEvent } from '@/libs'
+import { PathId } from '@/routes'
 import { useWorkspace } from '@/store'
 import { useActiveEntities } from '@/store/active-entities'
 import {
@@ -69,7 +70,7 @@ function environmentNameToast(
 function addEnvironment(environment: {
   name: string
   color: string
-  collectionId?: string
+  collectionId: string | undefined
 }) {
   const environmentNameUsed = activeWorkspaceCollections.value.some(
     (collection) => {
@@ -98,8 +99,8 @@ function addEnvironment(environment: {
     router.push({
       name: 'environment.collection',
       params: {
-        collectionId: environment.collectionId,
-        environmentId: environment.name,
+        [PathId.Collection]: environment.collectionId,
+        [PathId.Environment]: environment.name,
       },
     })
   }
@@ -262,7 +263,7 @@ const handleHotKey = (event?: HotKeyEvent) => {
 }
 
 watch(
-  () => [route.params.collectionId, route.params.environmentId],
+  () => [route.params[PathId.Collection], route.params[PathId.Environment]],
   ([newCollectionId, newEnvironmentId]) => {
     if (newCollectionId) {
       // Collection environment
@@ -276,9 +277,9 @@ watch(
 
 onMounted(() => {
   currentEnvironmentId.value =
-    (route.params.environmentId as string) || 'default'
+    (route.params[PathId.Environment] as string) || 'default'
   events.hotKeys.on(handleHotKey)
-  const { collectionId } = router.currentRoute.value.params
+  const collectionId = route.params[PathId.Collection]
   if (collectionId && !collapsedSidebarFolders[collectionId as string]) {
     toggleSidebarFolder(collectionId as string)
   }
@@ -290,13 +291,26 @@ const handleNavigation = (
   uid: string,
   collectionId?: string,
 ) => {
-  const path = collectionId
-    ? `/workspace/default/environment/${collectionId}/${uid}`
-    : `/workspace/default/environment/${uid}`
+  const to = collectionId
+    ? {
+        name: 'environment.collection',
+        params: {
+          [PathId.Workspace]: activeWorkspace.value?.uid,
+          [PathId.Collection]: collectionId,
+          [PathId.Environment]: uid,
+        },
+      }
+    : {
+        name: 'environment.default',
+        params: {
+          [PathId.Workspace]: activeWorkspace.value?.uid,
+          [PathId.Environment]: uid,
+        },
+      }
   if (event.metaKey) {
-    window.open(path, '_blank')
+    window.open(router.resolve(to).href, '_blank')
   } else {
-    router.push({ path })
+    router.push(to)
   }
 }
 
@@ -373,7 +387,7 @@ function handleRename(newName: string) {
                 icon: 'Globe',
                 isDefault: true,
               }" />
-            <div
+            <li
               v-for="collection in activeWorkspaceCollections"
               :key="collection.uid"
               class="flex flex-col gap-0.25">
@@ -381,25 +395,28 @@ function handleRename(newName: string) {
                 class="flex font-medium gap-1.5 group items-center p-1.5 text-left text-sm w-full break-words rounded hover:bg-b-2"
                 type="button"
                 @click="toggleSidebarFolder(collection.uid)">
-                <LibraryIcon
-                  class="text-sidebar-c-2 size-3.5 stroke-[2.25] group-hover:hidden"
-                  :src="
-                    collection['x-scalar-icon'] || 'interface-content-folder'
-                  " />
-                <ScalarIcon
-                  class="text-c-3 hidden text-sm group-hover:block"
-                  :class="{
-                    'rotate-90': collapsedSidebarFolders[collection.uid],
-                  }"
-                  icon="ChevronRight"
-                  size="sm"
-                  thickness="2.5" />
+                <span class="flex h-5 items-center justify-center max-w-[14px]">
+                  <LibraryIcon
+                    class="min-w-3.5 text-sidebar-c-2 size-3.5 stroke-2 group-hover:hidden"
+                    :src="
+                      collection['x-scalar-icon'] || 'interface-content-folder'
+                    " />
+                  <div
+                    :class="{
+                      'rotate-90': collapsedSidebarFolders[collection.uid],
+                    }">
+                    <ScalarIcon
+                      class="text-c-3 hidden text-sm group-hover:block"
+                      icon="ChevronRight"
+                      size="md" />
+                  </div>
+                </span>
                 {{ collection.info?.title ?? '' }}
               </button>
               <div
                 v-show="showChildren(collection.uid)"
                 :class="{
-                  'before:bg-border before:pointer-events-none before:z-1 before:absolute before:left-[calc(1rem_-_1.5px)] before:top-0 before:h-[calc(100%_+_.5px)] last:before:h-full before:w-[.5px] flex flex-col gap-px mb-[.5px] last:mb-0 relative':
+                  'before:bg-border before:pointer-events-none before:z-1 before:absolute before:left-3 before:top-0 before:h-[calc(100%_+_.5px)] last:before:h-full before:w-[.5px] mb-[.5px] last:mb-0 relative':
                     Object.keys(collection['x-scalar-environments'] || {})
                       .length > 0,
                 }">
@@ -442,7 +459,7 @@ function handleRename(newName: string) {
                   <span>Add Environment</span>
                 </ScalarButton>
               </div>
-            </div>
+            </li>
           </SidebarList>
         </div>
       </template>
@@ -465,7 +482,7 @@ function handleRename(newName: string) {
         </template>
         <CodeInput
           v-if="currentEnvironmentId"
-          class="pl-px pr-2 md:px-4 py-2"
+          class="border-t pl-px pr-2 md:px-4 py-2"
           isCopyable
           language="json"
           lineNumbers

@@ -10,12 +10,12 @@
     "url": "git+https://github.com/scalar/scalar.git",
     "directory": "packages/components"
   },
-  "version": "0.13.11",
+  "version": "0.13.23",
   "engines": {
     "node": ">=18"
   },
   "scripts": {
-    "build": "pnpm typegen:icons && pnpm build-only",
+    "build": "pnpm typegen:icons && pnpm build:storybook && pnpm build-only",
     "build-only": "scalar-build-vite",
     "build:storybook": "storybook build",
     "dev": "storybook dev -p 5100 --ci",
@@ -55,6 +55,7 @@
     "@vueuse/core": "^10.10.0",
     "cva": "1.0.0-beta.2",
     "nanoid": "^5.0.7",
+    "pretty-bytes": "^6.1.1",
     "radix-vue": "^1.9.3",
     "tailwind-merge": "^2.5.5",
     "vue": "^3.5.12"

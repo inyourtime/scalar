@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { useActiveEntities } from '@scalar/api-client/store'
-import { RequestAuthDataTable } from '@scalar/api-client/views/Request/RequestSection/RequestAuth'
+import { BaseUrl } from '@/features/BaseUrl'
+import { useActiveEntities, useWorkspace } from '@scalar/api-client/store'
+import { RequestAuth } from '@scalar/api-client/views/Request/RequestSection/RequestAuth'
 import { ScalarErrorBoundary } from '@scalar/components'
-import type { Server, Spec } from '@scalar/types/legacy'
+import type { Spec } from '@scalar/types/legacy'
 import { computed } from 'vue'
 
-import { BaseUrl } from '../../features/BaseUrl'
 import { getModels, hasModels } from '../../helpers'
 import { useSidebar } from '../../hooks'
 import { ClientLibraries } from './ClientLibraries'
@@ -19,8 +19,6 @@ const props = withDefaults(
   defineProps<{
     parsedSpec: Spec
     layout?: 'modern' | 'classic'
-    baseServerURL?: string
-    servers?: Server[]
   }>(),
   {
     layout: 'modern',
@@ -28,7 +26,8 @@ const props = withDefaults(
 )
 
 const { hideModels } = useSidebar()
-const { activeCollection } = useActiveEntities()
+const { securitySchemes } = useWorkspace()
+const { activeCollection, activeServer, activeWorkspace } = useActiveEntities()
 
 const introCardsSlot = computed(() =>
   props.layout === 'classic' ? 'after' : 'aside',
@@ -61,18 +60,27 @@ const introCardsSlot = computed(() =>
           <div
             class="introduction-card"
             :class="{ 'introduction-card-row': layout === 'classic' }">
-            <BaseUrl
-              class="introduction-card-item"
-              :defaultServerUrl="baseServerURL"
-              :servers="props.servers"
-              :specification="parsedSpec" />
-            <div class="scalar-client p-[9px] border-y-1/2">
-              <RequestAuthDataTable
+            <div
+              v-if="activeCollection?.servers?.length"
+              class="scalar-client introduction-card-item [--scalar-address-bar-height:0px] divide-y text-sm">
+              <BaseUrl />
+            </div>
+            <div
+              v-if="
+                activeCollection &&
+                activeWorkspace &&
+                Object.keys(securitySchemes ?? {}).length
+              "
+              class="scalar-client introduction-card-item">
+              <RequestAuth
+                :collection="activeCollection"
                 layout="reference"
                 :selectedSecuritySchemeUids="
                   activeCollection?.selectedSecuritySchemeUids ?? []
                 "
-                title="Authentication" />
+                :server="activeServer"
+                title="Authentication"
+                :workspace="activeWorkspace" />
             </div>
             <ClientLibraries class="introduction-card-item" />
           </div>
@@ -133,14 +141,14 @@ const introCardsSlot = computed(() =>
 .introduction-card {
   display: flex;
   flex-direction: column;
-  padding-top: 3px;
   background: var(--scalar-background-1);
-  border: var(--scalar-border-width) solid var(--scalar-border-color);
-  border-radius: var(--scalar-radius-lg);
 }
 .introduction-card-item {
-  padding: 9px;
   display: flex;
+  overflow: hidden;
+  border: var(--scalar-border-width) solid var(--scalar-border-color);
+  border-radius: var(--scalar-radius-lg);
+  margin-bottom: 12px;
   flex-direction: column;
   justify-content: start;
 }
@@ -153,8 +161,8 @@ const introCardsSlot = computed(() =>
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
-.introduction-card-item:last-of-type {
-  border-bottom: none;
+.introduction-card-item :deep(.request-item) {
+  border-bottom: 0;
 }
 .introduction-card-title {
   font-weight: var(--scalar-semibold);

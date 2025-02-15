@@ -18,7 +18,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - name: Ensure all Actions are pinned to a Commit SHA
-        uses: zgosalvez/github-actions-ensure-sha-pinned-actions@64418826697dcd77c93a8e4a1f7601a1942e57b5
+        uses: zgosalvez/github-actions-ensure-sha-pinned-actions@6eb1abde32fed00453b0d03497f4ba4fecba146d
 
   build:
     runs-on: ubuntu-22.04
@@ -60,7 +60,7 @@ jobs:
 
       - if: steps.changed-files.outputs.api_reference_docker_any_changed == 'true'
         name: Set up Docker
-        uses: docker/setup-buildx-action@6524bf65af31da8d45b59e8c27de4bd072b392f5
+        uses: docker/setup-buildx-action@f7ce87c1d6bead3e36075b2ce75da1f6cc28aaca
 
       - if: steps.changed-files.outputs.api_reference_docker_any_changed == 'true'
         name: Get version from package.json
@@ -69,7 +69,7 @@ jobs:
 
       - if: steps.changed-files.outputs.api_reference_docker_any_changed == 'true'
         name: Build and tag Docker image
-        uses: docker/build-push-action@48aba3b46d1b1fec4febb7c5d0c644b249a11355
+        uses: docker/build-push-action@ca877d9245402d1537745e0e356eab47c3520991
         with:
           context: packages/api-reference/docker/src
           file: packages/api-reference/docker/src/Dockerfile
@@ -106,7 +106,7 @@ jobs:
 
       - if: startsWith(github.event.head_commit.message, 'RELEASING:') && steps.changed-files.outputs.api_reference_docker_version_any_changed == 'true'
         name: Push Docker image
-        uses: docker/build-push-action@48aba3b46d1b1fec4febb7c5d0c644b249a11355
+        uses: docker/build-push-action@ca877d9245402d1537745e0e356eab47c3520991
         with:
           context: packages/api-reference/docker/src
           file: packages/api-reference/docker/src/Dockerfile
@@ -129,9 +129,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-      - uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2
+      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
@@ -177,7 +177,7 @@ jobs:
       - name: Run tests
         run: pnpm test:ci
       - name: Setup Go
-        uses: actions/setup-go@3041bf56c941b39c61721a86cd11f3bb1338122a
+        uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34
         with:
           go-version: '1.21'
       - name: Run tests for the proxy server (Go)
@@ -258,6 +258,16 @@ jobs:
           # Select packages: @scalar
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+  bust-cdn-cache:
+    needs: [npm-publish]
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Bust CDN cache
+        uses: fjogeleit/http-request-action@23ad54bcd1178fcff6a0d17538fa09de3a7f0a4d
+        with:
+          url: 'https://purge.jsdelivr.net/npm/@scalar/api-reference'
+          method: 'GET'
+
   todesktop-build:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-22.04
@@ -293,7 +303,7 @@ jobs:
         run: ls -R ./packages/scalar-app/dist
       - if: steps.changed-files.outputs.api_client_app_any_changed == 'true'
         name: Build in the toDesktop cloud
-        run: pnpm --filter scalar-app todesktop:build
+        run: pnpm --filter scalar-app todesktop:build:ci
         env:
           TODESKTOP_EMAIL: ${{ secrets.TODESKTOP_EMAIL }}
           TODESKTOP_ACCESS_TOKEN: ${{ secrets.TODESKTOP_ACCESS_TOKEN }}
@@ -327,13 +337,13 @@ jobs:
           ./packages/api-reference
           ./packages/api-reference-react
           ./packages/components
-          ./packages/docusaurus
-          ./packages/express-api-reference
+          ./integrations/docusaurus
+          ./integrations/express
           ./packages/fastify-api-reference
-          ./packages/hono-api-reference
-          ./packages/nestjs-api-reference
-          ./packages/nextjs-api-reference
-          ./packages/nuxt
+          ./integrations/hono
+          ./integrations/nestjs
+          ./integrations/nextjs
+          ./integrations/nuxt
           ./packages/themes
 
   deploy-api-client:
@@ -363,9 +373,41 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - if: steps.changed-files.outputs.api_client_any_changed == 'true'
-        name: Deploy to client.scalar.com
-        id: deploy-client
-        uses: cloudflare/wrangler-action@6d58852c35a27e6034745c5d0bc373d739014f7f
+        name: Deploy to client.staging.scalar.com (staging)
+        id: deploy-client-staging
+        uses: cloudflare/wrangler-action@7a5f8bbdfeedcde38e6777a50fe685f89259d4ca
+        with:
+          command: pages deploy dist --project-name=client-staging
+          workingDirectory: projects/client-scalar-com
+          # 1) Log in to the Cloudflare dashboard.
+          # 2) Select Workers & Pages.
+          # 3) See the Account ID in the right sidebar.
+          # Read more: https://developers.cloudflare.com/fundamentals/setup/find-account-and-zone-ids/
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # 1) Go to https://dash.cloudflare.com/profile/api-tokens
+          # 2) Create a token with the following permissions:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      - if: github.ref != 'refs/heads/main' && steps.deploy-client-staging.outputs.deployment-url
+        name: Add Cloudflare Preview URL to the PR
+        uses: thollander/actions-comment-pull-request@fabd468d3a1a0b97feee5f6b9e499eab0dd903f6
+        with:
+          message: |
+            **Cloudflare Preview for the API Client**
+
+            ${{ steps.deploy-client-staging.outputs.deployment-url }}
+          comment_tag: 'cloudflare-preview'
+      - if: github.ref == 'refs/heads/main' && startsWith(github.event.head_commit.message, 'RELEASING:')
+        name: Check for new @scalar/api-client version
+        id: client-version
+        uses: tj-actions/changed-files@4edd678ac3f81e2dc578756871e4d00c19191daf
+        with:
+          files_yaml: |
+            api_client:
+              - packages/api-client/**
+      - if: steps.client-version.outputs.api_client_any_changed == 'true'
+        name: Deploy to client.scalar.com (production)
+        id: deploy-client-production
+        uses: cloudflare/wrangler-action@7a5f8bbdfeedcde38e6777a50fe685f89259d4ca
         with:
           command: pages deploy dist --project-name=client
           workingDirectory: projects/client-scalar-com
@@ -377,15 +419,6 @@ jobs:
           # 1) Go to https://dash.cloudflare.com/profile/api-tokens
           # 2) Create a token with the following permissions:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      - if: github.ref != 'refs/heads/main' && steps.deploy-client.outputs.deployment-url
-        name: Add Cloudflare Preview URL to the PR
-        uses: thollander/actions-comment-pull-request@fabd468d3a1a0b97feee5f6b9e499eab0dd903f6
-        with:
-          message: |
-            **Cloudflare Preview for the API Client**
-
-            ${{ steps.deploy-client.outputs.deployment-url }}
-          comment_tag: 'cloudflare-preview'
 
   deploy-examples:
     # Skip for forks and bot PRs
@@ -427,6 +460,67 @@ jobs:
             https://${{env.DEPLOY_ID}}--scalar-deploy-preview.netlify.app
           comment_tag: 'netlify-preview'
 
+  deploy-components:
+    # Skip for forks and bot PRs
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && !contains(github.actor, '[bot]')
+    needs: [build]
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        node-version: [20]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Check which files were touched
+        id: changed-files
+        uses: tj-actions/changed-files@4edd678ac3f81e2dc578756871e4d00c19191daf
+        with:
+          files_yaml: |
+            components:
+              - packages/components/**
+
+      - if: steps.changed-files.outputs.components_any_changed == 'true'
+        name: Generate new DEPLOY_ID
+        run: echo "DEPLOY_ID=$(uuidgen)" >> "$GITHUB_ENV" && echo $DEPLOY_ID
+
+      - if: steps.changed-files.outputs.components_any_changed == 'true'
+        name: Build
+        uses: ./.github/actions/build
+        with:
+          node-version: ${{ matrix.node-version }}
+        env:
+          DEPLOY_ID: ${{ env.DEPLOY_ID }}
+
+      - if: steps.changed-files.outputs.components_any_changed == 'true'
+        name: Install Netlify CLI
+        run: pnpm install -g netlify
+
+      - if: steps.changed-files.outputs.components_any_changed == 'true'
+        name: Build storybook
+        run: pnpm --filter components build:storybook
+
+      - if: steps.changed-files.outputs.components_any_changed == 'true'
+        name: Deploy Storybook to Netlify (Preview)
+        run: |
+          netlify deploy --dir "./packages/components/storybook-static" \
+            --message "Deployed from GitHub (${{ env.DEPLOY_ID }})" \
+            --site ${{ vars.NETLIFY_SITE_ID_COMPONENTS }} \
+            --auth ${{ secrets.NETLIFY_AUTH_TOKEN }} \
+            --filter @scalar/components \
+            --alias=${{env.DEPLOY_ID}}
+
+      - if: steps.changed-files.outputs.components_any_changed == 'true'
+        name: Add Netlify Preview URL to the PR
+        uses: thollander/actions-comment-pull-request@fabd468d3a1a0b97feee5f6b9e499eab0dd903f6
+        with:
+          message: |
+            **Preview Storybook**
+
+            https://${{env.DEPLOY_ID}}--scalar-components.netlify.app
+          comment_tag: 'netlify-preview'
+
   aspnetcore-build-test:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
@@ -436,7 +530,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@3e891b0cb619bf60e2c25674b222b8940e2c1c25
+        uses: actions/setup-dotnet@3951f0dfe7a07e2313ec93c75700083e2005cbab
         with:
           dotnet-version: 9.x
 
@@ -447,19 +541,19 @@ jobs:
           packages-only: 'api-reference'
 
       - name: Copy JavaScript asset from @scalar/api-reference
-        working-directory: packages/scalar.aspnetcore
+        working-directory: integrations/aspnetcore
         run: pnpm prepare:build
 
       - name: Restore dependencies
-        working-directory: packages/scalar.aspnetcore
+        working-directory: integrations/aspnetcore
         run: dotnet restore
 
       - name: Build solution
-        working-directory: packages/scalar.aspnetcore
+        working-directory: integrations/aspnetcore
         run: dotnet build -c Release --no-restore
 
       - name: Test solution
-        working-directory: packages/scalar.aspnetcore
+        working-directory: integrations/aspnetcore
         run: dotnet test -c Release --no-build
 
   aspnetcore-publish:
@@ -489,17 +583,17 @@ jobs:
         with:
           files_yaml: |
             aspnetcore_package:
-              - packages/scalar.aspnetcore/package.json
+              - integrations/aspnetcore/package.json
 
       - if: steps.changed-files.outputs.aspnetcore_package_any_changed == 'true'
         name: Setup .NET
-        uses: actions/setup-dotnet@3e891b0cb619bf60e2c25674b222b8940e2c1c25
+        uses: actions/setup-dotnet@3951f0dfe7a07e2313ec93c75700083e2005cbab
         with:
           dotnet-version: 9.x
 
       - if: steps.changed-files.outputs.aspnetcore_package_any_changed == 'true'
         name: Extract version from package.json
-        working-directory: packages/scalar.aspnetcore
+        working-directory: integrations/aspnetcore
         run: |
           VERSION=$(node -p "require('./package.json').version")
           echo "VERSION=$VERSION" >> $GITHUB_ENV
@@ -513,20 +607,20 @@ jobs:
 
       - if: steps.changed-files.outputs.aspnetcore_package_any_changed == 'true'
         name: Copy JavaScript asset from @scalar/api-reference
-        working-directory: packages/scalar.aspnetcore
+        working-directory: integrations/aspnetcore
         run: pnpm prepare:build
 
       - if: steps.changed-files.outputs.aspnetcore_package_any_changed == 'true'
         name: Restore dependencies
-        working-directory: packages/scalar.aspnetcore/src/Scalar.AspNetCore
+        working-directory: integrations/aspnetcore/src/Scalar.AspNetCore
         run: dotnet restore
 
       - if: steps.changed-files.outputs.aspnetcore_package_any_changed == 'true'
         name: Pack Scalar.AspNetCore
-        working-directory: packages/scalar.aspnetcore/src/Scalar.AspNetCore
+        working-directory: integrations/aspnetcore/src/Scalar.AspNetCore
         run: dotnet pack -c Release --no-restore --output nupkgs /p:Version=$VERSION
 
       - if: steps.changed-files.outputs.aspnetcore_package_any_changed == 'true'
         name: Publish Scalar.AspNetCore
-        working-directory: packages/scalar.aspnetcore/src/Scalar.AspNetCore
+        working-directory: integrations/aspnetcore/src/Scalar.AspNetCore
         run: dotnet nuget push nupkgs/*.nupkg -k ${{ secrets.NUGET_TOKEN }} -s https://api.nuget.org/v3/index.json

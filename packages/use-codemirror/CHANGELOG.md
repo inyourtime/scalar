@@ -1,5 +1,105 @@
 # @scalar/use-codemirror
 
+## 0.11.68
+
+### Patch Changes
+
+- Updated dependencies [69da9e0]
+- Updated dependencies [f500435]
+  - @scalar/components@0.13.23
+
+## 0.11.67
+
+### Patch Changes
+
+- Updated dependencies [abc40ce]
+  - @scalar/components@0.13.22
+
+## 0.11.66
+
+### Patch Changes
+
+- Updated dependencies [9f2ec32]
+- Updated dependencies [9f2ec32]
+- Updated dependencies [28f23d9]
+  - @scalar/components@0.13.21
+
+## 0.11.65
+
+### Patch Changes
+
+- Updated dependencies [0d8b4ea]
+  - @scalar/components@0.13.20
+
+## 0.11.64
+
+### Patch Changes
+
+- e241e7d: chore: remove yjs
+  - @scalar/components@0.13.19
+
+## 0.11.63
+
+### Patch Changes
+
+- Updated dependencies [42d08d7]
+  - @scalar/components@0.13.18
+
+## 0.11.62
+
+### Patch Changes
+
+- Updated dependencies [8b5d905]
+- Updated dependencies [8665004]
+- Updated dependencies [4f12fe4]
+- Updated dependencies [5ab0663]
+- Updated dependencies [917214a]
+- Updated dependencies [776a4e2]
+  - @scalar/components@0.13.17
+
+## 0.11.61
+
+### Patch Changes
+
+- Updated dependencies [aac6c86]
+  - @scalar/components@0.13.16
+
+## 0.11.60
+
+### Patch Changes
+
+- Updated dependencies [97d8981]
+- Updated dependencies [1bee104]
+  - @scalar/components@0.13.15
+
+## 0.11.59
+
+### Patch Changes
+
+- 7f3aa9c: refactor: remove @uiw/codemirror-themes
+
+## 0.11.58
+
+### Patch Changes
+
+- Updated dependencies [2ad0407]
+- Updated dependencies [e866487]
+  - @scalar/components@0.13.14
+
+## 0.11.57
+
+### Patch Changes
+
+- Updated dependencies [e17ac68]
+- Updated dependencies [7b4ab2c]
+  - @scalar/components@0.13.13
+
+## 0.11.56
+
+### Patch Changes
+
+- @scalar/components@0.13.12
+
 ## 0.11.55
 
 ### Patch Changes

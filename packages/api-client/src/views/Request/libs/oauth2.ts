@@ -1,4 +1,4 @@
-import type { ErrorResponse } from '@/libs'
+import type { ErrorResponse } from '@/libs/errors.ts'
 import type { Oauth2Flow, Server } from '@scalar/oas-utils/entities/spec'
 import { shouldUseProxy } from '@scalar/oas-utils/helpers'
 
@@ -75,7 +75,8 @@ export const authorizeOauth2 = async (
 
     // OAuth2 flows with a login popup
     else {
-      const state = (Math.random() + 1).toString(36).substring(7)
+      // Generate a random state string with the length of 8 characters
+      const state = (Math.random() + 1).toString(36).substring(2, 10)
       const url = new URL(flow.authorizationUrl)
 
       /** Special PKCE state */
@@ -226,14 +227,21 @@ export const authorizeServers = async (
   }: {
     code?: string
     pkce?: PKCEState | null
-    proxyUrl?: string
+    proxyUrl?: string | undefined
   } = {},
 ): Promise<ErrorResponse<string>> => {
   if (!flow) return [new Error('OAuth2 flow was not defined'), null]
 
   const formData = new URLSearchParams()
   formData.set('client_id', flow['x-scalar-client-id'])
-  if (scopes) formData.set('scope', scopes)
+
+  // Only client credentials and password flows support scopes in the token request
+  if (
+    scopes &&
+    (flow.type == 'clientCredentials' || flow.type === 'password')
+  ) {
+    formData.set('scope', scopes)
+  }
 
   if (flow.clientSecret) formData.set('client_secret', flow.clientSecret)
   if ('x-scalar-redirect-uri' in flow && flow['x-scalar-redirect-uri'])
