@@ -1,5 +1,18 @@
 # @scalar/code-highlight
 
+## 0.0.22
+
+### Patch Changes
+
+- e350f23: chore: code style
+
+## 0.0.21
+
+### Patch Changes
+
+- fa6afe8: chore: code formatting
+- 1223c1f: chore: code style
+
 ## 0.0.20
 
 ### Patch Changes

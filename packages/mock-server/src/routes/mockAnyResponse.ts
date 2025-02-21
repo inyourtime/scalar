@@ -1,5 +1,3 @@
-import type { MockServerOptions } from '@/types'
-import { findPreferredResponseKey } from '@/utils/findPreferredResponseKey'
 import { getExampleFromSchema } from '@scalar/oas-utils/spec-getters'
 import type { OpenAPI } from '@scalar/openapi-types'
 import type { Context } from 'hono'
@@ -7,6 +5,9 @@ import { accepts } from 'hono/accepts'
 import type { StatusCode } from 'hono/utils/http-status'
 // @ts-expect-error Doesn’t come with types
 import objectToXML from 'object-to-xml'
+
+import type { MockServerOptions } from '@/types'
+import { findPreferredResponseKey } from '@/utils/findPreferredResponseKey'
 
 /**
  * Mock any response
@@ -77,7 +78,7 @@ export function mockAnyResponse(
       : null
 
   // Status code
-  const statusCode = parseInt(
+  const statusCode = Number.parseInt(
     preferredResponseKey === 'default'
       ? '200'
       : (preferredResponseKey ?? '200'),

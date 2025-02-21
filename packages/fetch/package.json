@@ -11,13 +11,14 @@
     "directory": "packages/fetch"
   },
   "keywords": [],
-  "version": "0.1.1",
+  "version": "0.1.3",
   "engines": {
     "node": ">=18"
   },
   "scripts": {
     "build": "scalar-build-rollup",
-    "format": "scalar-format-js",
+    "format": "scalar-format",
+    "format:check": "scalar-format-check",
     "lint:check": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "vitest",

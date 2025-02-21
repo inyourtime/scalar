@@ -1,5 +1,53 @@
 # @scalar/nuxt
 
+## 0.2.200
+
+### Patch Changes
+
+- Updated dependencies [58a8efd]
+  - @scalar/api-client@2.2.51
+  - @scalar/api-reference@1.25.122
+
+## 0.2.199
+
+### Patch Changes
+
+- Updated dependencies [e350f23]
+- Updated dependencies [e47a698]
+- Updated dependencies [debcb82]
+- Updated dependencies [debcb82]
+- Updated dependencies [738d21c]
+- Updated dependencies [459ad57]
+  - @scalar/api-reference@1.25.121
+  - @scalar/api-client@2.2.50
+  - @scalar/types@0.0.34
+
+## 0.2.198
+
+### Patch Changes
+
+- Updated dependencies [c62884d]
+- Updated dependencies [25209ee]
+- Updated dependencies [d2b7ca8]
+  - @scalar/api-client@2.2.49
+  - @scalar/api-reference@1.25.120
+
+## 0.2.197
+
+### Patch Changes
+
+- 54fdfcb: chore: remove spec wording
+- fa6afe8: chore: code formatting
+- Updated dependencies [453ed40]
+- Updated dependencies [54fdfcb]
+- Updated dependencies [fa6afe8]
+- Updated dependencies [8671902]
+- Updated dependencies [7ce8d4c]
+- Updated dependencies [4dedb68]
+  - @scalar/api-client@2.2.48
+  - @scalar/types@0.0.33
+  - @scalar/api-reference@1.25.119
+
 ## 0.2.196
 
 ### Patch Changes

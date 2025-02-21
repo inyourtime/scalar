@@ -1,5 +1,36 @@
 # @scalar/oas-utils
 
+## 0.2.107
+
+### Patch Changes
+
+- e350f23: chore: code style
+- 738d21c: chore: add brand to uids
+- Updated dependencies [e350f23]
+- Updated dependencies [e47a698]
+  - @scalar/openapi-types@0.1.8
+  - @scalar/themes@0.9.68
+  - @scalar/object-utils@1.1.13
+  - @scalar/types@0.0.34
+
+## 0.2.106
+
+### Patch Changes
+
+- ed92564: feat: allow preferredSecurityScheme to pre-select a scheme not in the requirements
+
+## 0.2.105
+
+### Patch Changes
+
+- 54fdfcb: chore: remove spec wording
+- Updated dependencies [54fdfcb]
+- Updated dependencies [fa6afe8]
+  - @scalar/types@0.0.33
+  - @scalar/object-utils@1.1.13
+  - @scalar/themes@0.9.67
+  - @scalar/openapi-types@0.1.7
+
 ## 0.2.104
 
 ### Patch Changes

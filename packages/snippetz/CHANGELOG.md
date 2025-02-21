@@ -1,5 +1,17 @@
 # @scalar/snippetz
 
+## 0.2.14
+
+### Patch Changes
+
+- e350f23: chore: code style
+
+## 0.2.13
+
+### Patch Changes
+
+- fa6afe8: chore: code formatting
+
 ## 0.2.12
 
 ### Patch Changes

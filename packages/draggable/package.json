@@ -13,13 +13,15 @@
   "keywords": [
     "vue drag and drop draggable html"
   ],
-  "version": "0.1.9",
+  "version": "0.1.10",
   "engines": {
     "node": ">=18"
   },
   "scripts": {
     "build": "scalar-build-vite",
     "dev": "vite",
+    "format": "scalar-format",
+    "format:check": "scalar-format-check",
     "lint:check": "eslint .",
     "lint:fix": "eslint .  --fix",
     "preview": "vite preview",

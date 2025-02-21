@@ -1,6 +1,27 @@
 <script setup lang="ts">
+import {
+  ScalarButton,
+  ScalarComboboxMultiselect,
+  ScalarIcon,
+  useModal,
+  type Icon,
+  type ScalarButton as ScalarButtonType,
+} from '@scalar/components'
+import type { Environment } from '@scalar/oas-utils/entities/environment'
+import type { SelectedSecuritySchemeUids } from '@scalar/oas-utils/entities/shared'
+import type {
+  Collection,
+  Operation,
+  SecurityScheme,
+  Server,
+} from '@scalar/oas-utils/entities/spec'
+import type { Workspace } from '@scalar/oas-utils/entities/workspace'
+import { isDefined } from '@scalar/oas-utils/helpers'
+import { computed, ref } from 'vue'
+
 import ViewLayoutCollapse from '@/components/ViewLayout/ViewLayoutCollapse.vue'
 import { useLayout } from '@/hooks/useLayout'
+import type { EnvVariable } from '@/store/active-entities'
 import { useWorkspace } from '@/store/store'
 import type { SecuritySchemeOption } from '@/views/Request/consts'
 import {
@@ -9,29 +30,14 @@ import {
   getSchemeOptions,
   getSecurityRequirements,
 } from '@/views/Request/libs'
-import {
-  type Icon,
-  ScalarButton,
-  type ScalarButton as ScalarButtonType,
-  ScalarComboboxMultiselect,
-  ScalarIcon,
-  useModal,
-} from '@scalar/components'
-import type { SelectedSecuritySchemeUids } from '@scalar/oas-utils/entities/shared'
-import type {
-  Collection,
-  Operation,
-  Server,
-} from '@scalar/oas-utils/entities/spec'
-import type { Workspace } from '@scalar/oas-utils/entities/workspace'
-import { isDefined } from '@scalar/oas-utils/helpers'
-import { computed, ref } from 'vue'
 
 import DeleteRequestAuthModal from './DeleteRequestAuthModal.vue'
 import RequestAuthDataTable from './RequestAuthDataTable.vue'
 
 const {
   collection,
+  environment,
+  envVariables,
   layout,
   operation,
   selectedSecuritySchemeUids,
@@ -40,6 +46,8 @@ const {
   workspace,
 } = defineProps<{
   collection: Collection
+  environment: Environment
+  envVariables: EnvVariable[]
   layout: 'client' | 'reference'
   operation?: Operation | undefined
   selectedSecuritySchemeUids: SelectedSecuritySchemeUids
@@ -58,7 +66,9 @@ const {
 
 const comboboxButtonRef = ref<typeof ScalarButtonType | null>(null)
 const deleteSchemeModal = useModal()
-const selectedScheme = ref<{ id: string; label: string } | null>(null)
+const selectedScheme = ref<{ id: SecurityScheme['uid']; label: string } | null>(
+  null,
+)
 
 /** Security requirements for the request */
 const securityRequirements = computed(() => {
@@ -112,7 +122,9 @@ function updateSelectedAuth(entries: SecuritySchemeOption[]) {
     .filter((e) => !e.payload)
     .map(({ id }) => {
       const arr = id.split(',')
-      return arr.length > 1 ? arr : id
+      return arr.length > 1
+        ? (arr as SecurityScheme['uid'][])
+        : (id as SecurityScheme['uid'])
     })
 
   // Adding new auth
@@ -139,8 +151,9 @@ const editSelectedSchemeUids = (uids: SelectedSecuritySchemeUids) => {
   }
 }
 
-function handleDeleteScheme(option: { id: string; label: string }) {
-  selectedScheme.value = option
+function handleDeleteScheme({ id, label }: { id: string; label: string }) {
+  // We cast the type here just to make the combobox happy, TODO: we should make ID be string-like and accept brands
+  selectedScheme.value = { id: id as SecurityScheme['uid'], label }
   deleteSchemeModal.show()
 }
 
@@ -176,7 +189,7 @@ const schemeOptions = computed(() =>
     :itemCount="selectedSchemeOptions.length"
     :layout="layout">
     <template #title>
-      <div class="inline-flex gap-1 items-center">
+      <div class="inline-flex items-center gap-1">
         <span>{{ title }}</span>
         <!-- Authentication indicator -->
         <span
@@ -188,9 +201,9 @@ const schemeOptions = computed(() =>
       </div>
     </template>
     <template #actions>
-      <div class="flex flex-1 -mx-1">
+      <div class="-mx-1 flex flex-1">
         <ScalarComboboxMultiselect
-          class="text-xs w-72"
+          class="w-72 text-xs"
           :isDeletable="clientLayout !== 'modal' && layout !== 'reference'"
           :modelValue="selectedSchemeOptions"
           multiple
@@ -199,7 +212,7 @@ const schemeOptions = computed(() =>
           @update:modelValue="updateSelectedAuth">
           <ScalarButton
             ref="comboboxButtonRef"
-            class="h-auto px-1.5 py-0.75 hover:bg-b-3 text-c-1 hover:text-c-1 font-normal"
+            class="py-0.75 hover:bg-b-3 text-c-1 hover:text-c-1 h-auto px-1.5 font-normal"
             fullWidth
             variant="ghost">
             <div class="text-c-1">
@@ -221,6 +234,8 @@ const schemeOptions = computed(() =>
     </template>
     <RequestAuthDataTable
       :collection="collection"
+      :envVariables="envVariables"
+      :environment="environment"
       :layout="layout"
       :selectedSchemeOptions="selectedSchemeOptions"
       :server="server"

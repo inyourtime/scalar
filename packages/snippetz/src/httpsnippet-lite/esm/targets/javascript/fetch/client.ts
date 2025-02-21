@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 /**
  * @description
@@ -47,12 +46,11 @@ export const fetch = {
       case 'application/json':
         options.body = JSON.stringify(postData.jsonObj)
         break
-      case 'multipart/form-data':
+      case 'multipart/form-data': {
         if (!postData.params) {
           break
         }
         // The FormData API automatically adds a `Content-Type` header for `multipart/form-data` content and if we add our own here data won't be correctly transmitted.
-        // eslint-disable-next-line no-case-declarations -- We're only using `contentTypeHeader` within this block.
         const contentTypeHeader = getHeaderName(allHeaders, 'content-type')
         if (contentTypeHeader) {
           delete allHeaders[contentTypeHeader]
@@ -65,6 +63,7 @@ export const fetch = {
         })
         blank()
         break
+      }
       default:
         if (postData === null || postData === void 0 ? void 0 : postData.text) {
           options.body = postData.text
@@ -99,7 +98,7 @@ export const fetch = {
       blank()
     }
     push('try {')
-    push(`const response = await fetch(url, options);`, 1)
+    push('const response = await fetch(url, options);', 1)
     push('const data = await response.json();', 1)
     push('console.log(data);', 1)
     push('} catch (error) {')

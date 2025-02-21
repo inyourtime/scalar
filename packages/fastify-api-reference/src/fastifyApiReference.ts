@@ -1,18 +1,11 @@
 import { openapi } from '@scalar/openapi-parser'
 import { fetchUrls } from '@scalar/openapi-parser/plugins/fetch-urls'
 import type { OpenAPI } from '@scalar/types/legacy'
-import type {
-  FastifyBaseLogger,
-  FastifyTypeProviderDefault,
-  RawServerDefault,
-} from 'fastify'
+import type { FastifyBaseLogger, FastifyTypeProviderDefault, RawServerDefault } from 'fastify'
 import fp from 'fastify-plugin'
 import { slug } from 'github-slugger'
 
-import type {
-  FastifyApiReferenceHooksOptions,
-  FastifyApiReferenceOptions,
-} from './types.ts'
+import type { FastifyApiReferenceHooksOptions, FastifyApiReferenceOptions } from './types.ts'
 import { getJavaScriptFile } from './utils/getJavaScriptFile.ts'
 
 // This Schema is used to hide the route from the documentation.
@@ -30,18 +23,14 @@ const getRoutePrefix = (routePrefix?: string) => {
 const getOpenApiDocumentEndpoints = (
   openApiDocumentEndpoints: FastifyApiReferenceOptions['openApiDocumentEndpoints'],
 ) => {
-  const { json = '/openapi.json', yaml = '/openapi.yaml' } =
-    openApiDocumentEndpoints ?? {}
+  const { json = '/openapi.json', yaml = '/openapi.yaml' } = openApiDocumentEndpoints ?? {}
   return { json, yaml }
 }
 
 const RELATIVE_JAVASCRIPT_PATH = 'js/scalar.js'
 
 const getJavaScriptUrl = (routePrefix?: string) =>
-  `${getRoutePrefix(routePrefix)}/${RELATIVE_JAVASCRIPT_PATH}`.replace(
-    /\/\//g,
-    '/',
-  )
+  `${getRoutePrefix(routePrefix)}/${RELATIVE_JAVASCRIPT_PATH}`.replace(/\/\//g, '/')
 
 /**
  * The Fastify custom theme CSS
@@ -219,10 +208,7 @@ const fastifyApiReference = fp<
 
     const hooks: FastifyApiReferenceHooksOptions = {}
     if (options.hooks) {
-      const additionalHooks: (keyof FastifyApiReferenceHooksOptions)[] = [
-        'onRequest',
-        'preHandler',
-      ]
+      const additionalHooks: (keyof FastifyApiReferenceHooksOptions)[] = ['onRequest', 'preHandler']
 
       for (const hook of additionalHooks) {
         if (options.hooks[hook]) hooks[hook] = options.hooks[hook]
@@ -232,9 +218,7 @@ const fastifyApiReference = fp<
     const getLoadedSpecIfAvailable = () => {
       return openapi().load(specSource.get(), { plugins: [fetchUrls()] })
     }
-    const getSpecFilenameSlug = async (
-      loadedSpec: ReturnType<typeof getLoadedSpecIfAvailable>,
-    ) => {
+    const getSpecFilenameSlug = async (loadedSpec: ReturnType<typeof getLoadedSpecIfAvailable>) => {
       const spec = await loadedSpec?.get()
       // Same GitHub Slugger and default file name as in `@scalar/api-reference`, when generating the download
       return slug(spec?.specification?.info?.title ?? 'spec')
@@ -247,12 +231,13 @@ const fastifyApiReference = fp<
       // @ts-ignore We don’t know whether @fastify/swagger is loaded.
       schema: schemaToHideRoute,
       ...hooks,
+      ...(options.logLevel && { logLevel: options.logLevel }),
       async handler(_, reply) {
         const spec = getLoadedSpecIfAvailable()
         const filename: string = await getSpecFilenameSlug(spec)
         const json = JSON.parse(await spec.toJson()) // parsing minifies the JSON
         return reply
-          .header('Content-Type', `application/json`)
+          .header('Content-Type', 'application/json')
           .header('Content-Disposition', `filename=${filename}.json`)
           .header('Access-Control-Allow-Origin', '*')
           .header('Access-Control-Allow-Methods', '*')
@@ -267,12 +252,13 @@ const fastifyApiReference = fp<
       // @ts-ignore We don’t know whether @fastify/swagger is loaded.
       schema: schemaToHideRoute,
       ...hooks,
+      ...(options.logLevel && { logLevel: options.logLevel }),
       async handler(_, reply) {
         const spec = getLoadedSpecIfAvailable()
         const filename: string = await getSpecFilenameSlug(spec)
         const yaml = await spec.toYaml()
         return reply
-          .header('Content-Type', `application/yaml`)
+          .header('Content-Type', 'application/yaml')
           .header('Content-Disposition', `filename=${filename}.yaml`)
           .header('Access-Control-Allow-Origin', '*')
           .header('Access-Control-Allow-Methods', '*')
@@ -284,8 +270,7 @@ const fastifyApiReference = fp<
     // We need this so the request to the JS file is relative.
 
     // With ignoreTrailingSlash, fastify registeres both routes anyway.
-    const doesNotIgnoreTrailingSlash =
-      fastify.initialConfig.ignoreTrailingSlash !== true
+    const doesNotIgnoreTrailingSlash = fastify.initialConfig.ignoreTrailingSlash !== true
 
     if (doesNotIgnoreTrailingSlash && getRoutePrefix(options.routePrefix)) {
       fastify.route({
@@ -294,6 +279,7 @@ const fastifyApiReference = fp<
         // @ts-ignore We don't know whether @fastify/swagger is loaded.
         schema: schemaToHideRoute,
         ...hooks,
+        ...(options.logLevel && { logLevel: options.logLevel }),
         handler(_, reply) {
           return reply.redirect(getRoutePrefix(options.routePrefix) + '/', 302)
         },
@@ -308,6 +294,7 @@ const fastifyApiReference = fp<
       // @ts-ignore We don’t know whether @fastify/swagger is loaded.
       schema: schemaToHideRoute,
       ...hooks,
+      ...(options.logLevel && { logLevel: options.logLevel }),
       handler(_, reply) {
         // Redirect if it’s the route without a slash
         const currentUrl = new URL(_.url, `${_.protocol}://${_.hostname}`)
@@ -354,10 +341,9 @@ const fastifyApiReference = fp<
       // @ts-ignore We don’t know whether @fastify/swagger is loaded.
       schema: schemaToHideRoute,
       ...hooks,
+      ...(options.logLevel && { logLevel: options.logLevel }),
       handler(_, reply) {
-        return reply
-          .header('Content-Type', 'application/javascript; charset=utf-8')
-          .send(fileContent)
+        return reply.header('Content-Type', 'application/javascript; charset=utf-8').send(fileContent)
       },
     })
   },

@@ -1,5 +1,17 @@
 # @scalar/openapi-parser
 
+## 0.10.8
+
+### Patch Changes
+
+- e350f23: chore: code style
+
+## 0.10.7
+
+### Patch Changes
+
+- 1223c1f: chore: code style
+
 ## 0.10.6
 
 ### Patch Changes

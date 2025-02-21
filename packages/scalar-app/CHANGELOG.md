@@ -1,5 +1,56 @@
 # scalar-app
 
+## 0.1.145
+
+### Patch Changes
+
+- Updated dependencies [58a8efd]
+  - @scalar/api-client@2.2.51
+
+## 0.1.144
+
+### Patch Changes
+
+- e350f23: chore: code style
+- Updated dependencies [e350f23]
+- Updated dependencies [e47a698]
+- Updated dependencies [e47a698]
+- Updated dependencies [debcb82]
+- Updated dependencies [debcb82]
+- Updated dependencies [738d21c]
+- Updated dependencies [459ad57]
+- Updated dependencies [e47a698]
+  - @scalar/api-client@2.2.50
+  - @scalar/components@0.13.25
+  - @scalar/themes@0.9.68
+  - @scalar/import@0.2.27
+
+## 0.1.143
+
+### Patch Changes
+
+- Updated dependencies [c62884d]
+  - @scalar/api-client@2.2.49
+  - @scalar/import@0.2.26
+
+## 0.1.142
+
+### Patch Changes
+
+- fa6afe8: chore: code formatting
+- Updated dependencies [453ed40]
+- Updated dependencies [54fdfcb]
+- Updated dependencies [825bc40]
+- Updated dependencies [fa6afe8]
+- Updated dependencies [8671902]
+- Updated dependencies [7ce8d4c]
+- Updated dependencies [4d30a35]
+- Updated dependencies [4dedb68]
+  - @scalar/api-client@2.2.48
+  - @scalar/import@0.2.25
+  - @scalar/components@0.13.24
+  - @scalar/themes@0.9.67
+
 ## 0.1.141
 
 ### Patch Changes

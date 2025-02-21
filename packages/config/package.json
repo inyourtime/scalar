@@ -11,13 +11,13 @@
     "directory": "packages/config"
   },
   "keywords": [],
-  "version": "0.1.1",
+  "version": "0.1.2",
   "engines": {
     "node": ">=18"
   },
   "scripts": {
     "build": "scalar-build-rollup",
-    "format": "scalar-format-js",
+    "format": "scalar-format",
     "lint:check": "eslint .",
     "lint:fix": "eslint .  --fix",
     "test": "vitest",

@@ -16,15 +16,17 @@
     "scalar",
     "references"
   ],
-  "version": "0.0.35",
+  "version": "0.0.37",
   "engines": {
     "node": ">=18"
   },
   "scripts": {
     "build": "scalar-build-rollup",
     "dev": "next dev playground -p 5066",
-    "lint:check": "eslint .",
-    "lint:fix": "eslint .  --fix",
+    "format": "scalar-format",
+    "format:check": "scalar-format-check",
+    "lint:check": "scalar-lint-check",
+    "lint:fix": "scalar-lint-fix",
     "types:build": "scalar-types-build",
     "types:check": "scalar-types-check"
   },

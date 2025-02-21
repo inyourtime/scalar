@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { useHead, useRequestURL, useSeoMeta } from '#imports'
 import { ModernLayout, parse } from '@scalar/api-reference'
 import type { ReferenceConfiguration } from '@scalar/types/legacy'
-import { reactive, ref, toRaw } from 'vue'
+import { useHead, useRequestURL, useSeoMeta } from '#imports'
 import type { Configuration } from '~/src/types'
+import { reactive, ref, toRaw } from 'vue'
 
 const props = defineProps<{
   configuration: Configuration
@@ -23,7 +23,7 @@ const content =
 
 // Check for empty spec
 if (!content)
-  throw new Error('You must provide a spec for Scalar API References')
+  throw new Error('You must provide a document for Scalar API References')
 
 const parsedSpec = reactive(await parse(content))
 const rawSpec = JSON.stringify(content)

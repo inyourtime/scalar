@@ -19,14 +19,17 @@
     "testing",
     "react"
   ],
-  "version": "0.4.196",
+  "version": "0.4.200",
   "engines": {
     "node": ">=18"
   },
   "scripts": {
+    "dev": "cd ./playground && pnpm dev",
     "build": "rm -Rf ./dist && tsc --declaration && postcss src/theme.css -o dist/theme.css",
-    "lint:check": "eslint .",
-    "lint:fix": "eslint .  --fix",
+    "format:check": "scalar-format-check",
+    "format": "scalar-format",
+    "lint:check": "scalar-lint-check",
+    "lint:fix": "scalar-lint-fix",
     "types:check": "tsc --noEmit --skipLibCheck"
   },
   "main": "./dist/index.js",

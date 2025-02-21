@@ -1,21 +1,25 @@
 <script setup lang="ts">
+import { ScalarIcon } from '@scalar/components'
+import type { Workspace } from '@scalar/oas-utils/entities'
+import type { Environment } from '@scalar/oas-utils/entities/environment'
+import { prettyPrintJson } from '@scalar/oas-utils/helpers'
 import {
   colorPicker as colorPickerExtension,
   useCodeMirror,
+  useDropdown,
   type CodeMirrorLanguage,
   type Extension,
-  useDropdown,
 } from '@scalar/use-codemirror'
-import { nanoid } from 'nanoid'
-import { ref, toRef, useAttrs, watch, type Ref, computed } from 'vue'
-import DataTableInputSelect from '../DataTable/DataTableInputSelect.vue'
-import { pillPlugin, backspaceCommand } from './codeVariableWidget'
-import EnvironmentVariableDropdown from '@/views/Environment/EnvironmentVariableDropdown.vue'
 import { useClipboard } from '@scalar/use-hooks/useClipboard'
-import { ScalarIcon } from '@scalar/components'
-import { prettyPrintJson } from '@scalar/oas-utils/helpers'
-import { useActiveEntities } from '@/store/active-entities'
+import { nanoid } from 'nanoid'
+import { computed, ref, toRef, useAttrs, watch, type Ref } from 'vue'
+
 import { useLayout } from '@/hooks'
+import type { EnvVariable } from '@/store/active-entities'
+import EnvironmentVariableDropdown from '@/views/Environment/EnvironmentVariableDropdown.vue'
+
+import DataTableInputSelect from '../DataTable/DataTableInputSelect.vue'
+import { backspaceCommand, pillPlugin } from './codeVariableWidget'
 
 const props = withDefaults(
   defineProps<{
@@ -42,6 +46,9 @@ const props = withDefaults(
     importCurl?: boolean
     isCopyable?: boolean
     default?: string | number
+    environment: Environment
+    envVariables: EnvVariable[]
+    workspace: Workspace
   }>(),
   {
     disableCloseBrackets: false,
@@ -61,7 +68,7 @@ const emit = defineEmits<{
   (e: 'curl', v: string): void
 }>()
 
-const attrs = useAttrs()
+const attrs = useAttrs() as { id?: string }
 const uid = (attrs.id as string) || `id-${nanoid()}`
 
 const isFocused = ref(false)
@@ -74,8 +81,6 @@ const dropdownRef = ref<InstanceType<
   typeof EnvironmentVariableDropdown
 > | null>(null)
 
-const { activeEnvVariables, activeEnvironment, activeWorkspace } =
-  useActiveEntities()
 const { layout } = useLayout()
 const { copyToClipboard } = useClipboard()
 
@@ -127,9 +132,9 @@ const extensions: Extension[] = []
 if (props.colorPicker) extensions.push(colorPickerExtension)
 extensions.push(
   pillPlugin({
-    environment: activeEnvironment.value,
-    envVariables: activeEnvVariables.value,
-    workspace: activeWorkspace.value,
+    environment: props.environment,
+    envVariables: props.envVariables,
+    workspace: props.workspace,
     isReadOnly: layout === 'modal',
   }),
   backspaceCommand,
@@ -141,7 +146,8 @@ const { codeMirror } = useCodeMirror({
     props.modelValue !== undefined ? String(props.modelValue) : '',
   ),
   onChange: (value) => {
-    handleChange(value), updateDropdownVisibility()
+    handleChange(value)
+    updateDropdownVisibility()
   },
   onFocus: () => (isFocused.value = true),
   onBlur: (val) => handleBlur(val),
@@ -203,6 +209,8 @@ const handleKeyDown = (key: string, event: KeyboardEvent) => {
       event.preventDefault()
       dropdownRef.value?.handleSelect()
     }
+  } else if (key === 'enter' && event.target instanceof HTMLDivElement) {
+    handleSubmit(event.target.textContent ?? '')
   }
 }
 
@@ -223,7 +231,7 @@ export default {
 <template>
   <template v-if="disabled">
     <div
-      class="cursor-default flex items-center justify-center text-c-2"
+      class="text-c-2 flex cursor-default items-center justify-center"
       :class="layout === 'modal' ? 'font-code pl-1 pr-2 text-sm' : 'px-2'">
       <span>{{ modelValue }}</span>
     </div>
@@ -255,7 +263,7 @@ export default {
       :id="uid"
       v-bind="$attrs"
       ref="codeMirrorRef"
-      class="peer font-code w-full whitespace-nowrap overflow-hidden text-xs leading-[1.44] relative has-[:focus-visible]:outline has-[:focus-visible]:rounded-[4px] -outline-offset-1"
+      class="group-[.alert]:outline-orange font-code peer relative w-full overflow-hidden whitespace-nowrap text-xs leading-[1.44] -outline-offset-1 has-[:focus-visible]:rounded-[4px] has-[:focus-visible]:outline"
       :class="{
         'flow-code-input--error': error,
       }"
@@ -280,23 +288,21 @@ export default {
   </template>
   <div
     v-if="$slots.warning"
-    class="absolute centered-y right-7 text-orange text-xs">
+    class="centered-y text-orange absolute right-7 text-xs">
     <slot name="warning" />
   </div>
-  <slot name="icon"></slot>
+  <slot name="icon" />
   <div
     v-if="required"
-    class="required absolute centered-y right-0 pt-px pr-2 text-xxs text-c-3 bg-b-1 shadow-[-8px_0_4px_var(--scalar-background-1)] opacity-100 duration-150 transition-opacity peer-has-[.cm-focused]:opacity-0 pointer-events-none">
+    class="required centered-y text-xxs text-c-3 bg-b-1 pointer-events-none absolute right-0 pr-2 pt-px opacity-100 shadow-[-8px_0_4px_var(--scalar-background-1)] transition-opacity duration-150 group-[.alert]:bg-transparent group-[.alert]:shadow-none peer-has-[.cm-focused]:opacity-0">
     Required
   </div>
   <EnvironmentVariableDropdown
-    v-if="
-      showDropdown && withVariables && layout !== 'modal' && activeEnvironment
-    "
+    v-if="showDropdown && withVariables && layout !== 'modal' && environment"
     ref="dropdownRef"
     :dropdownPosition="dropdownPosition"
-    :envVariables="activeEnvVariables"
-    :environment="activeEnvironment"
+    :envVariables="envVariables"
+    :environment="environment"
     :query="dropdownQuery"
     @select="handleDropdownSelect" />
 </template>

@@ -1,5 +1,83 @@
 # @scalar/api-client
 
+## 2.2.51
+
+### Patch Changes
+
+- 58a8efd: fix: empty state with no collection requests
+
+## 2.2.50
+
+### Patch Changes
+
+- e350f23: chore: code style
+- e47a698: feat: adds request parameter value validation alert
+- debcb82: fix: allow pressing modified hotkeys in inputs
+- debcb82: fix: allow hitting enter to submit in the address bar
+- 738d21c: chore: add brand to uids
+- 459ad57: chore: remove active entities for prop drilling
+- Updated dependencies [e350f23]
+- Updated dependencies [e47a698]
+- Updated dependencies [738d21c]
+- Updated dependencies [e47a698]
+  - @scalar/openapi-parser@0.10.8
+  - @scalar/openapi-types@0.1.8
+  - @scalar/components@0.13.25
+  - @scalar/oas-utils@0.2.107
+  - @scalar/snippetz@0.2.14
+  - @scalar/themes@0.9.68
+  - @scalar/import@0.2.27
+  - @scalar/draggable@0.1.10
+  - @scalar/icons@0.1.3
+  - @scalar/object-utils@1.1.13
+  - @scalar/postman-to-openapi@0.1.30
+  - @scalar/types@0.0.34
+  - @scalar/use-codemirror@0.11.70
+  - @scalar/use-hooks@0.1.22
+  - @scalar/use-toasts@0.7.9
+  - @scalar/use-tooltip@1.0.6
+
+## 2.2.49
+
+### Patch Changes
+
+- c62884d: fix: virtualization issues causing tab to be unresponsive
+- Updated dependencies [ed92564]
+  - @scalar/oas-utils@0.2.106
+  - @scalar/import@0.2.26
+  - @scalar/postman-to-openapi@0.1.29
+
+## 2.2.48
+
+### Patch Changes
+
+- 453ed40: fix: preserve lowercase auth headers
+- 54fdfcb: chore: remove spec wording
+- 8671902: fix: sets overflow on input enum value
+- 7ce8d4c: fix: updates sidebar icon hover state style
+- 4dedb68: fix: updates disabled style based on layout
+- Updated dependencies [54fdfcb]
+- Updated dependencies [825bc40]
+- Updated dependencies [fa6afe8]
+- Updated dependencies [1223c1f]
+- Updated dependencies [4d30a35]
+  - @scalar/oas-utils@0.2.105
+  - @scalar/import@0.2.25
+  - @scalar/types@0.0.33
+  - @scalar/components@0.13.24
+  - @scalar/postman-to-openapi@0.1.28
+  - @scalar/use-codemirror@0.11.69
+  - @scalar/object-utils@1.1.13
+  - @scalar/use-tooltip@1.0.6
+  - @scalar/use-toasts@0.7.9
+  - @scalar/draggable@0.1.10
+  - @scalar/use-hooks@0.1.21
+  - @scalar/snippetz@0.2.13
+  - @scalar/themes@0.9.67
+  - @scalar/icons@0.1.3
+  - @scalar/openapi-parser@0.10.7
+  - @scalar/openapi-types@0.1.7
+
 ## 2.2.47
 
 ### Patch Changes

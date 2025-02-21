@@ -1,5 +1,34 @@
 # @scalar/mock-server
 
+## 0.2.114
+
+### Patch Changes
+
+- Updated dependencies [e350f23]
+- Updated dependencies [738d21c]
+  - @scalar/openapi-parser@0.10.8
+  - @scalar/openapi-types@0.1.8
+  - @scalar/oas-utils@0.2.107
+
+## 0.2.113
+
+### Patch Changes
+
+- Updated dependencies [ed92564]
+  - @scalar/oas-utils@0.2.106
+
+## 0.2.112
+
+### Patch Changes
+
+- fa6afe8: chore: code formatting
+- 1223c1f: chore: code style
+- Updated dependencies [54fdfcb]
+- Updated dependencies [1223c1f]
+  - @scalar/oas-utils@0.2.105
+  - @scalar/openapi-parser@0.10.7
+  - @scalar/openapi-types@0.1.7
+
 ## 0.2.111
 
 ### Patch Changes

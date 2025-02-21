@@ -1,5 +1,33 @@
 # @scalar/import
 
+## 0.2.27
+
+### Patch Changes
+
+- Updated dependencies [e350f23]
+- Updated dependencies [738d21c]
+  - @scalar/openapi-parser@0.10.8
+  - @scalar/oas-utils@0.2.107
+
+## 0.2.26
+
+### Patch Changes
+
+- Updated dependencies [ed92564]
+  - @scalar/oas-utils@0.2.106
+
+## 0.2.25
+
+### Patch Changes
+
+- 54fdfcb: chore: remove spec wording
+- fa6afe8: chore: code formatting
+- 4d30a35: fix: can’t parse HTML attributes with HTML tags inside
+- Updated dependencies [54fdfcb]
+- Updated dependencies [1223c1f]
+  - @scalar/oas-utils@0.2.105
+  - @scalar/openapi-parser@0.10.7
+
 ## 0.2.24
 
 ### Patch Changes

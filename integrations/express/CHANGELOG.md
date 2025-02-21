@@ -1,5 +1,28 @@
 # @scalar/express-api-reference
 
+## 0.4.184
+
+### Patch Changes
+
+- @scalar/types@0.0.34
+
+## 0.4.183
+
+### Patch Changes
+
+- ac49fdb: fix: package.json points to cjs file
+
+## 0.4.182
+
+### Patch Changes
+
+- fa6afe8: chore: code formatting
+- d6d50e8: feat: render embedded content only once
+- 1223c1f: chore: code style
+- Updated dependencies [54fdfcb]
+- Updated dependencies [fa6afe8]
+  - @scalar/types@0.0.33
+
 ## 0.4.181
 
 ### Patch Changes

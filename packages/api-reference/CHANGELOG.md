@@ -1,5 +1,74 @@
 # @scalar/api-reference
 
+## 1.25.122
+
+### Patch Changes
+
+- Updated dependencies [58a8efd]
+  - @scalar/api-client@2.2.51
+
+## 1.25.121
+
+### Patch Changes
+
+- e350f23: chore: code style
+- 738d21c: chore: add brand to uids
+- 459ad57: chore: remove active entities for prop drilling
+- Updated dependencies [e350f23]
+- Updated dependencies [e47a698]
+- Updated dependencies [e47a698]
+- Updated dependencies [debcb82]
+- Updated dependencies [debcb82]
+- Updated dependencies [738d21c]
+- Updated dependencies [459ad57]
+- Updated dependencies [e47a698]
+  - @scalar/code-highlight@0.0.22
+  - @scalar/openapi-parser@0.10.8
+  - @scalar/openapi-types@0.1.8
+  - @scalar/api-client@2.2.50
+  - @scalar/components@0.13.25
+  - @scalar/oas-utils@0.2.107
+  - @scalar/snippetz@0.2.14
+  - @scalar/themes@0.9.68
+  - @scalar/types@0.0.34
+  - @scalar/use-hooks@0.1.22
+  - @scalar/use-toasts@0.7.9
+
+## 1.25.120
+
+### Patch Changes
+
+- 25209ee: feat: markdown for the response description
+- d2b7ca8: fix: renders arrays with discriminators four times instead of once
+- Updated dependencies [c62884d]
+- Updated dependencies [ed92564]
+  - @scalar/api-client@2.2.49
+  - @scalar/oas-utils@0.2.106
+
+## 1.25.119
+
+### Patch Changes
+
+- Updated dependencies [453ed40]
+- Updated dependencies [54fdfcb]
+- Updated dependencies [825bc40]
+- Updated dependencies [fa6afe8]
+- Updated dependencies [8671902]
+- Updated dependencies [1223c1f]
+- Updated dependencies [7ce8d4c]
+- Updated dependencies [4dedb68]
+  - @scalar/api-client@2.2.48
+  - @scalar/oas-utils@0.2.105
+  - @scalar/types@0.0.33
+  - @scalar/components@0.13.24
+  - @scalar/code-highlight@0.0.21
+  - @scalar/use-toasts@0.7.9
+  - @scalar/use-hooks@0.1.21
+  - @scalar/snippetz@0.2.13
+  - @scalar/themes@0.9.67
+  - @scalar/openapi-parser@0.10.7
+  - @scalar/openapi-types@0.1.7
+
 ## 1.25.118
 
 ### Patch Changes

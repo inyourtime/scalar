@@ -1,5 +1,6 @@
+import { fileURLToPath, URL } from 'node:url'
+
 import { createViteBuildOptions, findEntryPoints } from '@scalar/build-tooling'
-import { URL, fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
 
 export default defineConfig({

@@ -1,5 +1,30 @@
 # @scalar/components
 
+## 0.13.25
+
+### Patch Changes
+
+- e350f23: chore: code style
+- e47a698: feat: adds alert icon
+- Updated dependencies [e350f23]
+- Updated dependencies [e47a698]
+  - @scalar/code-highlight@0.0.22
+  - @scalar/themes@0.9.68
+  - @scalar/use-hooks@0.1.22
+  - @scalar/use-toasts@0.7.9
+
+## 0.13.24
+
+### Patch Changes
+
+- 825bc40: feat(components): update lock icons to align with other icons
+- Updated dependencies [fa6afe8]
+- Updated dependencies [1223c1f]
+  - @scalar/code-highlight@0.0.21
+  - @scalar/use-toasts@0.7.9
+  - @scalar/use-hooks@0.1.21
+  - @scalar/themes@0.9.67
+
 ## 0.13.23
 
 ### Patch Changes

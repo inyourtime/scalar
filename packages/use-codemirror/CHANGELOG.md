@@ -1,5 +1,21 @@
 # @scalar/use-codemirror
 
+## 0.11.70
+
+### Patch Changes
+
+- Updated dependencies [e350f23]
+- Updated dependencies [e47a698]
+  - @scalar/components@0.13.25
+
+## 0.11.69
+
+### Patch Changes
+
+- fa6afe8: chore: code formatting
+- Updated dependencies [825bc40]
+  - @scalar/components@0.13.24
+
 ## 0.11.68
 
 ### Patch Changes

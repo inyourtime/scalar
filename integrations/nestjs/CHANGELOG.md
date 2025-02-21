@@ -1,5 +1,21 @@
 # @scalar/nestjs-api-reference
 
+## 0.3.184
+
+### Patch Changes
+
+- @scalar/types@0.0.34
+
+## 0.3.183
+
+### Patch Changes
+
+- 54fdfcb: chore: remove spec wording
+- fa6afe8: chore: code formatting
+- Updated dependencies [54fdfcb]
+- Updated dependencies [fa6afe8]
+  - @scalar/types@0.0.33
+
 ## 0.3.182
 
 ### Patch Changes

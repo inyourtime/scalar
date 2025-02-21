@@ -17,15 +17,17 @@
     "vue",
     "vue3"
   ],
-  "version": "0.7.8",
+  "version": "0.7.9",
   "engines": {
     "node": ">=18"
   },
   "scripts": {
     "build": "scalar-build-vite",
     "dev": "vite",
-    "lint:check": "eslint .",
-    "lint:fix": "eslint .  --fix",
+    "format": "scalar-format",
+    "format:check": "scalar-format-check",
+    "lint:check": "scalar-lint-check",
+    "lint:fix": "scalar-lint-fix",
     "preview": "vite preview",
     "test": "vitest",
     "types:build": "scalar-types-build-vue",
@@ -38,7 +40,7 @@
     "CHANGELOG.md"
   ],
   "dependencies": {
-    "nanoid": "^5.0.7",
+    "nanoid": "^5.0.9",
     "vue": "^3.5.12",
     "vue-sonner": "^1.0.3"
   },

@@ -18,7 +18,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - name: Ensure all Actions are pinned to a Commit SHA
-        uses: zgosalvez/github-actions-ensure-sha-pinned-actions@6eb1abde32fed00453b0d03497f4ba4fecba146d
+        uses: zgosalvez/github-actions-ensure-sha-pinned-actions@25ed13d0628a1601b4b44048e63cc4328ed03633
 
   build:
     runs-on: ubuntu-22.04
@@ -137,8 +137,15 @@ jobs:
           cache: 'pnpm'
       - name: Install dev dependencies
         run: pnpm install --dev
-      - name: Check code style
-        run: pnpm format:check
+      - name: Setup Biome
+        uses: biomejs/setup-biome@c016c38f26f2c4a6eb3662679143614a254263fd
+        with:
+          version: 1.9.4
+      - name: Lint code
+        run: biome lint --diagnostic-level=error
+      # TODO: Disabled until we applied the new formatting through Biome.
+      # - name: Check code style formatting
+      #   run: pnpm format:check
 
   types:
     needs: [build]
@@ -181,7 +188,7 @@ jobs:
         with:
           go-version: '1.21'
       - name: Run tests for the proxy server (Go)
-        run: cd examples/proxy-server && pnpm test
+        run: cd projects/proxy-scalar-com && pnpm test
 
   stats:
     needs: [build]

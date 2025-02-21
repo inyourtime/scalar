@@ -1,4 +1,5 @@
 import { rm } from 'node:fs/promises'
+
 import type { Plugin } from 'rollup'
 
 /**
@@ -15,7 +16,6 @@ export default function emptyOutDir({ dir }: { dir: string }): Plugin {
     generateBundle: {
       // Run before all other `generateBundle` plugins
       order: 'pre',
-      // eslint-disable-next-line consistent-return
       handler(_options, _bundle, isWrite) {
         if (isWrite) {
           // Only remove before first write, but make all writes wait on the removal

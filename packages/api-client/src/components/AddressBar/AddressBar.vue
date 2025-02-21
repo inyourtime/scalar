@@ -1,16 +1,34 @@
 <script setup lang="ts">
+import { ScalarButton, ScalarIcon } from '@scalar/components'
+import type { Environment } from '@scalar/oas-utils/entities/environment'
+import type {
+  Collection,
+  Operation,
+  RequestMethod,
+  Server,
+} from '@scalar/oas-utils/entities/spec'
+import type { Workspace } from '@scalar/oas-utils/entities/workspace'
+import { REQUEST_METHODS } from '@scalar/oas-utils/helpers'
+import { ref, useId, watch } from 'vue'
+
 import CodeInput from '@/components/CodeInput/CodeInput.vue'
 import { ServerDropdown } from '@/components/Server'
 import { useLayout } from '@/hooks'
 import { useWorkspace } from '@/store'
-import { useActiveEntities } from '@/store/active-entities'
-import { ScalarButton, ScalarIcon } from '@scalar/components'
-import type { RequestMethod } from '@scalar/oas-utils/entities/spec'
-import { REQUEST_METHODS } from '@scalar/oas-utils/helpers'
-import { ref, useId, watch } from 'vue'
+import type { EnvVariable } from '@/store/active-entities'
 
 import HttpMethod from '../HttpMethod/HttpMethod.vue'
 import AddressBarHistory from './AddressBarHistory.vue'
+
+const { collection, operation, server, environment, envVariables, workspace } =
+  defineProps<{
+    collection: Collection
+    operation: Operation
+    server: Server | undefined
+    environment: Environment
+    envVariables: EnvVariable[]
+    workspace: Workspace
+  }>()
 
 defineEmits<{
   (e: 'importCurl', value: string): void
@@ -18,8 +36,6 @@ defineEmits<{
 
 const id = useId()
 
-const { activeRequest, activeExample, activeServer, activeCollection } =
-  useActiveEntities()
 const { requestMutators, events } = useWorkspace()
 
 const { layout } = useLayout()
@@ -28,16 +44,15 @@ const addressBarRef = ref<typeof CodeInput | null>(null)
 
 /** update the instance path parameters on change */
 const onUrlChange = (newPath: string) => {
-  if (!activeRequest.value || activeRequest.value.path === newPath) return
-
-  requestMutators.edit(activeRequest.value.uid, 'path', newPath)
+  if (operation.path === newPath) return
+  requestMutators.edit(operation.uid, 'path', newPath)
 }
 
 /** watch for changes in the URL */
 watch(
-  () => activeRequest.value?.path,
+  () => operation.path,
   (newURL) => {
-    if (!activeRequest.value || !newURL) return
+    if (!newURL) return
     onUrlChange(newURL)
   },
 )
@@ -92,20 +107,18 @@ events.requestStatus.on((status) => {
 })
 
 function updateRequestMethod(method: RequestMethod) {
-  if (!activeRequest.value) return
-  requestMutators.edit(activeRequest.value.uid, 'method', method)
+  requestMutators.edit(operation.uid, 'method', method)
 }
 
 function getBackgroundColor() {
-  if (!activeRequest.value) return undefined
-  const { method } = activeRequest.value
+  const { method } = operation
   return REQUEST_METHODS[method].backgroundColor
 }
 
 function handleExecuteRequest() {
-  if (isRequesting.value || !activeRequest.value) return
+  if (isRequesting.value) return
   isRequesting.value = true
-  events.executeRequest.emit({ requestUid: activeRequest.value.uid })
+  events.executeRequest.emit({ requestUid: operation.uid })
 }
 
 /** Handle hotkeys */
@@ -118,32 +131,29 @@ events.hotKeys.on((event) => {
  * TODO: Should we handle query params here somehow?
  */
 function updateRequestPath(url: string) {
-  if (!activeRequest.value) return
-
-  requestMutators.edit(activeRequest.value.uid, 'path', url)
+  requestMutators.edit(operation.uid, 'path', url)
 }
 </script>
 <template>
   <div
-    v-if="activeRequest && activeExample"
     :id="id"
-    class="scalar-address-bar order-last lg:order-none lg:w-auto w-full [--scalar-address-bar-height:32px] h-[--scalar-address-bar-height]">
+    class="scalar-address-bar order-last h-[--scalar-address-bar-height] w-full [--scalar-address-bar-height:32px] lg:order-none lg:w-auto">
     <div class="m-auto flex flex-row items-center">
       <!-- Address Bar -->
       <div
-        class="addressbar-bg-states group text-xxs relative flex w-full xl:min-w-[720px] xl:max-w-[720px] lg:min-w-[580px] lg:max-w-[580px] order-last lg:order-none flex-1 flex-row items-stretch rounded-lg p-0.75 max-w-[calc(100dvw-24px)]">
+        class="addressbar-bg-states text-xxs p-0.75 group relative order-last flex w-full max-w-[calc(100dvw-24px)] flex-1 flex-row items-stretch rounded-lg lg:order-none lg:min-w-[580px] lg:max-w-[580px] xl:min-w-[720px] xl:max-w-[720px]">
         <div
-          class="border rounded-lg pointer-events-none absolute left-0 top-0 block h-full w-full overflow-hidden">
+          class="pointer-events-none absolute left-0 top-0 block h-full w-full overflow-hidden rounded-lg border">
           <div
-            class="bg-mix-transparent bg-mix-amount-90 absolute left-0 top-0 h-full w-full z-context"
+            class="bg-mix-transparent bg-mix-amount-90 z-context absolute left-0 top-0 h-full w-full"
             :class="getBackgroundColor()"
-            :style="{ transform: `translate3d(-${percentage}%,0,0)` }"></div>
+            :style="{ transform: `translate3d(-${percentage}%,0,0)` }" />
         </div>
-        <div class="flex gap-1 z-context-plus">
+        <div class="z-context-plus flex gap-1">
           <HttpMethod
             :isEditable="layout !== 'modal'"
             isSquare
-            :method="activeRequest.method"
+            :method="operation.method"
             teleport
             @change="updateRequestMethod" />
         </div>
@@ -152,52 +162,56 @@ function updateRequestPath(url: string) {
           class="codemirror-bg-switcher scroll-timeline-x scroll-timeline-x-hidden z-context-plus relative flex w-full">
           <!-- Servers -->
           <ServerDropdown
-            v-if="activeCollection?.servers?.length"
-            :collection="activeCollection"
+            v-if="collection.servers.length"
+            :collection="collection"
             layout="client"
-            :operation="activeRequest"
-            :server="activeServer"
+            :operation="operation"
+            :server="server"
             :target="id" />
 
-          <div class="fade-left"></div>
+          <div class="fade-left" />
           <!-- Path + URL + env vars -->
           <CodeInput
             ref="addressBarRef"
             aria-label="Path"
-            class="outline-none min-w-fit"
+            class="min-w-fit outline-none"
             disableCloseBrackets
             :disabled="layout === 'modal'"
             disableEnter
             disableTabIndent
             :emitOnBlur="false"
+            :envVariables="envVariables"
+            :environment="environment"
             importCurl
-            :modelValue="activeRequest.path"
+            :modelValue="operation.path"
             :placeholder="
-              activeServer?.uid &&
-              activeCollection?.servers?.includes(activeServer.uid)
+              server?.uid && collection.servers.includes(server.uid)
                 ? ''
                 : 'Enter a URL or cURL command'
             "
             server
+            :workspace="workspace"
             @curl="$emit('importCurl', $event)"
             @submit="handleExecuteRequest"
             @update:modelValue="updateRequestPath" />
-          <div class="fade-right"></div>
+          <div class="fade-right" />
         </div>
 
-        <AddressBarHistory :target="id" />
+        <AddressBarHistory
+          :operation="operation"
+          :target="id" />
         <ScalarButton
-          class="relative h-auto shrink-0 z-context-plus overflow-hidden pl-2 pr-2.5 py-1 font-bold"
+          class="z-context-plus relative h-auto shrink-0 overflow-hidden py-1 pl-2 pr-2.5 font-bold"
           :disabled="isRequesting"
           @click="handleExecuteRequest">
           <span
             aria-hidden="true"
-            class="inline-flex gap-1 items-center">
+            class="inline-flex items-center gap-1">
             <ScalarIcon
               class="relative shrink-0 fill-current"
               icon="Play"
               size="xs" />
-            <span class="text-xxs lg:flex hidden">Send</span>
+            <span class="text-xxs hidden lg:flex">Send</span>
           </span>
           <span class="sr-only"> Send Request </span>
         </ScalarButton>

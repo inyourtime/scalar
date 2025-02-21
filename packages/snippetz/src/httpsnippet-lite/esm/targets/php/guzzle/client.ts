@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 /**
  * @description
@@ -56,7 +55,7 @@ export const guzzle = {
       case 'multipart/form-data': {
         const fields = []
         if (postData.params) {
-          postData.params.forEach(function (param) {
+          postData.params.forEach((param) => {
             if (param.fileName) {
               const field = {
                 name: param.name,
@@ -105,9 +104,7 @@ export const guzzle = {
     // construct headers
     const headers = Object.keys(headersObj)
       .sort()
-      .map(function (key) {
-        return `${opts.indent}${opts.indent}'${key}' => '${escapeForSingleQuotes(headersObj[key])}',`
-      })
+      .map((key) => `${opts.indent}${opts.indent}'${key}' => '${escapeForSingleQuotes(headersObj[key])}',`)
     // construct cookies
     const cookieString = cookies
       .map(

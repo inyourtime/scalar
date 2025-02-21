@@ -1,5 +1,28 @@
 # @scalar/fastify-api-reference
 
+## 1.25.122
+
+## 1.25.121
+
+### Patch Changes
+
+- @scalar/types@0.0.34
+
+## 1.25.120
+
+### Patch Changes
+
+- a59b6c9: feat: pass logLevel to all registered routes
+
+## 1.25.119
+
+### Patch Changes
+
+- fa6afe8: chore: code formatting
+- Updated dependencies [54fdfcb]
+- Updated dependencies [fa6afe8]
+  - @scalar/types@0.0.33
+
 ## 1.25.118
 
 ### Patch Changes

@@ -20,7 +20,7 @@
     "vue",
     "vue3"
   ],
-  "version": "1.25.118",
+  "version": "1.25.122",
   "engines": {
     "node": ">=18"
   },
@@ -80,7 +80,7 @@
     "@vueuse/core": "^10.10.0",
     "fuse.js": "^7.0.0",
     "github-slugger": "^2.0.0",
-    "nanoid": "^5.0.7",
+    "nanoid": "^5.0.9",
     "vue": "^3.5.12"
   },
   "devDependencies": {
